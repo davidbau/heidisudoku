@@ -1,0 +1,58 @@
+<script src=/encode/seedrandom-min.js></script>
+<script src=sudoku.js></script>
+<pre id=timing>Timing</pre>
+<pre id=status>Status</pre>
+<script>
+function formatsquare(n) {
+  if (n === null) return '_';
+  return '' + (1 + n);
+}
+function formatboard(board) {
+  var result = [];
+  for (var j = 0; j < 9; j++) {
+    for (var k = 0; k < 9; k++) {
+      result.push(formatsquare(board[j * 9 + k]) + ' ')
+      if (k % 3 == 2) result.push(' ');
+    }
+    result.push('\n');
+    if (j % 3 == 2) result.push('\n');
+  }
+  return result.join('');
+}
+</script>
+
+<script>
+var iterations = 1000;
+var count = 0;
+var start = (new Date).getTime();
+
+function go() {
+  var puzzle = Sudoku.makepuzzle();
+  var solution = Sudoku.solution(puzzle);
+  var unsolvable = puzzle.slice();
+  while (true) {
+    var pos = Math.floor(Math.random() * 81);
+    var val = Math.floor(Math.random() * 9);
+    if (unsolvable[pos] === null && solution[pos] != val) {
+      unsolvable[pos] = val;
+      break;
+    }
+  }
+  document.getElementById('status').innerHTML =
+    formatboard(puzzle) + '\n\n' +
+    formatboard(unsolvable) + '\n\n' +
+    formatboard(solution);
+  if (Sudoku.solvable(unsolvable)) {
+    alert('incorrectly solvable');
+  } else if (!Sudoku.uniquesolution(puzzle)) {
+    alert('incorrect puzzle');
+  } else {
+    count += 1;
+    document.getElementById('timing').innerHTML = count + ', avg ' +
+                (((new Date).getTime() - start) / count) + ' ms';
+    if (count < iterations) setTimeout(go, 0);
+  }
+}
+
+go();
+</script>

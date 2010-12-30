@@ -1,0 +1,17 @@
+{
+  "name": "Heidi's Sudoku Hintpad",
+  "description": "Play the popular paper-and-pencil puzzler with Heidi's helpful hints.",
+  "version": "0.0.0.2",
+  "app": {
+    "launch": {
+      "local_path": "index.html"
+    }
+  },
+  "icons": {
+    "16": "sudoku-icon-16.png",
+    "96": "sudoku-icon-96.png",
+    "128": "sudoku-icon-128.png"
+  },
+  "permissions": [
+  ]
+}
