@@ -1,0 +1,202 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js">
+</script>
+<script>
+/**
+ * .disableTextSelect - Disable Text Select Plugin
+ *
+ * Version: 1.1
+ * Updated: 2007-11-28
+ *
+ * Used to stop users from selecting text
+ *
+ * Copyright (c) 2007 James Dempster (letssurf@gmail.com, http://www.jdempster.com/category/jquery/disabletextselect/)
+ *
+ * Dual licensed under the MIT (MIT-LICENSE.txt)
+ * and GPL (GPL-LICENSE.txt) licenses.
+ **/
+
+/**
+ * Requirements:
+ * - jQuery (John Resig, http://www.jquery.com/)
+ **/
+(function($) {
+    if ($.browser.mozilla) {
+        $.fn.disableTextSelect = function() {
+            return this.each(function() {
+                $(this).css({
+                    'MozUserSelect' : 'none'
+                });
+            });
+        };
+        $.fn.enableTextSelect = function() {
+            return this.each(function() {
+                $(this).css({
+                    'MozUserSelect' : ''
+                });
+            });
+        };
+    } else if ($.browser.msie) {
+        $.fn.disableTextSelect = function() {
+            return this.each(function() {
+                $(this).bind('selectstart.disableTextSelect', function() {
+                    return false;
+                });
+            });
+        };
+        $.fn.enableTextSelect = function() {
+            return this.each(function() {
+                $(this).unbind('selectstart.disableTextSelect');
+            });
+        };
+    } else {
+        $.fn.disableTextSelect = function() {
+            return this.each(function() {
+                $(this).bind('mousedown.disableTextSelect', function() {
+                    return false;
+                });
+            });
+        };
+        $.fn.enableTextSelect = function() {
+            return this.each(function() {
+                $(this).unbind('mousedown.disableTextSelect');
+            });
+        };
+    }
+})(jQuery);
+</script>
+
+<style>
+@media screen {
+@font-face {
+  font-family: 'Covered By Your Grace';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Covered By Your Grace'), local('CoveredByYourGrace'), url('CoveredByYourGrace.ttf') format('truetype');
+}
+}
+div.smenu {
+ position: absolute;
+ border: 1px solid lightgray;
+ overflow: hidden;
+}
+div.smenu table {
+ border-spacing: 0px;
+ display: none;
+ width: 84px;
+ height: 112px;
+}
+div.smenu table td {
+ color: #aaa;
+ font: 20px Covered By Your Grace; padding:0; margin:0;
+ height: 28px; width: 28px; border:0;
+ text-align:center;
+ cursor:default;
+ background-color:whitesmoke;
+ opacity:.95;
+}
+</style>
+
+<body bgcolor=pink>
+
+<!-- the popup menu -->
+<div class=smenu>
+<table>
+<tr><td>1</td><td>2</td><td>3</td></tr>
+<tr><td>4</td><td>5</td><td>6</td></tr>
+<tr><td>7</td><td>8</td><td>9</td></tr>
+<tr><td>&mdash;</td><td>?</td><td>OK</td></tr>
+</table>
+</div>
+
+<table class=grid>
+<tr><td>testing</td><td>testing</td><td>testing</td></tr>
+<tr><td>testing</td><td>testing</td><td>testing</td></tr>
+<tr><td>testing</td><td>testing</td><td>testing</td></tr>
+<tr><td>testing</td><td>testing</td><td>testing</td></tr>
+</table>
+
+<script>
+var stateobj = function() {
+  var state = [];
+  var hint = [];
+  return {
+    init: function(m, h) { state = m.slice(); hint = h.slice() },
+    get: function(j) { return j in state && state[j]; },
+    set: function(j, b) { if (b) state[j] = true; else delete state[j]; },
+    fetchhint: function() { state = hint.slice(); }
+    clear: function() { state = []; }
+  };
+}();
+
+var smenu = function() {
+  var state = null;
+  var menudiv = $('div.smenu');
+  var menutable = $('div.smenu table');
+  var menudims = {
+    width: menutable.width(),
+    height: menutable.height()
+  };
+  menudiv.disableTextSelect();
+  function redraw() {
+    $('div.smenu table td').each(function(j, elt) {
+      if (j >= 9) {
+        $(elt).css({'color': 'black', 'text-decoration': 'none'});
+      } else if (state.get(j + 1)) {
+        $(elt).css({'color': 'black', 'text-decoration': 'underline'});
+      } else {
+        $(elt).css({'color': 'lightgray', 'text-decoration': 'none'});
+      }
+    });
+  }
+  function show(elt, stateobj) {
+    $('div.smenu table').css('display', 'none');
+    state = stateobj;
+    redraw();
+    $('div.smenu').css({display: 'block'})
+                  .offset($(elt).offset())
+                  .css({
+      width: $(elt).width(),
+      height: $(elt).height(),
+      'background-color': $('div.smenu td').css('background-color'),
+      'opacity': $('div.smenu td').css('opacity')});
+    $('div.smenu').animate({
+      top: '+=' + ($(elt).height() - menudims.height * .75) / 2,
+      left: '+=' + ($(elt).width() - menudims.width) / 2,
+      height: menudims.height,
+      width: menudims.width
+    }, {
+      duration: 200,
+      complete: function() {
+        $('div.smenu table').css({
+          'display': 'block',
+        });
+        $('div.smenu').css({
+          'background-color': '',
+          'opacity': ''
+        });
+    }});
+  }
+  function hide() {
+    $('div.smenu').css({
+      'display': 'none'
+    });
+  }
+  $('div.smenu table td').mouseenter(function(ev) {
+    $(this).css({'background-color': 'white', 'opacity': 1.0});
+  }).mouseleave(function(ev) {
+    $(this).css({'background-color': '', 'opacity': ''});
+  }).click(function(ev) {
+    var txt = $(this).text();
+    if (txt == 'OK') { hide(); return; }
+    if (txt == '\u2014') { state.clear(); redraw(); return; }
+    if (txt == '?') { state.fetchhint(); redraw(); return; }
+    state.set(txt, !state.get(txt));
+    redraw();
+  });
+  return {show:show, hide:hide};
+}();
+
+$('table.grid td').click(function (ev) {
+  smenu.show(this, stateobj);
+});
+</script>

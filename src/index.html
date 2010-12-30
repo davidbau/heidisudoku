@@ -1,0 +1,30 @@
+<title>Heidi's Sudoku Hintpad</title>
+<body>
+<center><h1 style='font: 20pt "arial black", "arial bold", "sans-serif"'
+>Heidi's Sudoku Hintpad</h1></center>
+<p align=center style="font: 10pt arial">
+Click to mark squares, and ctrl-click to change the puzzle.<br>
+Every digit should appear once in each row, column, and box.<br>
+<a href="about.html">About this game</a>
+</p>
+<script src=jquery-1.4.4.min.js></script>
+<script src=jquery-bbq-1.2.1.min.js></script>
+<script src=sudoku.js></script>
+<script src=sudoku-hint.js></script>
+<script src=sudoku-ui.js></script>
+<script>
+document.write("<style>" + SudokuUI.boardcss() + "</style>");
+document.write(SudokuUI.menuhtml());
+document.write("<center>" + SudokuUI.boardhtml() + "</center>");
+</script>
+<center
+><input type=button value="Clear" id=clearbutton
+><input type=button value="Solve" id=solvebutton
+><input type=button value="New Puzzle" id=newbutton
+><input type=button value="Pencilmarks" id=markbutton
+><input type=button value="Hint" id=hintbutton
+><input type=button value="Check" id=checkbutton
+></center>
+<div class=sudoku-popup id=victory>You Win!</div>
+<div class=sudoku-popup id=ok>ok so far</div>
+<div class=sudoku-popup id=nohint>no hint</div>
