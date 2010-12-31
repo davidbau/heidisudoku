@@ -1,3 +1,8 @@
+// Sudoku hint engine for Heidi's Sudoku Hintpad
+// Implements various nonbacktracking sudoku deduction techniques.
+//
+// Copyright 2010 David Bau, all rights reserved.
+
 var SudokuHint = {};
 
 (function(lib) {

@@ -1,9 +1,10 @@
 <title>About Heidi's Sudoku Hintpad</title>
 <style>
-div.box { max-width: 500pt; text-align:left; }
+div.box { max-width: 360pt; text-align:left; }
 h1 { font: 20pt "arial black", "arial bold", "sans-serif" }
 h2 { font: 14pt "arial black", "arial bold", "sans-serif" }
 p { font: 10pt arial }
+b { background-color: gainsboro; padding: 0 5px; }
 </style>
 <body>
 
@@ -12,11 +13,13 @@ p { font: 10pt arial }
 <center><h1 style='font: 20pt "arial black", "arial bold", "sans-serif"'
 >About Heidi's Sudoku Hintpad</h1></center>
 <p style="text-align:center"
-><a href="javascript:history.back(1)" onclick=>Back to the game</a></p>
+><a href="index.html"
+onclick="this.href=this.href.replace(/#.*$/,'')+location.hash"
+>Back to the game</a>
 
 <h2>Heidi's Helpful Hints</h2>
 
-<p>This electronic Sudoku workpad is inspired by Heidi's favorite
+<p>This Sudoku workpad is inspired by Heidi's favorite
 way to solve Sudoku: instead of starting by eliminating candidates one
 square at a time, she loves to speed along looking for digits that can only
 be placed in one location because they are blocked by the same digit
@@ -34,8 +37,14 @@ filled in, or where the possibilities can be narrowed down.
 
 <p>If you are still stuck, you can try a more explicit hint by holding
 down <b>ctrl</b> while clicking the <b>Hint</b> button.  Sometimes
-the strategies shown will be very subtle: see if you can find the hidden
-pairs or triples, or if you can recognize an x-wing or a swordfish.
+the strategies shown will be very subtle: learn to recognize
+<a href="http://www.sudokuwiki.org/Naked_Candidates">naked pairs</a>
+and <a href="http://www.sudokuwiki.org/Intersection_Removal">pointing
+pairs</a>, and see if you can find the
+<a href="http://www.sudokuwiki.org/Hidden_Candidates">hidden pairs
+or triples</a> or recognize an
+<a href="http://www.sudokuwiki.org/X_Wing_Strategy">x-wing</a> or
+<a href="http://www.sudokuwiki.org/Sword_Fish_Strategy">swordfish</a>.
 
 <h2>Checking and Fixing Mistakes</h2>
 
@@ -69,14 +78,31 @@ you enter a puzzle that has no solution.
 <p>When you are ready for a new game, click <b>New Puzzle</b>, and a new
 puzzle will be randomly generated.
 
-<p>Holding <b>ctrl</b> when clicking <b>New Puzzle</b> will load one of
-<a href="http://mapleta.maths.uwa.edu.au/~gordon/sudokumin.php">Gordon
-Royale's beautifully minimal 17-hint Sudoku puzzles</a> if you are
-connected to the internet.
+<h2>Credits</h2>
 
-<p style=text-align:center>Version 0.3</p>
+<p>Heidi's Hintpad was written in HTML and Javascript by Heidi's husband
+<a href="http://davidbau.com/about/david_bau.html">David Bau</a>
+using John Resig's <a href="http://jquery.com/">jQuery</a>
+with Ben Alman's handy <a
+href="http://benalman.com/projects/jquery-bbq-plugin/">BBQ plugin</a>
+to manage "back" button state.  Kimberly Geswein's terrific
+<a href="http://code.google.com/webfonts/family?family=Covered+By+Your+Grace&subset=latin"
+>Covered-By-Your-Grace</a> font provides digits that look just like
+Heidi's handwriting, and Gordon Royale's mathematically beautiful <a
+href="http://mapleta.maths.uwa.edu.au/~gordon/sudokumin.php"
+>Minimum Sudoku Collection</a> provides minimal 17-hint puzzles
+when you hold <b>ctrl</b> and click <b>New Puzzle</b>.
+
+<p>The app's sources are not licensed for reuse at this time, but they
+are available to read <a href="http://davidbau.com/sudoku/sudoku.js"
+>here</a>, <a href="http://davidbau.com/sudoku/sudoku-hint.js">here</a>, and
+<a href="http://davidbau.com/sudoku/sudoku-ui.js">here</a>.
+
+<p style=text-align:center>Version 0.4</p>
 </div>
 </center>
 
 <p style="text-align:center"
-><a href="javascript:history.back(1)" onclick=>Back to the game</a></p>
+><a href="index.html"
+onclick="this.href=this.href.replace(/#.*$/,'')+location.hash"
+>Back to the game</a>

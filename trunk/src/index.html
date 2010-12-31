@@ -5,7 +5,9 @@
 <p align=center style="font: 10pt arial">
 Click to mark squares, and ctrl-click to change the puzzle.<br>
 Every digit should appear once in each row, column, and box.<br>
-<a href="about.html">About this game</a>
+<a href="about.html"
+onclick="this.href=this.href.replace(/#.*$/,'')+location.hash"
+>About this game</a>
 </p>
 <script src=jquery-1.4.4.min.js></script>
 <script src=jquery-bbq-1.2.1.min.js></script>
