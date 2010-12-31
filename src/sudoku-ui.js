@@ -1,3 +1,6 @@
+// UI for Heidi's Sudoku Hintpad
+//
+// Copyright 2010 David Bau, all rights reserved.
 
 var SudokuUI = {};
 
@@ -16,20 +19,29 @@ $(window).bind('hashchange', function() {
   redraw();
 });
 
+var justclicked = null;
+
 function hidepopups() {
   if (workmenu.showing()) {
     workmenu.hide();
   }
   $('div.sudoku-popup').css('display', 'none');
+  justclicked = null;
 }
 
 $('body').click(function(ev) {
   hidepopups();
 });
 
+$('td.sudoku-cell').click(function(ev) {
+  var pos = parseInt($(this).attr('id').substr(2));
+  if (pos == justclicked) ev.stopPropagation();
+});
+
 $('td.sudoku-cell').mousedown(function(ev) {
   hidepopups();
   var pos = parseInt($(this).attr('id').substr(2));
+  justclicked = pos;
   var state = decodeboardstate($.deparam.fragment());
   if (ev.ctrlKey) {
     var bits = 0;
@@ -566,6 +578,15 @@ function boardcss() {
     "body {" +
             "-webkit-user-select: none;" +
             "user-select: none; }",
+    // Font loading for firefox
+    "@font-face {" +
+            "font-family: 'Covered By Your Grace';" +
+            "font-style: normal;" +
+            "font-weight: normal;" +
+            "src: local('Covered By Your Grace'), " +
+                 "local('CoveredByYourGrace'), " +
+                 "url('CoveredByYourGrace.ttf') format('truetype'); }",
+    // Font loading for chrome
     "@media screen {" +
       "@font-face {" +
             "font-family: 'Covered By Your Grace';" +
