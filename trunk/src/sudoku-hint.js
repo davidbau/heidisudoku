@@ -96,11 +96,10 @@ function listbits(bits) {
   return result;
 }
 
-function boardsofar(puzzle, work) {
+function boardsofar(puzzle, answer) {
   var sofar = puzzle.slice();
   for (var j = 0; j < 81; j++) {
-    var nums = listbits(work[j]);
-    if (nums.length == 1) { sofar[j] = nums[0]; }
+    if (answer[j] !== null) sofar[j] = answer[j];
   }
   return sofar;
 }
@@ -109,7 +108,7 @@ function simplehint(board) {
   return figurebits(board).allowed;
 }
 
-function conflicts(board, work) {
+function conflicts(board) {
   var marked = emptyboard();
   for (var axis = 0; axis < 3; axis++) {
     for (var x = 0; x < 9; x++) {
@@ -143,11 +142,12 @@ function conflicts(board, work) {
   }];
 }
 
-function mistakes(board, work) {
+function mistakes(board, answer, work) {
   var solution = Sudoku.solution(board);
   var errors = [];
   for (var j = 0; j < 81; j++) {
-    if (work[j] != 0 && !(work[j] & (1 << solution[j]))) {
+    if ((work[j] != 0 && !(work[j] & (1 << solution[j]))) ||
+        (answer[j] !== null && answer[j] != solution[j])) {
       errors.push(j);
     }
   }
@@ -656,14 +656,14 @@ function hintsort(x, y) {
   return 0;
 }
 
-function hint(puzzle, work) {
-  var sofar = boardsofar(puzzle, work);
+function hint(puzzle, answer, work) {
+  var sofar = boardsofar(puzzle, answer);
   var result = [];
   var level = 0;
   while (true) {
-    result = result.concat(conflicts(sofar, work));
+    result = result.concat(conflicts(sofar));
     if (result.length) break;
-    result = result.concat(mistakes(puzzle, work));
+    result = result.concat(mistakes(puzzle, answer, work));
     if (result.length) break;
     level = 1;
     result = result.concat(singleposdirect(sofar, work));
