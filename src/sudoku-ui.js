@@ -9,8 +9,9 @@ var SudokuUI = {};
 $(function() {
 
 if (!window.location.hash) {
-  var state = { puzzle: Sudoku.makepuzzle(), work: [] };
-  $.bbq.pushState(encodeboardstate(state));
+  if (!loadstate()) {
+    savestate({ puzzle: Sudoku.makepuzzle(), work: [] });
+  }
 }
 
 redraw();
@@ -42,31 +43,36 @@ $('td.sudoku-cell').mousedown(function(ev) {
   hidepopups();
   var pos = parseInt($(this).attr('id').substr(2));
   justclicked = pos;
-  var state = decodeboardstate($.deparam.fragment());
+  var state = currentstate();
   if (ev.ctrlKey) {
     var bits = 0;
-    if (state.puzzle[pos] !== null) { bits = 1 << state.puzzle[pos]; }
     var hint = Sudoku.puzzlechoices(state.puzzle, pos);
-    workmenu.show(this, $('div.puzzle-menu'), bits, hint, true,
-    function(out) {
-      state = decodeboardstate($.deparam.fragment());
-      for (var num = 0; num < 9; num++) {
-        if (out & (1 << num)) break;
+    workmenu.show(this, $('div.puzzle-menu'), state.puzzle[pos], 0, 0,
+                  hint, true,
+    function(num, w, m) {
+      state = currentstate();
+      state.puzzle[pos] = num;
+      if (num !== null) {
+        state.answer[pos] = null;
+        state.work[pos] = 0;
+        state.mark[pos] = 0;
       }
-      state.puzzle[pos] = num < 9 ? num : null;
-      if (num < 9) state.work[pos] = 0;
-      $.bbq.pushState(encodeboardstate(state));
+      savestate(state);
     });
   } else {
     if (state.puzzle[pos] !== null) return;
     var sofar = boardsofar(state);
     sofar[pos] = null;
     var hint = SudokuHint.simplehint(sofar)[pos];
-    workmenu.show(this, $('div.work-menu'), state.work[pos], hint, false,
-    function(out) {
-      state = decodeboardstate($.deparam.fragment());
-      state.work[pos] = ((state.work[pos] & (~511)) | out);
-      $.bbq.pushState(encodeboardstate(state));
+    workmenu.show(this, $('div.work-menu'),
+                  state.answer[pos], state.work[pos], state.mark[pos],
+                  hint, false,
+    function(num, w, m) {
+      state = currentstate();
+      state.answer[pos] = num;
+      state.work[pos] = w;
+      state.mark[pos] = m;
+      savestate(state);
     });
   }
   ev.stopPropagation();
@@ -75,14 +81,14 @@ $('td.sudoku-cell').mousedown(function(ev) {
 $('#newbutton').click(function(ev) {
   hidepopups();
   if (ev.ctrlKey) {
-    $.bbq.pushState(encodeboardstate({puzzle: [], work: []}));
+    savestate({puzzle: [], work: []});
     $.getJSON('http://davidbau.com/sudoku/min.json?callback=?', function(p) {
       var puzzle = decodepuzzle81(p);
-      $.bbq.pushState(encodeboardstate({puzzle: puzzle, work: []}));
+      savestate({puzzle: puzzle, answer: [], work: [], mark: []});
     });
   } else {
-    var state = { puzzle: Sudoku.makepuzzle(), work: [] };
-    $.bbq.pushState(encodeboardstate(state));
+    var state = { puzzle: Sudoku.makepuzzle(), answer: [], work: [], mark: [] };
+    savestate(state);
   }
 });
 
@@ -92,21 +98,20 @@ $('#clearbutton').click(function(ev) {
   if (ev.ctrlKey) {
     cleared['puzzle'] = '';
   }
-  $.bbq.pushState(cleared);
-
+  savestate(cleared);
 });
 
 $('#hintbutton,#checkbutton').bind('mouseup mouseleave', function() {
   hidepopups();
-  var state = decodeboardstate($.deparam.fragment());
+  var state = currentstate();
   redraw(state);
   $('#markbutton').css('border', '');
 });
   
 $('#hintbutton').mousedown(function(ev) {
   hidepopups();
-  var state = decodeboardstate($.deparam.fragment());
-  var hint = SudokuHint.hint(state.puzzle, state.work);
+  var state = currentstate();
+  var hint = SudokuHint.hint(state.puzzle, state.answer, state.work);
   for (j = 0; j < 81; j++) {
     state.color[j] = 0;
   }
@@ -149,7 +154,7 @@ $('#hintbutton').mousedown(function(ev) {
 
 $('#markbutton').click(function(ev) {
   hidepopups();
-  var state = decodeboardstate($.deparam.fragment());
+  var state = currentstate();
   var sofar = boardsofar(state);
   if (ev.ctrlKey) {
     for (var j = 0; j < 81; j++) {
@@ -165,27 +170,32 @@ $('#markbutton').click(function(ev) {
       } else {
         state.work[j] &= hint[j];
       }
+      var nums = listbits(state.work[j]);
+      if (nums.length == 1) {
+        state.work[j] = 0;
+        state.answer[j] = nums[0];
+      }
     }
   }
-  $.bbq.pushState(encodeboardstate(state));
+  savestate(state);
 });
 
 $('#solvebutton').click(function() {
   hidepopups();
-  var state = decodeboardstate($.deparam.fragment());
+  var state = currentstate();
   var solution = Sudoku.solution(state.puzzle);
   if (solution === null) {
     alert("No solution");
     return;
   }
   for (var j = 0; j < 81; j++) {
-    if (state.puzzle === null) {
+    if (state.puzzle[j] === null) {
+      state.answer[j] = solution[j];
       state.work[j] = 0;
-    } else {
-      state.work[j] = (1 << solution[j]);
+      state.mark[j] = 0;
     }
   }
-  $.bbq.pushState(encodeboardstate(state));
+  savestate(state);
 });
 
 function showpopup(id) {
@@ -203,7 +213,7 @@ function showpopup(id) {
 
 $('#checkbutton').mousedown(function(ev) {
   hidepopups();
-  var state = decodeboardstate($.deparam.fragment());
+  var state = currentstate();
   for (var j = 0; j < 81; j++) {
     state.color[j] = 0;
   }
@@ -249,8 +259,7 @@ function listbits(bits) {
 function boardsofar(state) {
   var sofar = state.puzzle.slice();
   for (var j = 0; j < 81; j++) {
-    var nums = listbits(state.work[j]);
-    if (nums.length == 1) { sofar[j] = nums[0]; }
+    if (state.answer[j] !== null) sofar[j] = state.answer[j];
   }
   return sofar;
 }
@@ -260,27 +269,29 @@ function boardsofar(state) {
 // work=[base64]{162}
 
 function redraw(s) {
-  var state = s ? s : decodeboardstate($.deparam.fragment());
+  var state = s ? s : currentstate();
   var puzzle = state.puzzle;
+  var answer = state.answer;
   var work = state.work;
+  var mark = state.mark;
   var color = state.color;
   for (var j = 0; j < 81; j++) {
     if (puzzle[j] !== null) {
       $("#sn" + j).attr('class', 'sudoku-given').html(puzzle[j] + 1);
     } else {
-      var nums = listbits(work[j]);
-      if (nums.length == 0) {
-        $("#sn" + j).attr('class', 'sudoku-answer').html('&nbsp;');
-      } else if (nums.length == 1) {
-        $("#sn" + j).attr('class', 'sudoku-answer').html(nums[0] + 1);
+      if (answer[j] !== null || work[j] == 0) {
+        $("#sn" + j).attr('class', 'sudoku-answer').html(
+            answer[j] === null ? '&nbsp;' : answer[j] + 1);
       } else {
         var text = '<table class="sudoku-work-table">';
         for (var n = 0; n < 9; n++) {
-          if (n % 3 == 0) text += '<tr>'
-          text += '<td><div>' +
-            ((work[j] & (1 << n)) ? (n+1) : '&nbsp;') +
-            '</div></td>';
-          if (n % 3 == 2) text += '</tr>'
+          if (n % 3 == 0) { text += '<tr>'; }
+          text += '<td' +
+          ((mark[j] & (1 << n)) ? ' style="background-color:yellow"' : '') +
+          '><div>' +
+          ((work[j] & (1 << n)) ? (n+1) : '&nbsp;') +
+          '</div></td>';
+          if (n % 3 == 2) { text += '</tr>'; }
         }
         text += '</table>'
         $("#sn" + j).attr('class', 'sudoku-work').html(text);
@@ -291,40 +302,74 @@ function redraw(s) {
   }
 }
 
+function loadstate() {
+  if (!('localStorage' in window) || !('JSON' in window) ||
+      !('sudokustate' in window.localStorage)) {
+    return false;
+  }
+  var state = JSON.parse(localStorage['sudokustate']);
+  if (!state.puzzle || !state.puzzle.length) return false;
+  savestate(state);
+  return true;
+}
+
+function currentstate() {
+  return decodeboardstate($.deparam.fragment());
+}
+
+function savestate(state) {
+  $.bbq.pushState(encodeboardstate(state));
+  if (!('localStorage' in window) || !('JSON' in window)) {
+    return;
+  }
+  localStorage['sudokustate'] = JSON.stringify(state);
+}
+
 function decodeboardstate(data) {
   var puzzle = decodepuzzle81('puzzle' in data ? data.puzzle : '');
-  var bits = base64toarray('work' in data ? data.work : '');
+  var answer = decodepuzzle81('answer' in data ? data.answer : '');
+  var bits = base64toarray('marks' in data ? data.marks : '');
   var work = [];
+  var mark = [];
   var color = [];
   var w, c;
   for (var j = 0; j < 81; j++) {
     if (j < bits.length) {
       w = bits[j] & 511;
-      c = (bits[j] >> 9) & 3;
+      m = (bits[j] >> 9) & 511;
     } else {
       w = 0;
-      c = 0;
+      m = 0;
     }
     work.push(w);
-    color.push(c);
+    mark.push(m);
+    color.push(0);
   }
-  return { puzzle: puzzle, work: work, color: color };
+  return {
+    puzzle: puzzle,
+    answer: answer,
+    work: work,
+    mark: mark,
+    color: color
+  };
 }
 
 function encodeboardstate(state) {
   var bits = state.work.slice();
-  if ('color' in state) {
-    for (var j = 0; j < state.color.length; j++) {
-      bits[j] |= ((state.color[j] & 3) << 9);
+  if ('mark' in state) {
+    for (var j = 0; j < state.mark.length; j++) {
+      bits[j] |= ((state.mark[j] & 511) << 9);
     }
   }
   return {
     puzzle: encodepuzzle81(state.puzzle),
-    work: arraytobase64(bits)
+    answer: encodepuzzle81(state.answer),
+    marks: arraytobase64(bits)
   };
 }
 
 function encodepuzzle81(puzzle, explicit) {
+  if (!puzzle) return '';
   var result = [];
   if (explicit) {
     for (var j = 0; j < puzzle.length; j++) {
@@ -385,14 +430,16 @@ var base64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
                   "0123456789" +
                   "-_";
 
-function shorttobase64(twelvebits) {
-  return base64chars[(twelvebits >> 6) & 63] +
-         base64chars[twelvebits & 63];
+function shorttobase64(int18) {
+  return base64chars[(int18 >> 12) & 63] +
+         base64chars[(int18 >> 6) & 63] +
+         base64chars[int18 & 63];
 }
 
 function base64toshort(base64, index) {
-  return (base64chars.indexOf(base64.charAt(index)) << 6) +
-          base64chars.indexOf(base64.charAt(index + 1));
+  return (base64chars.indexOf(base64.charAt(index)) << 12) +
+         (base64chars.indexOf(base64.charAt(index + 1)) << 6) +
+          base64chars.indexOf(base64.charAt(index + 2));
 }
 
 function arraytobase64(numbers) {
@@ -405,7 +452,7 @@ function arraytobase64(numbers) {
 
 function base64toarray(base64) {
   var result = [];
-  for (var j = 0; j < base64.length; j += 2) {
+  for (var j = 0; j + 2 < base64.length; j += 3) {
     result.push(base64toshort(base64, j));
   }
   return result;
@@ -439,7 +486,8 @@ function boardhtml() {
 
 function menuhtml() {
   var result = ['<div class=work-menu><table>'];
-  var cells = [1,2,3,4,5,6,7,8,9,'&mdash;','?','<div class=menu-OK>OK</div>'];
+  var cells = [1,2,3,4,5,6,7,8,9,'&mdash;','?',
+               '<div class=menu-mode></div>'];
   for (var j = 0; j < cells.length; j++) {
     if (j % 3 == 0) result.push('<tr>');
     result.push('<td><div class=menu-clip><div class=menu-text>');
@@ -470,8 +518,13 @@ workmenu = (function() {
   var menu = null;
   var exclusive = false;
   var state = 0;
+  var marked = 0;
   var hint = 0;
   var callback = null;
+  var lasttime = 0;
+  var lastclick = null;
+  var called = false;
+  var mode = 0;
   function redrawmenu() {
     $(menu).find('div.menu-clip div').each(function(j, elt) {
       if (exclusive && j < 9 && 0 == (hint & (1 << j))) {
@@ -483,40 +536,65 @@ workmenu = (function() {
       } else {
         $(elt).css({'color': '#22c' });
       }
+      $(elt).css({'background-color': (marked & (1 << j)) ? 'yellow' : ''});
     });
+    $(menu).find('div.menu-mode').css({'background-image': 'url("' + 
+      ['pencilgray.png', 'pencil.png', 'highlighter.png'][mode] + '")' });
   }
-  function show(elt, m, bits, h, ex, cb) {
+  function togglemode() {
+    mode = (mode + 1) % 3;
+    redrawmenu();
+  }
+  function show(elt, m, n, bits, mrk, h, ex, cb) {
     if (showing) { hide(); }
     menu = m;
     exclusive = ex;
     state = bits;
+    marked = mrk;
     hint = h;
     callback = cb;
     showing = true;
     lasttime = 0;
     lastclick = null;
+    called = false;
+    mode = 0; // 0: auto; 1: pencil; 2: highlight
+    if (listbits(state).length == 1) { mode = 1; }
+    else if (n !== null) { state = (1 << n); }
     redrawmenu();
     var offset = $(elt).offset();
     offset.left += ($(elt).outerWidth() - $(menu).outerWidth()) / 2;
     offset.top += ($(elt).outerHeight() - $(menu).outerHeight()) / 2;
     $(menu).css({display: 'block'}).offset(offset);
   }
+  function sendcallback() {
+    if (callback && !called) {
+      called = true;
+      var nums = listbits(state);
+      if (mode == 0 && marked == 0 && nums.length == 1) {
+        callback(nums[0], 0, 0);
+      } else {
+        callback(null, state, marked);
+      }
+    }
+  }
   function hide() {
     showing = false;
     $(menu).css({
       'display': 'none'
     });
-    if (callback) { callback(state); }
+    sendcallback();
   }
   $('div.menu-text').mouseenter(function(ev) {
     $(this).css({'background-color': '#eef', 'opacity': 1.0});
   }).mouseleave(function(ev) {
-    $(this).css({'background-color': '', 'opacity': ''});
+    var num = parseInt($(this).text());
+    var clr = !isNaN(num) && (marked & (1 << (num - 1))) ? 'yellow' : '';
+    $(this).css({'background-color': clr, 'opacity': ''});
   }).click(function(ev) {
     ev.stopPropagation();
     var txt = $(this).text();
-    if (txt == 'OK') { hide(); }
-    else if (txt == '\u2014') { state = 0; }
+    if (txt == '') { togglemode(); }
+    else if (txt == '\u2014') { state = 0; marked = 0;}
     else if (txt == '?') { state = hint; }
     else {
       var clicktime = (new Date()).getTime();
@@ -527,10 +605,14 @@ workmenu = (function() {
         hide();
       } else {
         state ^= bit;
+        if (mode == 2 && !(marked & bit)) { state |= bit; }
+        marked = (marked & ~bit);
+        if (mode == 2) marked |= (state & bit);
         lastclick = bit;
         lasttime = clicktime;
       }
     }
+    called = false;
     redrawmenu();
   }).mousedown(function(ev) {
     ev.stopPropagation();
@@ -539,7 +621,10 @@ workmenu = (function() {
     var downtime = (new Date()).getTime();
     var bit = (1 << (parseInt(txt) - 1));
     if (bit == lastclick && (downtime - lasttime < 500)) {
+      // when there is a double-click, then write an answer
       state = bit;
+      mode = 0;
+      marked = 0;
       redrawmenu();
       hide();
     }
@@ -552,18 +637,18 @@ workmenu = (function() {
     var dx = Math.max(topleft.left - x, x - (topleft.left + width), 0);
     var dy = Math.max(topleft.top - y, y - (topleft.top + height), 0);
     var dist = Math.sqrt(dx * dx + dy * dy);
-    if (dist > 16) {
-      $(menu).css('opacity', (36 - dist) / 20);
-    } else {
-      $(menu).css('opacity', '');
-    }
     if (dist >= 36) {
       hide();
+      $(menu).css('opacity', '');
+    } else if (dist > 16) {
+      $(menu).css('opacity', (36 - dist) / 20);
+      sendcallback();
+    } else {
       $(menu).css('opacity', '');
     }
   }
   return {show:show, hide:hide, fade:fade,
-    showing:function(){return showing; } };
+    showing:function(){ return showing; } };
 })();
 
 $(document).mousemove(function(ev) {
@@ -695,12 +780,10 @@ function boardcss() {
             "cursor: pointer;" +
             "background-color:#fff;" +
             "opacity:1; }",
-    "div.menu-OK {" +
-            "color: #aaa;" +
-            "font: 10px Arial, sans-serif; padding:0; margin:0;" +
+    "div.menu-mode {" +
             "height: 30px; width: 30px; border:0;" +
-            "margin: 0;" +
-            "padding: 8px 0 8px 0;" +
+            "background-repeat:no-repeat;" +
+            "background-position:center;" +
             "vertical-align:middle;" +
             "cursor: default;" +
             "background-color:transparent;" +
