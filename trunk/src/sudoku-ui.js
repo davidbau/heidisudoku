@@ -6,6 +6,9 @@ var SudokuUI = {};
 
 (function(lib) {
 
+lib.levels = [];
+for (var j = 0; j <= 10; j++) { lib.levels.push(j); }
+
 $(function() {
 
 if (!window.location.hash) {
@@ -14,9 +17,11 @@ if (!window.location.hash) {
   }
 }
 
+setTimeout(gradepuzzle, 0);
 redraw();
 
 $(window).bind('hashchange', function() {
+  setTimeout(gradepuzzle, 0);
   redraw();
 });
 
@@ -79,10 +84,12 @@ $(document).keydown(function(ev) {
       state.answer[pos] = null;
       state.work[pos] = bits;
     }
-  } if (num == -1 || ev.which == 32 || ev.which == 46 || ev.which == 189) {
+  } else if (num == -1 || ev.which == 32 || ev.which == 46 || ev.which == 189) {
     state.work[pos] = 0;
     state.mark[pos] = 0;
     state.answer[pos] = null;
+  } else {
+    return;
   }
   savestate(state);
 });
@@ -125,6 +132,7 @@ $('td.sudoku-cell').mousedown(function(ev) {
         state.mark[pos] = 0;
       }
       savestate(state);
+      setTimeout(gradepuzzle, 0);
     });
   } else {
     if (state.puzzle[pos] !== null) return;
@@ -145,6 +153,27 @@ $('td.sudoku-cell').mousedown(function(ev) {
   ev.stopPropagation();
 });
 
+var graded = null;
+function gradepuzzle() {
+  var state = currentstate();
+  var current = encodepuzzle81(state.puzzle);
+  if (graded === current) return;
+  graded = current;
+
+  if (current == '') {
+    $('#grade').html('&nbsp;');
+    return;
+  }
+  if (!Sudoku.uniquesolution(state.puzzle)) {
+    $('#grade').html(lib.levels[0]);
+    return;
+  }
+  var steps = SudokuHint.hintgrade(state.puzzle);
+  var level = Math.max(1, Math.min(lib.levels.length - 1,
+              Math.floor(steps / 5)));
+  $('#grade').html(lib.levels[level]);
+}
+
 $('#newbutton').click(function(ev) {
   hidepopups();
   if (ev.ctrlKey) {
@@ -152,18 +181,23 @@ $('#newbutton').click(function(ev) {
     $.getJSON('http://davidbau.com/sudoku/min.json?callback=?', function(p) {
       var puzzle = decodepuzzle81(p);
       savestate({puzzle: puzzle, answer: [], work: [], mark: []});
+      setTimeout(gradepuzzle, 0);
     });
   } else {
     var state = { puzzle: Sudoku.makepuzzle(), answer: [], work: [], mark: [] };
+    if (!SudokuHint.hintgrade(state.puzzle)) return;
     savestate(state);
+    setTimeout(gradepuzzle, 0);
   }
 });
 
 $('#clearbutton').click(function(ev) {
   hidepopups();
-  var cleared = {work: ''};
+  var state = currentstate();
+  var cleared = {puzzle: state.puzzle, answer:[], work: [], mark: []};
   if (ev.ctrlKey) {
-    cleared['puzzle'] = '';
+    cleared['puzzle'] = [];
+    setTimeout(gradepuzzle, 0);
   }
   savestate(cleared);
 });
@@ -440,11 +474,11 @@ function encodepuzzle81(puzzle, explicit) {
       run += 1;
     }
     if (puzzle[j] !== null) {
-      if (run == 1) {
-        result.push('0');
-      } else {
-        while (run > 27) { result.push('Z'); run -= 27; }
+      while (run > 27) { result.push('Z'); run -= 27; }
+      if (run > 1) {
         result.push(base64chars.charAt(run - 2));
+      } else if (run == 1) {
+        result.push('0');
       }
       run = 0;
     }
@@ -889,6 +923,7 @@ function boardcss() {
 lib.boardcss = boardcss;
 lib.boardhtml = boardhtml;
 lib.menuhtml = menuhtml;
+lib.savestate = savestate;
 
 })(SudokuUI);
 

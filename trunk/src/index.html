@@ -2,13 +2,6 @@
 <body>
 <center><h1 style='font: 20pt "arial black", "arial bold", "sans-serif"'
 >Heidi's Sudoku Hintpad</h1></center>
-<p align=center style="font: 10pt arial">
-Click to mark squares, and ctrl-click to change the puzzle.<br>
-Every digit should appear once in each row, column, and box.<br>
-<a href="about.html"
-onclick="this.href=this.href.replace(/#.*$/,'')+location.hash"
->About this game</a>
-</p>
 <script src=jquery-1.4.4.min.js></script>
 <script src=jquery-bbq-1.2.1.min.js></script>
 <script src=sudoku.js></script>
@@ -17,6 +10,10 @@ onclick="this.href=this.href.replace(/#.*$/,'')+location.hash"
 <script>
 document.write("<style>" + SudokuUI.boardcss() + "</style>");
 document.write(SudokuUI.menuhtml());
+</script>
+<div style='text-align:center;font:16pt "arial black","arial bold","sans-serif"'
+id=grade>&nbsp;</div>
+<script>
 document.write("<center>" + SudokuUI.boardhtml() + "</center>");
 </script>
 <center
@@ -30,3 +27,36 @@ document.write("<center>" + SudokuUI.boardhtml() + "</center>");
 <div class=sudoku-popup id=victory>You Win!</div>
 <div class=sudoku-popup id=ok>ok so far</div>
 <div class=sudoku-popup id=nohint>no hint</div>
+
+<p align=center style="font: 10pt arial">
+<a href="about.html"
+onclick="this.href=this.href.replace(/#.*$/,'')+location.hash"
+>About this game</a>
+</p>
+<script>
+SudokuUI.levels = [
+  "Unsolvable",
+  "Beginner",
+  "Simple",
+  "Easy",
+  "Medium",
+  "Intermediate",
+  "Tricky",
+  "Puzzling",
+  "Subtle",
+  "Knotty",
+  "Thorny",
+  "Baffling",
+  "Intricate",
+  "Perplexing",
+  "Obscure",
+  "Labyrinthine",
+  "Obstinate",
+  "Abstruse",
+  "Vexing",
+  "Enigmatic",
+  "Formidable",
+  "Confounding",
+  "Impossible"
+];
+</script>

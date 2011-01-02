@@ -172,6 +172,7 @@ function mistakes(board, answer, work) {
   var solution = Sudoku.solution(board);
   var errors = [];
   for (var j = 0; j < 81; j++) {
+    if (board[j] !== null) continue;
     if ((work[j] != 0 && !(work[j] & (1 << solution[j]))) ||
         (answer[j] !== null && answer[j] != solution[j])) {
       errors.push(j);
@@ -598,6 +599,7 @@ function candidatelinepairs(board, unz, bits) {
 
 function xwing(board, bits, size) {
   var result = [];
+  bits = fullbits(board, bits);
   for (var axis = 0; axis < 2; axis++) {
     for (var num = 0; num < 9; num++) {
       var bit = 1 << num;
@@ -609,7 +611,7 @@ function xwing(board, bits, size) {
         var spotcount = 0;
         for (var y = 0; spotcount <= 2 && y < 9; y++) {
           var pos = posfor(x, y, axis);
-          if (board[pos] === null && (bits[pos] & bit)) {
+          if (bits[pos] & bit) {
             spotcount += 1;
             spots |= (1 << y);
           }
@@ -683,6 +685,14 @@ function hintsort(x, y) {
 }
 
 function hint(puzzle, answer, work) {
+  var result = rawhints(puzzle, answer, work);
+  if (!result.hints.length) return null;
+  result.hints.sort(hintsort);
+  result.hints[0].level = result.level;
+  return result.hints[0];
+}
+
+function rawhints(puzzle, answer, work) {
   var sofar = boardsofar(puzzle, answer);
   var unz = unzeroedwork(sofar, work);
   var result = [];
@@ -715,12 +725,14 @@ function hint(puzzle, answer, work) {
     level = 5;
     result = result.concat(hiddensets(sofar, unz, work, 4));
     result = result.concat(xwing(sofar, unz, 4));
+    // result = result.concat(hiddensets(sofar, unz, work, 5));
+    // result = result.concat(xwing(sofar, unz, 5));
     break;
   }
-  if (!result.length) return null;
-  result.sort(hintsort);
-  result[0].level = level;
-  return result[0];
+  return {
+    level: level,
+    hints: result
+  };
 }
 
 function pencilmarks(board, work) {
@@ -732,12 +744,63 @@ function pencilmarks(board, work) {
   return hint;
 }
 
+function hintgrade(puzzle) {
+  var answer = emptyboard();
+  work = [];
+  var unsolved = 0;
+  var level = 0;
+  for (var j = 0; j < 81; j++) {
+    work.push(511);
+    if (puzzle[j] === null) { unsolved += 1; }
+  }
+  var steps = 0;
+  while (unsolved) {
+    var h = rawhints(puzzle, answer, work);
+    if (h.hints.length == 0) {
+      steps += Math.floor(Math.pow(2, (unsolved - 3) / 3));
+      break;
+    }
+    steps += (h.level - 1) * 3 + 1;
+    // console.log("Level " + h.level + " options " + h.hints.length);
+    if (h.hints.length <= 2) { steps += (3 - h.hints.length); }
+    for (var k = 0; k < h.hints.length; k++) {
+      var hint = h.hints[k];
+      var oldwork = work.slice();
+      for (var j = 0; j < hint.reduced.length; j++) {
+        var pos = hint.reduced[j];
+        work[pos] = (work[pos] & ~hint.exclude);
+      }
+      /*
+      if (mistakes(puzzle, answer, work).length) {
+        console.log('problem', JSON.stringify(hint));
+        SudokuUI.savestate({
+          puzzle:puzzle,
+          answer:answer,
+          work:oldwork
+        });
+        alert('problem');
+        return 0;
+      }
+      */
+    }
+    unsolved = 0;
+    for (var j = 0; j < 81; j++) {
+      if (answer[j] !== null || puzzle[j] !== null) continue;
+      var nums = listbits(work[j]);
+      if (nums.length == 1) { answer[j] = nums[0]; work[j] = 0; }
+      else { unsolved += 1; }
+    }
+  }
+  return steps;
+}
+
 
 lib.simplehint = simplehint;
 lib.conflicts = conflicts;
 lib.mistakes = mistakes;
 lib.pencilmarks = pencilmarks;
 lib.hint = hint;
+lib.hintgrade = hintgrade;
 
 })(SudokuHint);
 
