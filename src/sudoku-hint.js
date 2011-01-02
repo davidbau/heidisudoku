@@ -113,17 +113,15 @@ function unzeroedwork(puzzle, answer, work) {
   var sofar = boardsofar(puzzle, answer);
   for (var block = 0; block < 9; block++) {
     var marked = 0;
-    var doublemarked = 0;
     for (var y = 0; y < 9; y++) {
       var pos = posfor(block, y, 2);
       if (sofar[pos] !== null) {
-        doublemarked |= (1 << sofar[pos]);
+        marked |= (1 << sofar[pos]);
       } else {
-        doublemarked |= (marked & work[pos]);
         marked |= work[pos];
       }
     }
-    var unmarked = 511 ^ doublemarked;
+    var unmarked = 511 ^ marked;
     if (unmarked != 0) {
       for (var y = 0; y < 9; y++) {
         var pos = posfor(block, y, 2);
@@ -775,12 +773,15 @@ function hintgrade(puzzle) {
     for (var k = 0; k < h.hints.length; k++) {
       var hint = h.hints[k];
       var oldwork = work.slice();
+      var modified = false;
       for (var j = 0; j < hint.reduced.length; j++) {
         var pos = hint.reduced[j];
+        if (work[pos] & hint.exclude) { modified = true; }
         work[pos] = (work[pos] & ~hint.exclude);
       }
       /*
-      if (mistakes(puzzle, answer, work).length) {
+      if ((!modified && k == 0) ||
+          mistakes(puzzle, answer, work).length) {
         console.log('problem', JSON.stringify(hint));
         SudokuUI.savestate({
           puzzle:puzzle,
@@ -789,7 +790,7 @@ function hintgrade(puzzle) {
         });
         alert('problem');
         return 0;
-      }
+      } 
       */
     }
     unsolved = 0;
