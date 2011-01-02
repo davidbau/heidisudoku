@@ -261,6 +261,7 @@ $('#markbutton').click(function(ev) {
     for (var j = 0; j < 81; j++) {
       if (sofar[j] !== null) continue;
       state.work[j] = 0;
+      state.mark[j] = 0;
     }
   } else {
     state.work = SudokuHint.pencilmarks(sofar, state.work);
@@ -311,7 +312,8 @@ $('#checkbutton').mousedown(function(ev) {
   var sofar = boardsofar(state);
   var conflicts = SudokuHint.conflicts(sofar);
   if (conflicts.length == 0 && ev.ctrlKey) {
-    conflicts = SudokuHint.mistakes(state.puzzle, state.answer, state.work);
+    var unz = SudokuHint.unzeroedwork(state.puzzle, state.answer, state.work);
+    conflicts = SudokuHint.mistakes(state.puzzle, state.answer, unz);
   }
   if (conflicts.length > 0 && conflicts[0].errors) {
     var errors = conflicts[0].errors;

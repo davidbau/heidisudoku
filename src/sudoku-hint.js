@@ -107,23 +107,32 @@ function boardsofar(puzzle, answer) {
 
 // Assume that if a number isn't marked at all within a block,
 // the player thinks that the number could be anywhere in the block.
-function unzeroedwork(sofar, work) {
+function unzeroedwork(puzzle, answer, work) {
   var result = work.slice();
+  var solution = Sudoku.solution(puzzle);
+  var sofar = boardsofar(puzzle, answer);
   for (var block = 0; block < 9; block++) {
     var marked = 0;
+    var doublemarked = 0;
     for (var y = 0; y < 9; y++) {
       var pos = posfor(block, y, 2);
       if (sofar[pos] !== null) {
-        marked |= (1 << sofar[pos]);
+        doublemarked |= (1 << sofar[pos]);
       } else {
+        doublemarked |= (marked & work[pos]);
         marked |= work[pos];
       }
     }
-    var unmarked = 511 ^ marked;
+    var unmarked = 511 ^ doublemarked;
     if (unmarked != 0) {
       for (var y = 0; y < 9; y++) {
         var pos = posfor(block, y, 2);
         if (sofar[pos] === null) result[pos] |= unmarked;
+        // benefit of the doubt: assume the player thinks the correct
+        // solution is one of the options in an empty square.
+        if (work[pos] == 0 && solution !== null) {
+          result[pos] |= (1 << solution[pos]);
+        }
       }
     }
   }
@@ -694,7 +703,7 @@ function hint(puzzle, answer, work) {
 
 function rawhints(puzzle, answer, work) {
   var sofar = boardsofar(puzzle, answer);
-  var unz = unzeroedwork(sofar, work);
+  var unz = unzeroedwork(puzzle, answer, work);
   var result = [];
   var level = 0;
   while (true) {
@@ -736,7 +745,7 @@ function rawhints(puzzle, answer, work) {
 }
 
 function pencilmarks(board, work) {
-  var unz = unzeroedwork(board, work);
+  var unz = unzeroedwork(Sudoku.emptyboard(), board, work);
   var hint = simplehint(board);
   for (var j = 0; j < 81; j++) {
     hint[j] &= unz[j];
@@ -798,6 +807,7 @@ function hintgrade(puzzle) {
 lib.simplehint = simplehint;
 lib.conflicts = conflicts;
 lib.mistakes = mistakes;
+lib.unzeroedwork = unzeroedwork;
 lib.pencilmarks = pencilmarks;
 lib.hint = hint;
 lib.hintgrade = hintgrade;
