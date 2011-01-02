@@ -36,12 +36,30 @@ $('body').click(function(ev) {
 
 var keyfocus = null;
 
+function setkeyfocus(kf) {
+  if (keyfocus !== null) {
+    $(keyfocus).find('div.sudoku-border').css('border', '');
+  }
+  keyfocus = kf;
+  if (keyfocus !== null) {
+    $(keyfocus).find('div.sudoku-border').css('border', '1px dotted blue');
+  }
+}
+
 $(document).keydown(function(ev) {
+  if (workmenu.showing()) { workmenu.keydown(ev); return; }
   if (keyfocus === null) return;
   var pos = parseInt($(keyfocus).attr('id').substr(2));
   if (!(pos >= 0 && pos < 81)) return;
   if (ev.which >= 37 && ev.which <= 40) {
-    // handle arrows
+    var x = pos % 9;
+    var y = (pos - x) / 9;
+    if (ev.which == 37 && x > 0) { x -= 1; }
+    if (ev.which == 39 && x < 8) { x += 1; }
+    if (ev.which == 38 && y > 0) { y -= 1; }
+    if (ev.which == 40 && y < 8) { y += 1; }
+    setkeyfocus($('#sc' + (x + y * 9)));
+    return;
   }
   var state = currentstate();
   if (state.puzzle[pos] !== null) return;
@@ -77,14 +95,14 @@ $('td.sudoku-cell').click(function(ev) {
 $('td.sudoku-cell').mouseenter(function(ev) {
   if (!workmenu.showing()) {
     $(this).find('div.sudoku-border').css('border', '1px dotted blue');
-    keyfocus = this;
+    setkeyfocus(this);
   }
   ev.stopPropagation();
 });
 
 $('td.sudoku-cell').mouseleave(function(ev) {
   $(this).find('div.sudoku-border').css('border', '');
-  keyfocus = null;
+  setkeyfocus(null);
   ev.stopPropagation();
 });
 
@@ -623,15 +641,18 @@ workmenu = (function() {
     });
     sendcallback();
   }
-  $('div.menu-text').mouseenter(function(ev) {
-    $(this).css({'background-color': '#eef', 'opacity': 1.0});
-  }).mouseleave(function(ev) {
-    var num = parseInt($(this).text());
-    var clr = !isNaN(num) && (marked & (1 << (num - 1))) ? 'yellow' : '';
-    $(this).css({'background-color': clr, 'opacity': ''});
-  }).click(function(ev) {
-    ev.stopPropagation();
-    var txt = $(this).text();
+  function keydown(ev) {
+    var txt = null;
+    if (ev.which >= '1'.charCodeAt(0) && ev.which <= '9'.charCodeAt(0)) {
+      txt = String.fromCharCode(ev.which);
+    } else if (ev.which == '0'.charCodeAt(0) ||
+               ev.which == 32 || ev.which == 46 || ev.which == 189) {
+      txt = '-';
+    }
+    if (txt === null) return;
+    entry(txt);
+  }
+  function entry(txt) {
     if (txt == '') { togglemode(); }
     else if (txt == '\u2014') { state = 0; marked = 0;}
     else if (txt == '?') { state = hint; }
@@ -653,6 +674,17 @@ workmenu = (function() {
     }
     called = false;
     redrawmenu();
+  }
+
+  $('div.menu-text').mouseenter(function(ev) {
+    $(this).css({'background-color': '#eef', 'opacity': 1.0});
+  }).mouseleave(function(ev) {
+    var num = parseInt($(this).text());
+    var clr = !isNaN(num) && (marked & (1 << (num - 1))) ? 'yellow' : '';
+    $(this).css({'background-color': clr, 'opacity': ''});
+  }).click(function(ev) {
+    ev.stopPropagation();
+    entry($(this).text());
   }).mousedown(function(ev) {
     ev.stopPropagation();
     var txt = $(this).text();
@@ -686,7 +718,7 @@ workmenu = (function() {
       $(menu).css('opacity', '');
     }
   }
-  return {show:show, hide:hide, fade:fade,
+  return {show:show, hide:hide, fade:fade, keydown:keydown,
     showing:function(){ return showing; } };
 })();
 
