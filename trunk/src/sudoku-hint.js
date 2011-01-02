@@ -104,6 +104,32 @@ function boardsofar(puzzle, answer) {
   return sofar;
 }
 
+
+// Assume that if a number isn't marked at all within a block,
+// the player thinks that the number could be anywhere in the block.
+function unzeroedwork(sofar, work) {
+  var result = work.slice();
+  for (var block = 0; block < 9; block++) {
+    var marked = 0;
+    for (var y = 0; y < 9; y++) {
+      var pos = posfor(block, y, 2);
+      if (sofar[pos] !== null) {
+        marked |= (1 << sofar[pos]);
+      } else {
+        marked |= work[pos];
+      }
+    }
+    var unmarked = 511 ^ marked;
+    if (unmarked != 0) {
+      for (var y = 0; y < 9; y++) {
+        var pos = posfor(block, y, 2);
+        if (sofar[pos] === null) result[pos] |= unmarked;
+      }
+    }
+  }
+  return result;
+}
+
 function simplehint(board) {
   return figurebits(board).allowed;
 }
@@ -296,7 +322,7 @@ function nakedsets(board, bits, size) {
   return result;
 }
 
-function hiddensets(board, bits, size) {
+function hiddensets(board, unz, bits, size) {
   var result = [];
   for (var axis = 0; axis < 3; axis++) {
     for (var x = 0; x < 9; x++) {
@@ -306,7 +332,7 @@ function hiddensets(board, bits, size) {
       for (var y = 0; y < 9; y++) {
         var pos = posfor(x, y, axis);
         if (board[pos] !== null) { known |= (1 << board[pos]); continue; }
-        open |= unzero(bits[pos]);
+        open |= unz[pos];
       }
       var nums = listbits(open & ~known);
       if (nums.length >= size + 1) {
@@ -317,7 +343,7 @@ function hiddensets(board, bits, size) {
           var bit = 1 << nums[j];
           for (var y = 0; y < 9; y++) {
             var pos = posfor(x, y, axis);
-            if (unzero(bits[pos]) & bit) { np |= (1 << y); }
+            if (unz[pos] & bit) { np |= (1 << y); }
           }
           numpos.push(np);
         }
@@ -363,12 +389,12 @@ function hiddensets(board, bits, size) {
 }
 
 // Look to find not-yet-noted conflicts that force an answer.
-function singlenumdirect(board, bits) {
+function singlenumdirect(board, unz) {
   var hint = figurebits(board).allowed;
   var result = [];
   for (var pos = 0; pos < 81; pos++) {
     if (board[pos] !== null) continue;
-    var b = bits[pos] ? bits[pos] : 511;
+    var b = unz[pos];
     var forced = hint[pos] & b;
     if (listbits(forced).length != 1) continue;
     result.push({
@@ -421,7 +447,7 @@ function singleposdirect(board) {
   return result;
 }
 
-function singlepos(board, bits) {
+function singlepos(board, unz) {
   var result = [];
   var singlepos = emptyboard();
   for (var axis = 2; axis >= 0; axis--) {
@@ -432,8 +458,8 @@ function singlepos(board, bits) {
         var found = null;
         for (var y = 0; y < 9; y++) {
           var pos = posfor(x, y, axis);
-          if (bits[pos] & bit) {
-            if (bits[pos] == bit || found != null) {
+          if (unz[pos] & bit) {
+            if (found != null) {
               found = null;
               break;
             }
@@ -477,8 +503,8 @@ function unzero(bits) {
   return bits;
 }
 
-function candidatelines(board, bits) {
-  bits = fullbits(board, bits);
+function candidatelines(board, unz, bits) {
+  unz = fullbits(board, unz);
   var result = [];
   for (var block = 0; block < 9; block++) {
     for (var axis = 0; axis < 2; axis++) {
@@ -486,9 +512,9 @@ function candidatelines(board, bits) {
         var candbits = 0;
         var notbits = 0;
         for (var y = 0; y < 3; y++) {
-          candbits |= unzero(bits[posforblock(block, axis, x, y)]);
-          notbits |= unzero(bits[posforblock(block, axis, (x + 1) % 3, y)]);
-          notbits |= unzero(bits[posforblock(block, axis, (x + 2) % 3, y)]);
+          candbits |= unz[posforblock(block, axis, x, y)];
+          notbits |= unz[posforblock(block, axis, (x + 1) % 3, y)];
+          notbits |= unz[posforblock(block, axis, (x + 2) % 3, y)];
         }
         var candbits = candbits & ~notbits;
         if (candbits == 0) continue;
@@ -524,8 +550,8 @@ function candidatelines(board, bits) {
 }
 
 
-function candidatelinepairs(board, bits) {
-  bits = fullbits(board, bits);
+function candidatelinepairs(board, unz, bits) {
+  unz = fullbits(board, unz);
   var result = [];
   for (var block = 0; block < 9; block++) {
     for (var axis = 0; axis < 2; axis++) {
@@ -533,9 +559,9 @@ function candidatelinepairs(board, bits) {
         var candbits = 0;
         var notbits = 0;
         for (var y = 3; y < 9; y++) {
-          notbits |= unzero(bits[posforblock(block, axis, x, y)]);
-          candbits |= unzero(bits[posforblock(block, axis, (x + 1) % 3, y)]);
-          candbits |= unzero(bits[posforblock(block, axis, (x + 2) % 3, y)]);
+          notbits |= unz[posforblock(block, axis, x, y)];
+          candbits |= unz[posforblock(block, axis, (x + 1) % 3, y)];
+          candbits |= unz[posforblock(block, axis, (x + 2) % 3, y)];
         }
         candbits = candbits & ~notbits;
         if (candbits == 0) continue;
@@ -658,36 +684,37 @@ function hintsort(x, y) {
 
 function hint(puzzle, answer, work) {
   var sofar = boardsofar(puzzle, answer);
+  var unz = unzeroedwork(sofar, work);
   var result = [];
   var level = 0;
   while (true) {
     result = result.concat(conflicts(sofar));
     if (result.length) break;
-    result = result.concat(mistakes(puzzle, answer, work));
+    result = result.concat(mistakes(puzzle, answer, unz));
     if (result.length) break;
     level = 1;
-    result = result.concat(singleposdirect(sofar, work));
-    result = result.concat(singlenumdirect(sofar, work));
+    result = result.concat(singleposdirect(sofar));
+    result = result.concat(singlenumdirect(sofar, unz));
     if (result.length) break;
     level = 2;
-    result = result.concat(singlepos(sofar, work));
-    result = result.concat(candidatelines(sofar, work));
-    result = result.concat(nakedsets(sofar, work, 2));
+    result = result.concat(singlepos(sofar, unz));
+    result = result.concat(candidatelines(sofar, unz, work));
+    result = result.concat(nakedsets(sofar, unz, 2));
     if (result.length) break;
     level = 3;
-    result = result.concat(xwing(sofar, work, 2));
-    result = result.concat(candidatelinepairs(sofar, work));
-    result = result.concat(nakedsets(sofar, work, 3));
-    result = result.concat(hiddensets(sofar, work, 2));
+    result = result.concat(xwing(sofar, unz, 2));
+    result = result.concat(candidatelinepairs(sofar, unz, work));
+    result = result.concat(nakedsets(sofar, unz, 3));
+    result = result.concat(hiddensets(sofar, unz, work, 2));
     if (result.length) break;
     level = 4;
-    result = result.concat(xwing(sofar, work, 3));
-    result = result.concat(nakedsets(sofar, work, 4));
-    result = result.concat(hiddensets(sofar, work, 3));
+    result = result.concat(xwing(sofar, unz, 3));
+    result = result.concat(nakedsets(sofar, unz, 4));
+    result = result.concat(hiddensets(sofar, unz, work, 3));
     if (result.length) break;
     level = 5;
-    result = result.concat(hiddensets(sofar, work, 4));
-    result = result.concat(xwing(sofar, work, 4));
+    result = result.concat(hiddensets(sofar, unz, work, 4));
+    result = result.concat(xwing(sofar, unz, 4));
     break;
   }
   if (!result.length) return null;
@@ -696,10 +723,20 @@ function hint(puzzle, answer, work) {
   return result[0];
 }
 
+function pencilmarks(board, work) {
+  var unz = unzeroedwork(board, work);
+  var hint = simplehint(board);
+  for (var j = 0; j < 81; j++) {
+    hint[j] &= unz[j];
+  }
+  return hint;
+}
+
 
 lib.simplehint = simplehint;
 lib.conflicts = conflicts;
 lib.mistakes = mistakes;
+lib.pencilmarks = pencilmarks;
 lib.hint = hint;
 
 })(SudokuHint);

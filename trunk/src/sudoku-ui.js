@@ -34,9 +34,58 @@ $('body').click(function(ev) {
   hidepopups();
 });
 
+var keyfocus = null;
+
+$(document).keydown(function(ev) {
+  if (keyfocus === null) return;
+  var pos = parseInt($(keyfocus).attr('id').substr(2));
+  if (!(pos >= 0 && pos < 81)) return;
+  if (ev.which >= 37 && ev.which <= 40) {
+    // handle arrows
+  }
+  var state = currentstate();
+  if (state.puzzle[pos] !== null) return;
+  var num = ev.which - '1'.charCodeAt(0);
+  if (num >= 0 && num < 9) {
+    var bit = (1 << num);
+    var bits = state.work[pos];
+    if (state.answer[pos] !== null) bits |= (1 << state.answer[pos]);
+    bits ^= bit;
+    state.mark[pos] &= ~bit;
+    var nums = listbits(bits);
+    if (nums.length == 1) {
+      state.work[pos] = 0;
+      state.mark[pos] = 0;
+      state.answer[pos] = nums[0];
+    } else {
+      state.answer[pos] = null;
+      state.work[pos] = bits;
+    }
+  } if (num == -1 || ev.which == 32 || ev.which == 46 || ev.which == 189) {
+    state.work[pos] = 0;
+    state.mark[pos] = 0;
+    state.answer[pos] = null;
+  }
+  savestate(state);
+});
+
 $('td.sudoku-cell').click(function(ev) {
   var pos = parseInt($(this).attr('id').substr(2));
   if (pos == justclicked) ev.stopPropagation();
+});
+
+$('td.sudoku-cell').mouseenter(function(ev) {
+  if (!workmenu.showing()) {
+    $(this).find('div.sudoku-border').css('border', '1px dotted blue');
+    keyfocus = this;
+  }
+  ev.stopPropagation();
+});
+
+$('td.sudoku-cell').mouseleave(function(ev) {
+  $(this).find('div.sudoku-border').css('border', '');
+  keyfocus = null;
+  ev.stopPropagation();
 });
 
 $('td.sudoku-cell').mousedown(function(ev) {
@@ -162,19 +211,9 @@ $('#markbutton').click(function(ev) {
       state.work[j] = 0;
     }
   } else {
-    var hint = SudokuHint.simplehint(sofar);
+    state.work = SudokuHint.pencilmarks(sofar, state.work);
     for (var j = 0; j < 81; j++) {
-      if (sofar[j] !== null) continue;
-      if (state.work[j] == 0) {
-        state.work[j] = hint[j];
-      } else {
-        state.work[j] &= hint[j];
-      }
-      var nums = listbits(state.work[j]);
-      if (nums.length == 1) {
-        state.work[j] = 0;
-        state.answer[j] = nums[0];
-      }
+      state.mark[j] &= state.work[j];
     }
   }
   savestate(state);
@@ -220,7 +259,7 @@ $('#checkbutton').mousedown(function(ev) {
   var sofar = boardsofar(state);
   var conflicts = SudokuHint.conflicts(sofar);
   if (conflicts.length == 0 && ev.ctrlKey) {
-    conflicts = SudokuHint.mistakes(state.puzzle, state.work);
+    conflicts = SudokuHint.mistakes(state.puzzle, state.answer, state.work);
   }
   if (conflicts.length > 0 && conflicts[0].errors) {
     var errors = conflicts[0].errors;
@@ -783,6 +822,7 @@ function boardcss() {
     "div.menu-mode {" +
             "height: 30px; width: 30px; border:0;" +
             "background-repeat:no-repeat;" +
+            "background-image:url(pencilgray.png);" +
             "background-position:center;" +
             "vertical-align:middle;" +
             "cursor: default;" +
