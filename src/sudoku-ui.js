@@ -213,7 +213,8 @@ $('#newbutton').click(function(ev) {
 $('#clearbutton').click(function(ev) {
   hidepopups();
   var state = currentstate();
-  var cleared = {puzzle: state.puzzle, answer:[], work: [], mark: []};
+  var cleared = {puzzle: state.puzzle, answer:[], work: [], mark: [],
+                 gentime: 0, savename: '', seed: 0};
   if (ev.ctrlKey) {
     cleared['puzzle'] = [];
     setTimeout(gradepuzzle, 0);
