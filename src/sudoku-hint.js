@@ -717,6 +717,7 @@ function rawhints(puzzle, answer, work) {
     result = result.concat(singlepos(sofar, unz));
     result = result.concat(candidatelines(sofar, unz, work));
     result = result.concat(nakedsets(sofar, unz, 2));
+    result = result.concat(hiddensets(sofar, unz, work, 1));
     if (result.length) break;
     level = 3;
     result = result.concat(xwing(sofar, unz, 2));
