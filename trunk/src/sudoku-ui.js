@@ -11,10 +11,24 @@ for (var j = 0; j <= 10; j++) { lib.levels.push(j); }
 
 $(function() {
 
+function startnewgame() {
+  var seed = (new Date).getTime();
+  commitstate({
+    puzzle: Sudoku.makepuzzle(seed),
+    seed: seed,
+    gentime: seed,
+    savename: ''
+  });
+}
+
 if (!window.location.hash) {
-  if (!loadstate()) {
-    savestate({ puzzle: Sudoku.makepuzzle(), work: [] });
+  if (!loadstate('sudokustate')) {
+    startnewgame();
   }
+}
+
+if (/^#seed=[^&]*$/.test(window.location.hash)) {
+  startnewgame();
 }
 
 setTimeout(gradepuzzle, 0);
@@ -36,6 +50,7 @@ function hidepopups() {
 }
 
 $('body').click(function(ev) {
+  if ($(ev.target).closest('#file').length > 0) return;
   hidepopups();
 });
 
@@ -91,7 +106,7 @@ $(document).keydown(function(ev) {
   } else {
     return;
   }
-  savestate(state);
+  commitstate(state);
 });
 
 $('td.sudoku-cell').click(function(ev) {
@@ -131,7 +146,7 @@ $('td.sudoku-cell').mousedown(function(ev) {
         state.work[pos] = 0;
         state.mark[pos] = 0;
       }
-      savestate(state);
+      commitstate(state);
       setTimeout(gradepuzzle, 0);
     });
   } else {
@@ -147,7 +162,7 @@ $('td.sudoku-cell').mousedown(function(ev) {
       state.answer[pos] = num;
       state.work[pos] = w;
       state.mark[pos] = m;
-      savestate(state);
+      commitstate(state);
     });
   }
   ev.stopPropagation();
@@ -156,6 +171,10 @@ $('td.sudoku-cell').mousedown(function(ev) {
 var graded = null;
 function gradepuzzle() {
   var state = currentstate();
+  if ('savename' in state && state.savename.length > 0) {
+    $('#grade').html(htmlescape(state.savename));
+    return;
+  }
   var current = encodepuzzle81(state.puzzle);
   if (graded === current) return;
   graded = current;
@@ -177,16 +196,15 @@ function gradepuzzle() {
 $('#newbutton').click(function(ev) {
   hidepopups();
   if (ev.ctrlKey) {
-    savestate({puzzle: [], work: []});
+    commitstate({puzzle: [], work: [], savename: '', gentime: 0});
     $.getJSON('http://davidbau.com/sudoku/min.json?callback=?', function(p) {
       var puzzle = decodepuzzle81(p);
-      savestate({puzzle: puzzle, answer: [], work: [], mark: []});
+      commitstate({puzzle: puzzle, answer: [], work: [], mark: [],
+                   savename: '', gentime: (new Date).getTime()});
       setTimeout(gradepuzzle, 0);
     });
   } else {
-    var state = { puzzle: Sudoku.makepuzzle(), answer: [], work: [], mark: [] };
-    if (!SudokuHint.hintgrade(state.puzzle)) return;
-    savestate(state);
+    startnewgame();
     setTimeout(gradepuzzle, 0);
   }
 });
@@ -199,7 +217,7 @@ $('#clearbutton').click(function(ev) {
     cleared['puzzle'] = [];
     setTimeout(gradepuzzle, 0);
   }
-  savestate(cleared);
+  commitstate(cleared);
 });
 
 $('#hintbutton,#checkbutton').bind('mouseup mouseleave', function() {
@@ -208,7 +226,7 @@ $('#hintbutton,#checkbutton').bind('mouseup mouseleave', function() {
   redraw(state);
   $('#markbutton').css('border', '');
 });
-  
+
 $('#hintbutton').mousedown(function(ev) {
   hidepopups();
   var state = currentstate();
@@ -229,6 +247,7 @@ $('#hintbutton').mousedown(function(ev) {
         for (var j = 0; j < hint.reduced.length; j++) {
           state.color[hint.reduced[j]] = 1;
         }
+        if (ev.ctrlKey) { console.log(hint); }
       }
     }
   } else {
@@ -269,7 +288,7 @@ $('#markbutton').click(function(ev) {
       state.mark[j] &= state.work[j];
     }
   }
-  savestate(state);
+  commitstate(state);
 });
 
 $('#solvebutton').click(function() {
@@ -287,7 +306,20 @@ $('#solvebutton').click(function() {
       state.mark[j] = 0;
     }
   }
-  savestate(state);
+  commitstate(state);
+});
+
+$('#filebutton').click(function(ev) {
+  hidepopups();
+  var state = currentstate();
+  if (!('savename' in state) || state.savename.length == 0) {
+    state.savename = $.trim($('#grade').text());
+  }
+  if (!('gentime' in state) || state.gentime == 0) {
+    state.gentime = (new Date).getTime();
+  }
+  filebox.show(state);
+  ev.stopPropagation();
 });
 
 function showpopup(id) {
@@ -337,8 +369,6 @@ $('#checkbutton').click(function(ev) {
   if ($('#victory').css('display') != 'none') {
     ev.stopPropagation();
   }
-});
-
 });
 
 function listbits(bits) {
@@ -395,14 +425,14 @@ function redraw(s) {
   }
 }
 
-function loadstate() {
+function loadstate(name) {
   if (!('localStorage' in window) || !('JSON' in window) ||
-      !('sudokustate' in window.localStorage)) {
+      !(name in window.localStorage)) {
     return false;
   }
-  var state = JSON.parse(localStorage['sudokustate']);
+  var state = JSON.parse(localStorage[name]);
   if (!state.puzzle || !state.puzzle.length) return false;
-  savestate(state);
+  commitstate(state);
   return true;
 }
 
@@ -410,12 +440,16 @@ function currentstate() {
   return decodeboardstate($.deparam.fragment());
 }
 
-function savestate(state) {
+function commitstate(state) {
   $.bbq.pushState(encodeboardstate(state));
+  savestate('sudokustate', state);
+}
+
+function savestate(name, state) {
   if (!('localStorage' in window) || !('JSON' in window)) {
     return;
   }
-  localStorage['sudokustate'] = JSON.stringify(state);
+  localStorage[name] = JSON.stringify(state);
 }
 
 function decodeboardstate(data) {
@@ -438,27 +472,35 @@ function decodeboardstate(data) {
     mark.push(m);
     color.push(0);
   }
-  return {
+  var result = {
     puzzle: puzzle,
     answer: answer,
     work: work,
     mark: mark,
-    color: color
+    color: color,
   };
+  if ('seed' in data) { result.seed = data.seed; }
+  if ('gentime' in data) { result.gentime = data.gentime; }
+  if ('savename' in data) { result.savename = data.savename; }
+  return result;
 }
 
 function encodeboardstate(state) {
-  var bits = state.work.slice();
+  var bits = state.work ? state.work.slice() : [];
   if ('mark' in state) {
     for (var j = 0; j < state.mark.length; j++) {
       bits[j] |= ((state.mark[j] & 511) << 9);
     }
   }
-  return {
+  var result = {
     puzzle: encodepuzzle81(state.puzzle),
     answer: encodepuzzle81(state.answer),
     marks: arraytobase64(bits)
   };
+  if ('seed' in state) { result.seed = state.seed; }
+  if ('gentime' in state) { result.gentime = state.gentime; }
+  if ('savename' in state) { result.savename = state.savename; }
+  return result;
 }
 
 function encodepuzzle81(puzzle, explicit) {
@@ -518,11 +560,6 @@ function decodepuzzle81(str) {
   return puzzle;
 }
 
-var base64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-                  "abcdefghijklmnopqrstuvwxyz" +
-                  "0123456789" +
-                  "-_";
-
 function shorttobase64(int18) {
   return base64chars[(int18 >> 12) & 63] +
          base64chars[(int18 >> 6) & 63] +
@@ -551,62 +588,7 @@ function base64toarray(base64) {
   return result;
 }
 
-function boardhtml() {
-  var text = "<table class=sudoku id=grid cellpadding=1px>\n";
-  text += "<tr><td colspan=13 class=sudoku-border>" +
-          "<img class=sudoku-border></td></tr>\n";
-  for (var y = 0; y < 9; y++) {
-    text += "<tr>"
-    text += "<td class=sudoku-border></td>"
-    for (var x = 0; x < 9; x++) {
-      var c = y * 9 + x;
-      text += "<td class=sudoku-cell id=sc" + c + ">" +
-              "<div class=sudoku-border>" +
-              "<div class=sudoku-number id=sn" + c + ">" +
-              "&nbsp;</div></div>";
-      if (x % 3 == 2) text += "<td class=sudoku-border></td>";
-    }
-    text += "</tr>\n";
-    if (y % 3 == 2) {
-      text += "<tr><td colspan=13 class=sudoku-border>" +
-              "<img class=sudoku-border></td></tr>\n";
-    }
-  }
-  text += "<tr><td colspan=9 id=caption></td></tr>\n";
-  text += "</table>\n";
-  return text;
-}
-
-function menuhtml() {
-  var result = ['<div class=work-menu><table>'];
-  var cells = [1,2,3,4,5,6,7,8,9,'&mdash;','?',
-               '<div class=menu-mode></div>'];
-  for (var j = 0; j < cells.length; j++) {
-    if (j % 3 == 0) result.push('<tr>');
-    result.push('<td><div class=menu-clip><div class=menu-text>');
-    result.push(cells[j]);
-    result.push('</div></div></td>');
-    if (j % 3 == 2) result.push('</tr>');
-  }
-  result.push('</table></div>');
-  result.push('<div class=puzzle-menu><table>');
-  var cells = [1,2,3,4,5,6,7,8,9];
-  for (var j = 0; j < cells.length; j++) {
-    if (j % 3 == 0) result.push('<tr>');
-    result.push('<td><div class=menu-clip><div class=menu-text>');
-    result.push(cells[j]);
-    result.push('</div></div></td>');
-    if (j % 3 == 2) result.push('</tr>');
-  }
-  result.push('</table></div>');
-  return result.join('');
-}
-
-var workmenu = null;
-
-$(function() {
-
-workmenu = (function() {
+var workmenu = (function() {
   var showing = false;
   var menu = null;
   var exclusive = false;
@@ -762,170 +744,281 @@ $(document).mousemove(function(ev) {
   workmenu.fade(ev.pageX, ev.pageY);
 });
 
+// save strategy:
+
+// each board has a gentime, which is the last time at which the board
+// was generated, and a savename, which is the name under which the board
+// was last saved.
+
+// when saving the board normally, the gentime isn't changed, and the
+// game is overwritten.
+
+// when saving 'a new copy' the gentime is brought to the current time
+// and the savename may be changed.
+
+var filebox = (function() {
+  $('.save-closebutton').click(function() { hidepopups(); });
+
+  function allsaved() {
+    var key;
+    var result = [];
+    for (var j = 0, len = localStorage.length; j < len; j++){
+      key = localStorage.key(j);
+      if ((/^sudokusave_/).test(key)) {
+        var state = JSON.parse(localStorage.getItem(key));
+        if (!('gentime' in state)) {
+          state.gentime = parseInt(key.substr(key.indexOf('_') + 1));
+        }
+        result.push({key: key, state:state});
+      }
+    }
+    result.sort(function(a, b) { return b.state.gentime - a.state.gentime; });
+    return result;
+  }
+
+  function timeago(ms) {
+    var messages = [
+      ['just now'],
+      ['from', Math.round(ms / 1000), 'seconds ago'],
+      ['from', Math.round(ms / 60 / 1000), 'minutes ago'],
+      ['from', Math.round(ms / 60 / 60 / 1000), 'hours ago'],
+      ['from', Math.round(ms / 24 / 60 / 60 / 1000), 'days ago'],
+      ['from', Math.round(ms / 7 / 24 / 60 / 60 / 1000), 'weeks ago'],
+      ['from', Math.round(ms / 30 / 24 / 60 / 60 / 1000), 'months ago'],
+      ['from', Math.round(ms / 365 / 24 / 60 / 60 / 1000), 'years ago']
+    ];
+    for (var j = 1; j < messages.length; j++) {
+      if (messages[j][1] < 3) {
+        break;
+      }
+    }
+    j -= 1;
+    return messages[j].join(' ');
+  }
+
+  var currentstate = null;
+  var now = 0;
+
+  // functions to get the selection
+  function getselected() {
+    var result = [];
+    $('.save-listbox ul li:not(:first) input:checked').each(function(j, elt) {
+      result.push($(elt).parent('li').attr('data-key'));
+    });
+    return result;
+  }
+  function getselectedset() {
+    var selected = getselected();
+    var result = {};
+    for (var j = 0; j < selected.length; j++) {
+      result[selected[j]] = true;
+    }
+    return result;
+  }
+
+  // function to show the filebox
+  function show(state) {
+    currentstate = state;
+    now = (new Date).getTime();
+    var name = 'savename' in state ? state.savename : '';
+    $('#savename').val(name);
+    $('.save-listbox ul li:not(:first)').remove();
+    redrawlist();
+    showpopup('#file');
+  }
+
+  // function to render the filebox
+  function redrawlist() {
+    var saved = allsaved();
+    // first ensure that the list has the right set of items.
+    var items = $('.save-listbox ul li:not(:first)');
+    var rebuild = true;
+    if (items.length == saved.length) {
+      rebuild = false;
+      for (var j = 0; j < saved.length; j++) {
+        if (saved[j].key != $(items[j]).attr('data-key')) {
+          rebuild = true;
+          break;
+        }
+      }
+    }
+    if (rebuild) {
+      var selected = getselectedset();
+      $('.save-listbox ul li:not(:first)').remove();
+      for (var j = 0; j < saved.length; j++) {
+        var checked = false;
+        var item = saved[j];
+        if (item.key in selected) {
+          checked = true;
+        }
+        $('.save-listbox ul').append(
+           '<li data-key="' + htmlescape(item.key) + 
+           '"><input type=checkbox' + (checked ? ' checked' : '') +
+           '> ' + htmlescape(item.state.savename) +
+           ' (' + timeago(now - item.state.gentime) + ')</li>');
+      }
+      items = $('.save-listbox ul li:not(:first)');
+    }
+    // Now update checkmarks and buttons
+    var lastcopykey = null;
+    var changedname = false;
+    var currentname = $.trim($('#savename').val());
+    var countselected =
+        $('.save-listbox ul li:not(:first) input:checked').length;
+    for (var j = 0; j < saved.length; j++) {
+      if (currentstate !== null &&
+          saved[j].state.gentime == currentstate.gentime) {
+        lastcopykey = saved[j].key;
+        changedname = (saved[j].state.savename != currentname);
+      }
+    }
+    $('.save-listbox li').css('font-weight', '');
+    if (lastcopykey !== null) {
+      $('.save-listbox li[data-key=' + lastcopykey + ']').css(
+          'font-weight', 'bold');
+    }
+    $('#savename').attr('disabled', currentstate === null);
+    $('#savecurrent').attr('disabled', !(lastcopykey === null || !changedname));
+    $('#savecopy').attr('disabled', !(lastcopykey !== null && changedname &&
+      currentname != ''));
+    $('#selectall').attr('disabled', saved.length == 0);
+    $('#deleteselected').attr('disabled', countselected == 0);
+    $('#loadselected').attr('disabled', countselected != 1);
+  }
+
+  $('.save-listbox').delegate('input', 'change', function() {
+    redrawlist();
+  });
+
+  var lastclicktime = 0;
+  var lastclickelt = null;
+  $('.save-listbox').delegate('li', 'click', function(ev) {
+    if (ev.target.tagName == 'INPUT') return;
+    lastclickelt = ev.target;
+    lastclicktime = (new Date).getTime();
+    $(this).find('input').click();
+    redrawlist();
+  });
+
+  $('.save-listbox').delegate('li', 'mousedown', function(ev) {
+    if (ev.target === lastclickelt &&
+        (new Date).getTime() - lastclicktime < 500) {
+      $('.save-listbox ul li:not(:first) input').attr('checked', false);
+      $(lastclickelt).find('input').attr('checked', true);
+      redrawlist();
+      setTimeout(function() { $('#loadselected').click(); }, 0);
+    }
+  });
+
+  $('#savename').keydown(function() {
+    setTimeout(function() { redrawlist(); }, 0);
+  });
+
+  $('#savecurrent,#savecopy').click(function(ev) {
+    if (!('gentime' in currentstate) || $(ev.target).is('#savecopy')) {
+      currentstate.gentime = now;
+    }
+    var currentname = $.trim($('#savename').val());
+    if (currentname == '') return;
+    currentstate.savename = currentname;
+    var key = 'sudokusave_' + currentstate.gentime;
+    savestate(key, currentstate);
+    redrawlist();
+    loadstate(key);
+    hidepopups();
+  });
+
+  $('#loadselected').click(function() {
+    var selection = getselected();
+    if (selection.length < 1) return;
+    if (loadstate(selection[0])) {
+      hidepopups();
+    }
+  });
+
+  $('#selectall').click(function() {
+    $('.save-listbox ul li:not(:first) input').attr('checked', true);
+    redrawlist();
+  });
+
+  $('#deleteselected').click(function() {
+    var selection = getselected();
+    if (selection.length > 0) {
+      for (var j = 0; j < selection.length; j++) {
+        localStorage.removeItem(selection[j]);
+      }
+      redrawlist();
+    }
+  });
+
+  return { show: show };
+})();
+
 });
 
-function boardcss() {
-  var IE6 = /MSIE 6/i.test(navigator.userAgent);
-  return [
-    "body {" +
-            "-webkit-user-select: none;" +
-            "user-select: none; }",
-    // Font loading for firefox
-    "@font-face {" +
-            "font-family: 'Covered By Your Grace';" +
-            "font-style: normal;" +
-            "font-weight: normal;" +
-            "src: local('Covered By Your Grace'), " +
-                 "local('CoveredByYourGrace'), " +
-                 "url('CoveredByYourGrace.ttf') format('truetype'); }",
-    // Font loading for chrome
-    "@media screen {" +
-      "@font-face {" +
-            "font-family: 'Covered By Your Grace';" +
-            "font-style: normal;" +
-            "font-weight: normal;" +
-            "src: local('Covered By Your Grace'), " +
-                 "local('CoveredByYourGrace'), " +
-                 "url('CoveredByYourGrace.ttf') format('truetype'); } }",
-    "table.sudoku {" +
-            "border-collapse: collapse;" +
-            "table-layout: fixed; }",
-    "table.sudoku-select {" +
-            "border-collapse: collapse; " +
-            (IE6 ? "" : "border: 1px solid transparent; ") + 
-            "line-height: 100%; " +
-            "text-align: center; vertical-align: middle; " +
-            "padding: 0px; }",
-    "table.sudoku-work-table {" +
-            "border-collapse: collapse; " +
-            "border: 0; " +
-            "margin: 0; " +
-            "width: 100%; " +
-            "height: 100%; }",
-    "table.sudoku-work-table td {" +
-            "border: 0; " +
-            "padding: 0; " +
-            "margin: 0; " +
-            "line-height: 0; " +
-            "text-align: center; " +
-            "vertical-align: middle; } ",
-    "table.sudoku-work-table div {" +
-            "color: #22c;" +
-            "width: 16px; height: 16px;" +
-            "margin: -2px; " +
-            "font: 12px 'Covered By Your Grace', sans-serif; }",
-    "td.sudoku-cell {" +
-            "width: 38px; height: 38px; " +
-            "text-align: center; vertical-align: middle; " +
-            "line-height: 0; " +
-            "border: 1px solid black; }",
-    "div.sudoku-border {" +
-            "width: 36px; height: 36px; " +
-            "border: 1px solid transparent; overflow: hidden; }",
-    "div.sudoku-work {" +
-            "width: 34px; height: 34px; " +
-            "text-align: center; " +
-            "cursor: hand; " +
-            "padding: 0; margin: 0; border: 0; }",
-    "div.sudoku-answer {" +
-            "width: 54px; height: 54px; " +
-            "text-align: center; " +
-            "cursor: hand; " +
-            "padding: 0; margin: -10px; border: 0;" + 
-            "color: #22c;" +
-            "font: 40px 'Covered By Your Grace', sans-serif;}",
-    "div.sudoku-given {" +
-            "width: 40px; height: 40px; " +
-            "text-align: center; vertical-align: middle; " +
-            "cursor: default; " +
-            "padding: 0; margin: -3px; " +
-            "line-height: 0; " + 
-            "font-weight: bold; " + 
-            "font: 27px 'arial black', sans-serif;}",
-    "td.sudoku-border {" +
-            "background: black; height: 1px; width: 1px; " +
-            "border: 1px solid black;}",
-    "img.sudoku-border {" +
-            "background: black; height: 1px; width: 1px; }",
-    "div.sudoku-popup {" +
-            "position: absolute;" +
-            "height: 42px; width: 220px;" +
-            "font: 27px 'arial black', sans-serif;" +
-            "cursor: default;" +
-            "text-align: center;" +
-            "padding: 2px;" +
-            "vertical-align: middle; " +
-            "border: 3px solid black;" +
-            "background-color: white;" +
-            "display: none; }",
-    "div.sudoku-popup#victory {" +
-            "background-color: yellow; }",
-    "div.work-menu {" +
-            "position: absolute;" +
-            "display: none;" +
-            "overflow: hidden; }",
-    "div.work-menu table {" +
-            "border: 2px solid black;" +
-            "border-collapse: collapse;" +
-            "border-spacing: 0;" +
-            "width: 60px;" +
-            "height: 80px; }",
-    "div.work-menu td {" +
-            "padding: 0;" +
-            "}",
-    "div.menu-clip {" +
-            "height: 20px; width: 20px; border:0;" +
-            "text-align:center;" +
-            "vertical-align:middle;" +
-            "overflow:hidden; }",
-    "div.work-menu div.menu-text {" +
-            "color: #aaa;" +
-            "font: 20px Covered By Your Grace; padding:0; margin:0;" +
-            "height: 30px; width: 30px; border:0;" +
-            "margin: -5px;" +
-            "vertical-align:middle;" +
-            "cursor: pointer;" +
-            "background-color:#fff;" +
-            "opacity:1; }",
-    "div.menu-mode {" +
-            "height: 30px; width: 30px; border:0;" +
-            "background-repeat:no-repeat;" +
-            "background-image:url(pencilgray.png);" +
-            "background-position:center;" +
-            "vertical-align:middle;" +
-            "cursor: default;" +
-            "background-color:transparent;" +
-            "opacity:1; }",
-    "div.puzzle-menu {" +
-            "position: absolute;" +
-            "border: 2px solid black;" +
-            "display: none;" +
-            "overflow: hidden; }",
-    "div.puzzle-menu table {" +
-            "border-collapse: collapse;" +
-            "border-spacing: 0;" +
-            "width: 60px;" +
-            "height: 60px; }",
-    "div.puzzle-menu td {" +
-            "padding: 0;" +
-            "}",
-    "div.puzzle-menu div.menu-text {" +
-            "color: #aaa;" +
-            "font: 14px Arial Black; padding:0; margin:0;" +
-            "height: 20px; width: 20px; border:0;" +
-            "margin: -0px;" +
-            "vertical-align:middle;" +
-            "cursor: pointer;" +
-            "background-color:#fff;" +
-            "opacity:1; }",
-  ].join('\n');
+function boardhtml() {
+  var text = "<table class=sudoku id=grid cellpadding=1px>\n";
+  text += "<tr><td colspan=13 class=sudoku-border>" +
+          "<img class=sudoku-border></td></tr>\n";
+  for (var y = 0; y < 9; y++) {
+    text += "<tr>"
+    text += "<td class=sudoku-border></td>"
+    for (var x = 0; x < 9; x++) {
+      var c = y * 9 + x;
+      text += "<td class=sudoku-cell id=sc" + c + ">" +
+              "<div class=sudoku-border>" +
+              "<div class=sudoku-number id=sn" + c + ">" +
+              "&nbsp;</div></div>";
+      if (x % 3 == 2) text += "<td class=sudoku-border></td>";
+    }
+    text += "</tr>\n";
+    if (y % 3 == 2) {
+      text += "<tr><td colspan=13 class=sudoku-border>" +
+              "<img class=sudoku-border></td></tr>\n";
+    }
+  }
+  text += "<tr><td colspan=9 id=caption></td></tr>\n";
+  text += "</table>\n";
+  return text;
 }
 
+function menuhtml() {
+  var result = ['<div class=work-menu><table>'];
+  var cells = [1,2,3,4,5,6,7,8,9,'&mdash;','?',
+               '<div class=menu-mode></div>'];
+  for (var j = 0; j < cells.length; j++) {
+    if (j % 3 == 0) result.push('<tr>');
+    result.push('<td><div class=menu-clip><div class=menu-text>');
+    result.push(cells[j]);
+    result.push('</div></div></td>');
+    if (j % 3 == 2) result.push('</tr>');
+  }
+  result.push('</table></div>');
+  result.push('<div class=puzzle-menu><table>');
+  var cells = [1,2,3,4,5,6,7,8,9];
+  for (var j = 0; j < cells.length; j++) {
+    if (j % 3 == 0) result.push('<tr>');
+    result.push('<td><div class=menu-clip><div class=menu-text>');
+    result.push(cells[j]);
+    result.push('</div></div></td>');
+    if (j % 3 == 2) result.push('</tr>');
+  }
+  result.push('</table></div>');
+  return result.join('');
+}
 
-lib.boardcss = boardcss;
+function htmlescape(s) {
+  return s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").
+           replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+var base64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+                  "abcdefghijklmnopqrstuvwxyz" +
+                  "0123456789" +
+                  "-_";
+
 lib.boardhtml = boardhtml;
 lib.menuhtml = menuhtml;
-lib.savestate = savestate;
 
 })(SudokuUI);
 

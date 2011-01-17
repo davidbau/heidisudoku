@@ -1,14 +1,15 @@
 <title>Heidi's Sudoku Hintpad</title>
+<link rel=stylesheet href=sudoku-ui.css>
 <body>
 <center><h1 style='font: 20pt "arial black", "arial bold", "sans-serif"'
 >Heidi's Sudoku Hintpad</h1></center>
 <script src=jquery-1.4.4.min.js></script>
 <script src=jquery-bbq-1.2.1.min.js></script>
+<script src=seedrandom-min.js></script>
 <script src=sudoku.js></script>
 <script src=sudoku-hint.js></script>
 <script src=sudoku-ui.js></script>
 <script>
-document.write("<style>" + SudokuUI.boardcss() + "</style>");
 document.write(SudokuUI.menuhtml());
 </script>
 <div style='text-align:center;font:16pt "arial black","arial bold","sans-serif"'
@@ -18,7 +19,7 @@ document.write("<center>" + SudokuUI.boardhtml() + "</center>");
 </script>
 <center
 ><input type=button value="Clear" id=clearbutton
-><input type=button value="Solve" id=solvebutton
+><input type=button value="File" id=filebutton
 ><input type=button value="New Puzzle" id=newbutton
 ><input type=button value="Pencilmarks" id=markbutton
 ><input type=button value="Hint" id=hintbutton
@@ -28,6 +29,21 @@ document.write("<center>" + SudokuUI.boardhtml() + "</center>");
 <div class=sudoku-popup id=ok>ok so far</div>
 <div class=sudoku-popup id=nohint>no hint</div>
 
+<div class=sudoku-popup id=file><div class=save-outerbox>
+<div class=save-closebutton></div>
+<center>Saved Sudoku</center>
+<div class=save-listbox><ul><li>
+<input type=text value="Saved Game" id=savename>
+<input type=button value="Save Current Game" id=savecurrent>
+<input type=button value="Save New Copy" disabled id=savecopy>
+</li></ul></div><div style="text-align:right">
+<input type=button value="Select All" id=selectall
+><input type=button value="Delete Selected" id=deleteselected
+><input type=button value="Load Selected" id=loadselected
+></div></div></div>
+
+<script>
+</script>
 <p align=center style="font: 10pt arial">
 <a href="about.html"
 onclick="this.href=this.href.replace(/#.*$/,'')+location.hash"
