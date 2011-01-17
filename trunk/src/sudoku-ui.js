@@ -68,6 +68,7 @@ function setkeyfocus(kf) {
 
 $(document).keydown(function(ev) {
   if (workmenu.showing()) { workmenu.keydown(ev); return; }
+  // if (filebox.showing()) { filebox.keydown(ev); return; }
   if (keyfocus === null) return;
   var pos = parseInt($(keyfocus).attr('id').substr(2));
   if (!(pos >= 0 && pos < 81)) return;
@@ -925,7 +926,7 @@ var filebox = (function() {
     savestate(key, currentstate);
     redrawlist();
     loadstate(key);
-    hidepopups();
+    setTimeout(function() { hidepopups(); }, 800);
   });
 
   $('#loadselected').click(function() {
