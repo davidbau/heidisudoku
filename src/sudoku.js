@@ -63,7 +63,14 @@ function uniquesolution(board) {
 // and then finding a subset of squares that uniquely determine a
 // solution.
 
-function makepuzzle(quick) {
+function makepuzzle(seed, quick) {
+  // Apply seed if supplied
+  var oldrandom = null;
+  if (seed && 'seedrandom' in Math) {
+    oldrandom = Math.random;
+    Math.seedrandom(seed);
+  }
+
   // Make a solved board
   var solved = solution(emptyboard());
 
@@ -87,6 +94,11 @@ function makepuzzle(quick) {
 
   // Shuffle the revealed squares
   shuffle(puzzle);
+
+  // Restore native prng
+  if (oldrandom !== null) {
+    Math.random = oldrandom;
+  }
 
   // Remove any revealed squares as long as a unique solution is
   // determined.  The process below is slow and could be skipped
