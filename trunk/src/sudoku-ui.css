@@ -1,6 +1,14 @@
 body {
    -webkit-user-select: none;
    user-select: none;
+   font: 10pt Arial;
+}
+h1 {
+   font: 20pt "arial black", "arial bold", "sans-serif";
+}
+.puzzlename {
+   text-align:center;
+   font:16pt "arial black","arial bold","sans-serif";
 }
 /* Font loading for firefox */
 @font-face {
