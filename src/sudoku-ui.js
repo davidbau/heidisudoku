@@ -778,26 +778,6 @@ var filebox = (function() {
     return result;
   }
 
-  function timeago(ms) {
-    var messages = [
-      ['just now'],
-      ['from', Math.round(ms / 1000), 'seconds ago'],
-      ['from', Math.round(ms / 60 / 1000), 'minutes ago'],
-      ['from', Math.round(ms / 60 / 60 / 1000), 'hours ago'],
-      ['from', Math.round(ms / 24 / 60 / 60 / 1000), 'days ago'],
-      ['from', Math.round(ms / 7 / 24 / 60 / 60 / 1000), 'weeks ago'],
-      ['from', Math.round(ms / 30 / 24 / 60 / 60 / 1000), 'months ago'],
-      ['from', Math.round(ms / 365 / 24 / 60 / 60 / 1000), 'years ago']
-    ];
-    for (var j = 1; j < messages.length; j++) {
-      if (messages[j][1] < 3) {
-        break;
-      }
-    }
-    j -= 1;
-    return messages[j].join(' ');
-  }
-
   var currentstate = null;
   var now = 0;
 
@@ -857,7 +837,7 @@ var filebox = (function() {
            '<li data-key="' + htmlescape(item.key) + 
            '"><input type=checkbox' + (checked ? ' checked' : '') +
            '> ' + htmlescape(item.state.savename) +
-           ' (' + timeago(now - item.state.gentime) + ')</li>');
+           ' (' + lib.timeago(now - item.state.gentime) + ')</li>');
       }
       items = $('.save-listbox ul li:not(:first)');
     }
