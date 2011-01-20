@@ -135,6 +135,7 @@ $('td.sudoku-cell').mousedown(function(ev) {
   justclicked = pos;
   var state = currentstate();
   if (ev.ctrlKey) {
+    ev.preventDefault();
     var bits = 0;
     var hint = Sudoku.puzzlechoices(state.puzzle, pos);
     workmenu.show(this, $('div.puzzle-menu'), state.puzzle[pos], 0, 0,
@@ -204,6 +205,7 @@ $('#newbutton').click(function(ev) {
                    savename: '', gentime: (new Date).getTime()});
       setTimeout(gradepuzzle, 0);
     });
+    ev.preventDefault();
   } else {
     startnewgame();
     setTimeout(gradepuzzle, 0);
@@ -218,6 +220,7 @@ $('#clearbutton').click(function(ev) {
   if (ev.ctrlKey) {
     cleared['puzzle'] = [];
     setTimeout(gradepuzzle, 0);
+    ev.preventDefault();
   }
   commitstate(cleared);
 });
@@ -249,7 +252,10 @@ $('#hintbutton').mousedown(function(ev) {
         for (var j = 0; j < hint.reduced.length; j++) {
           state.color[hint.reduced[j]] = 1;
         }
-        if (ev.ctrlKey) { console.log(hint); }
+        if (ev.ctrlKey) {
+          ev.preventDefault();
+          console.log(hint);
+        }
       }
     }
   } else {
@@ -284,6 +290,7 @@ $('#markbutton').click(function(ev) {
       state.work[j] = 0;
       state.mark[j] = 0;
     }
+    ev.preventDefault();
   } else {
     state.work = SudokuHint.pencilmarks(sofar, state.work);
     for (var j = 0; j < 81; j++) {
@@ -346,6 +353,7 @@ $('#checkbutton').mousedown(function(ev) {
   var sofar = boardsofar(state);
   var conflicts = SudokuHint.conflicts(sofar);
   if (conflicts.length == 0 && ev.ctrlKey) {
+    ev.preventDefault();
     var unz = SudokuHint.unzeroedwork(state.puzzle, state.answer, state.work);
     conflicts = SudokuHint.mistakes(state.puzzle, state.answer, unz);
   }
