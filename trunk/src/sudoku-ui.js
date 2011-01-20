@@ -12,19 +12,29 @@ for (var j = 0; j <= 10; j++) { lib.levels.push(j); }
 $(function() {
 
 function startnewgame() {
-  var seed = (new Date).getTime();
+  var now = (new Date).getTime();
   commitstate({
-    puzzle: Sudoku.makepuzzle(seed),
-    seed: seed,
-    gentime: seed,
+    puzzle: Sudoku.makepuzzle(now),
+    seed: now,
+    gentime: now,
     savename: ''
   });
 }
+
+// Starttime set on initial load based on the 'elapsed' state, and
+// updated whenever loadstate() is called (i.e., when the user loads
+// a game) or when commitstate() is called with a newer gentime
+// (i.e., when a new game is started).
+var starttime = (new Date).getTime();
 
 if (!window.location.hash) {
   if (!loadstate('sudokustate')) {
     startnewgame();
   }
+} else {
+  // If you link to a game, time starts at the moment of the last move.
+  state = currentstate();
+  starttime = (new Date).getTime() - state.elapsed;
 }
 
 if (/^#seed=[^&]*$/.test(window.location.hash)) {
@@ -166,10 +176,14 @@ $('td.sudoku-cell').mousedown(function(ev) {
                   hint, false,
     function(num, w, m) {
       state = currentstate();
-      state.answer[pos] = num;
-      state.work[pos] = w;
-      state.mark[pos] = m;
-      commitstate(state);
+      if (state.answer[pos] !== num ||
+          state.work[pos] !== w ||
+          state.mark[pos] !== m) {
+        state.answer[pos] = num;
+        state.work[pos] = w;
+        state.mark[pos] = m;
+        commitstate(state);
+      }
     });
   }
   ev.stopPropagation();
@@ -204,7 +218,7 @@ $('#newbutton').click(function(ev) {
   hidepopups();
   if (ev.ctrlKey) {
     commitstate({puzzle: [], answer:[], work: [],
-                 seed: 0, savename: '', gentime: 0});
+                 seed: 0, savename: '', gentime: (new Date).getTime()});
     $.getJSON('http://davidbau.com/sudoku/min.json?callback=?', function(p) {
       var puzzle = decodepuzzle81(p);
       commitstate({puzzle: puzzle, answer: [], work: [], mark: [],
@@ -231,7 +245,20 @@ $('#clearbutton').click(function(ev) {
   commitstate(cleared);
 });
 
-$('#hintbutton,#checkbutton').bind('mouseup mouseleave', function() {
+$('#timerbutton').mousedown(function(ev) {
+  hidepopups();
+  showpopup('#timer');
+  function updatetime() {
+    if ($('#timer').is(':visible')) {
+      rendertime();
+      setTimeout(updatetime, 1001 - ((new Date).getTime() % 1000));
+    }
+  }
+  updatetime();
+});
+
+$('#hintbutton,#checkbutton,#timerbutton').bind(
+    'mouseup mouseleave', function() {
   hidepopups();
   var state = currentstate();
   redraw(state);
@@ -260,7 +287,7 @@ $('#hintbutton').mousedown(function(ev) {
         }
         if (ev.ctrlKey) {
           ev.preventDefault();
-          console.log(hint);
+          // console.log(JSON.stringify(hint));
         }
       }
     }
@@ -337,19 +364,6 @@ $('#filebutton').click(function(ev) {
   ev.stopPropagation();
 });
 
-function showpopup(id) {
-  var velt = $(id);
-  var telt = $('table.sudoku');
-  var position = telt.offset();
-  position.left += (telt.outerWidth() - velt.outerWidth()) / 2;
-  position.top += (telt.outerHeight() - velt.outerHeight()) / 3;
-  velt.css({
-    display: 'block',
-    left: position.left,
-    top: position.top
-  });
-}
-
 $('#checkbutton').mousedown(function(ev) {
   hidepopups();
   var state = currentstate();
@@ -386,6 +400,37 @@ $('#checkbutton').click(function(ev) {
     ev.stopPropagation();
   }
 });
+
+function showpopup(id) {
+  var velt = $(id);
+  var telt = $('table.sudoku');
+  var position = telt.offset();
+  position.left += (telt.outerWidth() - velt.outerWidth()) / 2;
+  position.top += (telt.outerHeight() - velt.outerHeight()) / 3;
+  velt.css({
+    display: 'block',
+    left: position.left,
+    top: position.top
+  });
+}
+
+function formatelapsed(elapsed) {
+  if (!(elapsed >= 0)) { return '-'; }
+  var seconds = Math.floor(elapsed / 1000);
+  var minutes = Math.floor(seconds / 60);
+  var hours = Math.floor(minutes / 60);
+  seconds -= minutes * 60;
+  minutes -= hours * 60;
+  var formatted = minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+  if (hours > 0) {
+    formattted = hours + ':' + (minutes < 10 ? '0' : '') + formatted;
+  }
+  return formatted;
+}
+
+function rendertime() {
+  $('#timer').text(formatelapsed((new Date).getTime() - starttime));
+}
 
 function listbits(bits) {
   var result = [];
@@ -448,6 +493,9 @@ function loadstate(name) {
   }
   var state = JSON.parse(localStorage[name]);
   if (!state.puzzle || !state.puzzle.length) return false;
+  if ('elapsed' in state) {
+    starttime = (new Date).getTime() - state.elapsed;
+  }
   commitstate(state);
   return true;
 }
@@ -457,6 +505,11 @@ function currentstate() {
 }
 
 function commitstate(state) {
+  var now = (new Date).getTime();
+  if (state.gentime > starttime) {
+    starttime = state.gentime;
+  }
+  state.elapsed = (now - starttime);
   $.bbq.pushState(encodeboardstate(state));
   savestate('sudokustate', state);
 }
@@ -498,6 +551,7 @@ function decodeboardstate(data) {
   if ('seed' in data) { result.seed = data.seed; }
   if ('gentime' in data) { result.gentime = data.gentime; }
   if ('savename' in data) { result.savename = data.savename; }
+  if ('elapsed' in data) { result.elapsed = data.elapsed; }
   return result;
 }
 
@@ -516,6 +570,7 @@ function encodeboardstate(state) {
   if ('seed' in state) { result.seed = state.seed; }
   if ('gentime' in state) { result.gentime = state.gentime; }
   if ('savename' in state) { result.savename = state.savename; }
+  if ('elapsed' in state) { result.elapsed = state.elapsed; }
   return result;
 }
 
@@ -851,7 +906,10 @@ var filebox = (function() {
            '<li data-key="' + htmlescape(item.key) + 
            '"><input type=checkbox' + (checked ? ' checked' : '') +
            '> ' + htmlescape(item.state.savename) +
-           ' (' + lib.timeago(now - item.state.gentime) + ')</li>');
+           ' ' + lib.timeago(now - item.state.gentime) +
+           (item.state.elapsed >= 0 ?
+             ' (' + formatelapsed(item.state.elapsed) + ')' : '' ) +
+           '</li>');
       }
       items = $('.save-listbox ul li:not(:first)');
     }
