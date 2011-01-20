@@ -142,14 +142,19 @@ $('td.sudoku-cell').mousedown(function(ev) {
                   hint, true,
     function(num, w, m) {
       state = currentstate();
-      state.puzzle[pos] = num;
-      if (num !== null) {
-        state.answer[pos] = null;
-        state.work[pos] = 0;
-        state.mark[pos] = 0;
+      if (state.puzzle[pos] !== num) {
+        state.puzzle[pos] = num;
+        if (num !== null) {
+          state.answer[pos] = null;
+          state.work[pos] = 0;
+          state.mark[pos] = 0;
+        }
+        state['seed'] = 0;
+        state['savename'] = '';
+        state['gentime'] = (new Date).getTime();
+        commitstate(state);
+        setTimeout(gradepuzzle, 0);
       }
-      commitstate(state);
-      setTimeout(gradepuzzle, 0);
     });
   } else {
     if (state.puzzle[pos] !== null) return;
@@ -198,11 +203,12 @@ function gradepuzzle() {
 $('#newbutton').click(function(ev) {
   hidepopups();
   if (ev.ctrlKey) {
-    commitstate({puzzle: [], work: [], savename: '', gentime: 0});
+    commitstate({puzzle: [], answer:[], work: [],
+                 seed: 0, savename: '', gentime: 0});
     $.getJSON('http://davidbau.com/sudoku/min.json?callback=?', function(p) {
       var puzzle = decodepuzzle81(p);
       commitstate({puzzle: puzzle, answer: [], work: [], mark: [],
-                   savename: '', gentime: (new Date).getTime()});
+                   seed: 0, savename: '', gentime: (new Date).getTime()});
       setTimeout(gradepuzzle, 0);
     });
     ev.preventDefault();
@@ -215,10 +221,10 @@ $('#newbutton').click(function(ev) {
 $('#clearbutton').click(function(ev) {
   hidepopups();
   var state = currentstate();
-  var cleared = {puzzle: state.puzzle, answer:[], work: [], mark: [],
-                 gentime: 0, savename: '', seed: 0};
+  var cleared = {puzzle: state.puzzle, answer:[], work: [], mark: []};
   if (ev.ctrlKey) {
-    cleared['puzzle'] = [];
+    cleared = {puzzle: [], answer: [], work: [], mark: [],
+               seed: 0, savename: '', gentime: (new Date).getTime()};
     setTimeout(gradepuzzle, 0);
     ev.preventDefault();
   }
