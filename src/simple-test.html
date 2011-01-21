@@ -1,4 +1,4 @@
-<script src=/encode/seedrandom-min.js></script>
+<script src=seedrandom-min.js></script>
 <script src=sudoku.js></script>
 <pre id=timing>Timing</pre>
 <pre id=status>Status</pre>
@@ -15,13 +15,11 @@ function formatboard(board) {
       if (k % 3 == 2) result.push(' ');
     }
     result.push('\n');
-    if (j % 3 == 2) result.push('\n');
+    if (j == 2 || j == 4) result.push('\n');
   }
   return result.join('');
 }
-</script>
 
-<script>
 var iterations = 1000;
 var count = 0;
 var start = (new Date).getTime();
@@ -39,9 +37,9 @@ function go() {
     }
   }
   document.getElementById('status').innerHTML =
-    formatboard(puzzle) + '\n\n' +
-    formatboard(unsolvable) + '\n\n' +
-    formatboard(solution);
+    formatboard(unsolvable) + 'known unsolvable\n\n' +
+    formatboard(puzzle) + 'uniquely solvable\n\n' +
+    formatboard(solution) + 'solution\n\n';
   if (Sudoku.solvable(unsolvable)) {
     alert('incorrectly solvable');
   } else if (!Sudoku.uniquesolution(puzzle)) {
@@ -53,6 +51,8 @@ function go() {
     if (count < iterations) setTimeout(go, 0);
   }
 }
+
+Math.seedrandom(location.hash);
 
 go();
 </script>

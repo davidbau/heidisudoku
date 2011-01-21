@@ -79,7 +79,7 @@ SudokuUI.timeago = function timeago(ms) {
     ['from', Math.round(ms / 30 / 24 / 60 / 60 / 1000), 'months ago'],
     ['from', Math.round(ms / 365 / 24 / 60 / 60 / 1000), 'years ago']
   ];
-  for (var j = 1; j < messages.length && messages[j][1] > 3; j++) { }
+  for (var j = 1; j < messages.length && messages[j][1] > 2; j++) { }
   return messages[j - 1].join(' ');
 }
 </script>

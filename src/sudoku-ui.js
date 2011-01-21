@@ -11,13 +11,17 @@ for (var j = 0; j <= 10; j++) { lib.levels.push(j); }
 
 $(function() {
 
-function startnewgame() {
+function startnewgame(seed) {
   var now = (new Date).getTime();
+  var auto = (typeof seed == 'undefined');
+  if (auto) { seed = now; }
+  var puzzle = Sudoku.makepuzzle(seed);
+  while (auto && SudokuHint.hintgrade(puzzle) > 120) {
+    seed += 1;
+    puzzle = Sudoku.makepuzzle(seed);
+  }
   commitstate({
-    puzzle: Sudoku.makepuzzle(now),
-    seed: now,
-    gentime: now,
-    savename: ''
+    puzzle: puzzle, seed: seed, gentime: now, savename: ''
   });
 }
 
@@ -31,21 +35,20 @@ if (!window.location.hash) {
   if (!loadstate('sudokustate')) {
     startnewgame();
   }
+} else if (/^#seed=[^&]*$/.test(location.hash)) {
+  startnewgame(location.hash.substr(6));
 } else {
   // If you link to a game, time starts at the moment of the last move.
   state = currentstate();
   starttime = (new Date).getTime() - state.elapsed;
 }
 
-if (/^#seed=[^&]*$/.test(window.location.hash)) {
-  startnewgame();
-}
 
-setTimeout(gradepuzzle, 0);
+gradepuzzle();
 redraw();
 
 $(window).bind('hashchange', function() {
-  setTimeout(gradepuzzle, 0);
+  gradepuzzle();
   redraw();
 });
 
@@ -163,7 +166,7 @@ $('td.sudoku-cell').mousedown(function(ev) {
         state['savename'] = '';
         state['gentime'] = (new Date).getTime();
         commitstate(state);
-        setTimeout(gradepuzzle, 0);
+        gradepuzzle();
       }
     });
   } else {
@@ -212,6 +215,7 @@ function gradepuzzle() {
   var level = Math.max(1, Math.min(lib.levels.length - 1,
               Math.floor(steps / 5)));
   $('#grade').html(lib.levels[level]);
+  return;
 }
 
 $('#newbutton').click(function(ev) {
@@ -223,12 +227,12 @@ $('#newbutton').click(function(ev) {
       var puzzle = decodepuzzle81(p);
       commitstate({puzzle: puzzle, answer: [], work: [], mark: [],
                    seed: 0, savename: '', gentime: (new Date).getTime()});
-      setTimeout(gradepuzzle, 0);
+      gradepuzzle();
     });
     ev.preventDefault();
   } else {
     startnewgame();
-    setTimeout(gradepuzzle, 0);
+    gradepuzzle();
   }
 });
 
@@ -239,7 +243,7 @@ $('#clearbutton').click(function(ev) {
   if (ev.ctrlKey) {
     cleared = {puzzle: [], answer: [], work: [], mark: [],
                seed: 0, savename: '', gentime: (new Date).getTime()};
-    setTimeout(gradepuzzle, 0);
+    gradepuzzle();
     ev.preventDefault();
   }
   commitstate(cleared);
@@ -251,7 +255,7 @@ $('#timerbutton').mousedown(function(ev) {
   function updatetime() {
     if ($('#timer').is(':visible')) {
       rendertime();
-      setTimeout(updatetime, 1001 - ((new Date).getTime() % 1000));
+      setTimeout(updatetime, 1500 - ((new Date).getTime() % 1000));
     }
   }
   updatetime();
@@ -879,12 +883,12 @@ var filebox = (function() {
   }
 
   // function to render the filebox
-  function redrawlist() {
+  function redrawlist(force) {
     var saved = allsaved();
     // first ensure that the list has the right set of items.
     var items = $('.save-listbox ul li:not(:first)');
     var rebuild = true;
-    if (items.length == saved.length) {
+    if (items.length == saved.length && !force) {
       rebuild = false;
       for (var j = 0; j < saved.length; j++) {
         if (saved[j].key != $(items[j]).attr('data-key')) {
@@ -977,7 +981,7 @@ var filebox = (function() {
     currentstate.savename = currentname;
     var key = 'sudokusave_' + currentstate.gentime;
     savestate(key, currentstate);
-    redrawlist();
+    redrawlist(true);
     loadstate(key);
     setTimeout(function() { hidepopups(); }, 800);
   });
