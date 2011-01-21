@@ -48,6 +48,7 @@ gradepuzzle();
 redraw();
 
 $(window).bind('hashchange', function() {
+  hidepopups();
   gradepuzzle();
   redraw();
 });
@@ -291,7 +292,11 @@ $('#hintbutton').mousedown(function(ev) {
         }
         if (ev.ctrlKey) {
           ev.preventDefault();
-          // console.log(JSON.stringify(hint));
+          if (ev.shiftKey) {
+            var hintlog = JSON.parse(JSON.stringify(hint));
+            hintlog.exclude = listbits(hintlog.exclude);
+            console.log(JSON.stringify(hintlog));
+          }
         }
       }
     }
