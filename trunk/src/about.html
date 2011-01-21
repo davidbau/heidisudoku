@@ -28,6 +28,17 @@ in various rows, columns, or blocks.
 <p>Solving sudoku puzzles by scanning the board for forced single positions
 is dynamic and fun.
 
+<h2>Difficulty Ratings</h3>
+
+<p>Good puzzles are rated on a 21-level scale from "Beginner" (the easiest)
+to "Counfounding" (the hardest).
+
+<p>Puzzles rated "Impossible" are solvable, but the solution
+may be impossible for a person to find without some lucky guessing.
+
+<p>Puzzles rated "Unsolvable" have no unique solution: an unsolvable
+puzzle has either no complete solution or multiple different solutions.
+
 <h2>Getting Hints</h2>
 
 <p>To get a hint, hold down the <b>Hint</b> button.  Red squares point
@@ -73,19 +84,33 @@ Click again to make a
 that lets you highlight specific numbers.
 
 <p>Candidates everywhere on the board can be automatically eliminated
-based on your answers so far using the <b>Pencilmarks</b>
+based on your answers so far using the <b>Marks</b>
 button.  To erase all pencilmarks on the entire board, hold down
-<b>ctrl</b> while clicking <b>Pencilmarks</b>.
+<b>ctrl</b> while clicking <b>Marks</b>.
 
-<h2>Starting a New Puzzle</h2>
+<h2>Loading Puzzles</h2>
 
 <p>To enter your own puzzle, hold down <b>ctrl</b> while clicking each
 square.  If you hold down <b>ctrl</b> while clicking <b>Clear</b>, the
 entire puzzle will be cleared.  Notice that the hintpad will not let
 you enter a puzzle that has no solution.
 
-<p>When you are ready for a new game, click <b>New Puzzle</b>, and a new
-puzzle will be randomly generated.
+<p>If you click <b>New Puzzle</b>, a new puzzle with a random level of
+difficulty will be randomly generated.
+
+<p>Puzzles can also be saved and loaded using the <b>File</b> button.
+
+<h2>The Timer</h2>
+
+<p>The game will keep track of the amount of time it has taken you to
+solve a puzzle.  Press the <b>Timer</b> button to reveal the elapsed
+time.
+
+<p>If you walk away from a puzzle and don't want all the idle time
+counted against you, don't worry: press the "Refresh" button in your
+browser and the timer will go back to the time you made your last move.
+Similarly, if you save a game, the time saved will be the time of the
+last move made.
 
 <h2>Credits</h2>
 
@@ -108,7 +133,7 @@ this time, but they are available to read
 <a href="https://www.assembla.com/code/jssudoku/subversion/nodes/trunk/src"
 >here on assembla.com</a>.
 
-<p style=text-align:center>Version 0.10</p>
+<p style=text-align:center>Version 0.11</p>
 </div>
 </center>
 
