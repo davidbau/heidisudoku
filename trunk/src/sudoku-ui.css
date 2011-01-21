@@ -28,8 +28,7 @@ h1 {
              local('CoveredByYourGrace'), 
              url('CoveredByYourGrace.ttf') format('truetype'); } }
 table.sudoku {
-        border-collapse: collapse;
-        table-layout: fixed; }
+        border-collapse: collapse; }
 table.sudoku-select {
         border-collapse: collapse; 
         border: 1px solid transparent;

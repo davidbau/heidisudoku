@@ -555,7 +555,7 @@ function decodeboardstate(data) {
     answer: answer,
     work: work,
     mark: mark,
-    color: color,
+    color: color
   };
   if ('seed' in data) { result.seed = data.seed; }
   if ('gentime' in data) { result.gentime = data.gentime; }
@@ -1079,6 +1079,26 @@ var base64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
                   "abcdefghijklmnopqrstuvwxyz" +
                   "0123456789" +
                   "-_";
+
+function googlurl(url, cb) {
+  jsonlib.fetch({
+    url: 'https://www.googleapis.com/urlshortener/v1/url?' +
+         'key=AIzaSyCIhMVF0u3UknPnTV-7sSxFG3nEpwDdidE',
+    header: 'Content-Type: application/json',
+    data: JSON.stringify({longUrl: url})
+  }, function (m) {
+    var result = null;
+    try {
+      if ('content' in m) {
+        result = JSON.parse(m.content).id;
+        if (typeof result != "string") { result = null; }
+      }
+    } catch (e) {
+      result = null;
+    }
+    cb(result);
+  });
+}
 
 lib.boardhtml = boardhtml;
 lib.menuhtml = menuhtml;
