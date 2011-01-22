@@ -2,7 +2,7 @@
 <link rel=stylesheet href=sudoku-ui.css>
 <body>
 <center><h1>Heidi's Sudoku</h1>
-<p><a id=promo href="https://chrome.google.com/webstore/detail/ccbhekjfmokgloklnjnidfhlaofegeno">Install the Chrome Web App for more features.</a></p>
+<p><a id=promo href="https://chrome.google.com/webstore/detail/ccbhekjfmokgloklnjnidfhlaofegeno">Install the Chrome Web App for more features</a></p>
 <script src=jquery-1.4.4.min.js></script>
 <script src=jquery-bbq-1.2.1.min.js></script>
 <script src=seedrandom-min.js></script>
@@ -25,6 +25,10 @@ document.write(SudokuUI.menuhtml());
 <div class=sudoku-popup id=ok>ok so far</div>
 <div class=sudoku-popup id=nohint>no hint</div>
 <p align=center style="font: 10pt arial">
+<a href="chrome-extension://ccbhekjfmokgloklnjnidfhlaofegeno/app.html"
+onclick="this.href=this.href.replace(/#.*$/,'')+location.hash"
+>Go to the Chrome app</a>
+&nbsp;
 <a href="about.html"
 onclick="this.href=this.href.replace(/#.*$/,'')+location.hash"
 >About this game</a>
