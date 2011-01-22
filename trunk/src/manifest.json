@@ -2,7 +2,7 @@
   "name": "Heidi's Sudoku",
   "description":
     "Play the popular pencil-and-paper puzzler with Heidi's helpful hint pad.",
-  "version": "0.0.0.11",
+  "version": "0.0.0.12",
   "app": {
     "launch": {
       "local_path": "app.html"
