@@ -882,6 +882,8 @@ var filebox = (function() {
     now = (new Date).getTime();
     var name = 'savename' in state ? state.savename : '';
     $('#savename').val(name);
+    $('#shortenurl').css('display', '');
+    $('#shortenedurl').css('display', '');
     $('.save-listbox ul li:not(:first)').remove();
     redrawlist();
     setTimeout(function() { $('#savename').focus(); }, 0);
@@ -1019,6 +1021,15 @@ var filebox = (function() {
       }
       redrawlist();
     }
+  });
+
+  $('#shortenurl').click(function(ev) {
+    ev.preventDefault();
+    googlurl('http://davidbau.com/sudoku/' + location.hash, function(s) {
+      if (!s) return;
+      $('#shortenurl').css('display', 'none');
+      $('#shortenedurl').val(s).css('display', 'block').focus().select();
+    });
   });
 
   return { show: show };
