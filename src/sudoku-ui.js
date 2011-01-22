@@ -884,6 +884,7 @@ var filebox = (function() {
     $('#savename').val(name);
     $('.save-listbox ul li:not(:first)').remove();
     redrawlist();
+    setTimeout(function() { $('#savename').focus(); }, 0);
     showpopup('#file');
   }
 
@@ -973,7 +974,13 @@ var filebox = (function() {
     }
   });
 
-  $('#savename').keydown(function() {
+  $('#savename').keydown(function(ev) {
+    if (ev.which == 13) {
+      ev.preventDefault();
+      if ($('#savecurrent').is(':enabled')) { $('#savecurrent').click(); }
+      else if ($('#savecopy').is(':enabled')) { $('#savecopy').click(); }
+      return;
+    }
     setTimeout(function() { redrawlist(); }, 0);
   });
 
