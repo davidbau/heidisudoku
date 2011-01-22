@@ -109,27 +109,27 @@ div.work-menu table {
         border: 2px solid black;
         border-collapse: collapse;
         border-spacing: 0;
-        width: 60px;
-        height: 80px; }
+        width: 72px;
+        height: 96px; }
 div.work-menu td {
         padding: 0;
         }
 div.menu-clip {
-        height: 20px; width: 20px; border:0;
+        height: 24px; width: 24px; border:0;
         text-align:center;
         vertical-align:middle;
         overflow:hidden; }
 div.work-menu div.menu-text {
         color: #aaa;
-        font: 20px Covered By Your Grace; padding:0; margin:0;
-        height: 30px; width: 30px; border:0;
+        font: 24px Covered By Your Grace; padding:0; margin:0;
+        height: 34px; width: 34px; border:0;
         margin: -5px;
         vertical-align:middle;
         cursor: pointer;
         background-color:#fff;
         opacity:1; }
 div.menu-mode {
-        height: 30px; width: 30px; border:0;
+        height: 34px; width: 34px; border:0;
         background-repeat:no-repeat;
         background-image:url(pencilgray.png);
         background-position:center;
@@ -145,15 +145,15 @@ div.puzzle-menu {
 div.puzzle-menu table {
         border-collapse: collapse;
         border-spacing: 0;
-        width: 60px;
-        height: 60px; }
+        width: 72px;
+        height: 72px; }
 div.puzzle-menu td {
         padding: 0;
         }
 div.puzzle-menu div.menu-text {
         color: #aaa;
-        font: 14px Arial Black; padding:0; margin:0;
-        height: 20px; width: 20px; border:0;
+        font: 16px Arial Black; padding:0; margin:0;
+        height: 24px; width: 24px; border:0;
         margin: -0px;
         vertical-align:middle;
         cursor: pointer;
@@ -171,6 +171,15 @@ div.puzzle-menu div.menu-text {
 .save-outerbox center {
         font: 16pt Arial Black;
         padding: 5px; }
+.save-link {
+        position:absolute;
+        z-index:1;
+        font: 10pt arial;
+        margin:10px 0; }
+#shortenedurl {
+        width: 120px;
+        margin: -3px 0;
+        display: none; }
 .save-listbox {
         overflow: auto;
         width: 456px;

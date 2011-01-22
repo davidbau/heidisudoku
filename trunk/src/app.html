@@ -4,6 +4,7 @@
 <center><h1>Heidi's Sudoku</h1>
 <script src=jquery-1.4.4.min.js></script>
 <script src=jquery-bbq-1.2.1.min.js></script>
+<script src=jsonlib.js></script>
 <script src=seedrandom-min.js></script>
 <script src=sudoku.js></script>
 <script src=sudoku-hint.js></script>
@@ -32,10 +33,12 @@ document.write(SudokuUI.menuhtml());
 <input type=text value="Saved Game" id=savename>
 <input type=button value="Save Current Game" id=savecurrent>
 <input type=button value="Save New Copy" disabled id=savecopy>
-</li></ul></div><!--
-<div style="position:absolute;z-index:1;font: 10pt arial;margin:10px 0;">
-<a id=shortenurl href="http://goo.gl/">short url</a>
-</div>--><div style="position:relative;text-align:right">
+</li></ul></div>
+<div class=save-link>
+<a id=shortenurl href="http://goo.gl/">save as url</a>
+<input id=shortenedurl>
+</div>
+<div style="position:relative;text-align:right">
 <input type=button value="Select All" id=selectall
 ><input type=button value="Delete Selected" id=deleteselected
 ><input type=button value="Load Selected" id=loadselected
