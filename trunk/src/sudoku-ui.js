@@ -892,6 +892,25 @@ var filebox = (function() {
     showpopup('#file');
   }
 
+  function summarize(state) {
+    var summary = [];
+    var needed = 0, finished = 0;
+    for (var j = 0; j < 81; j++) {
+      if (state.puzzle[j] === null) {
+        needed += 1;
+        if (state.answer[j] !== null) { finished += 1; }
+      }
+    }
+    if (needed + finished > 0) {
+      summary.push(finished + '/' + needed);
+    }
+    if (state.elapsed > 0) {
+      summary.push(formatelapsed(state.elapsed));
+    }
+    if (summary.length == 0) { return ''; }
+    return '(' + summary.join(', ') + ')';
+  }
+
   // function to render the filebox
   function redrawlist(force) {
     var saved = allsaved();
@@ -921,8 +940,7 @@ var filebox = (function() {
            '"><input type=checkbox' + (checked ? ' checked' : '') +
            '> ' + htmlescape(item.state.savename) +
            ' ' + lib.timeago(now - item.state.gentime) +
-           (item.state.elapsed >= 0 ?
-             ' (' + formatelapsed(item.state.elapsed) + ')' : '' ) +
+           ' ' + summarize(item.state) +
            '</li>');
       }
       items = $('.save-listbox ul li:not(:first)');
