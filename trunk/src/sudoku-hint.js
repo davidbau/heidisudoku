@@ -549,7 +549,55 @@ function unzero(bits) {
   return bits;
 }
 
-function candidatelines(board, unz, bits) {
+function claiming(board, unz, bits) {
+  unz = fullbits(board, unz);
+  var result = [];
+  for (var axis = 0; axis < 2; axis++) {
+    for (var x = 0; x < 9; x++) {
+      var blockbits = [0, 0, 0];
+      var solvedbits = 0;
+      for (var y = 0; y < 9; y++) {
+        blockbits[(y - (y % 3)) / 3] |= unz[posfor(x, y, axis)];
+        if (board[pos] !== null) solvedbits |= (1 << board[pos]);
+      }
+      for (var j = 0; j < 3; j++) {
+        var claimedbits = blockbits[j] & ~solvedbits &
+            ~blockbits[(j + 1) % 3] & ~blockbits[(j + 2) % 3];
+        if (claimedbits == 0) continue;
+        var reduced = [];
+        var reducedbits = 0;
+        var block = axisfor(posfor(x, j * 3, axis), 2);
+        for (var z = 0; z < 9; z++) {
+          var pos = posfor(block, z, 2);
+          if (axisfor(pos, axis) == x) continue;
+          if (claimedbits & bits[pos]) {
+            reducedbits |= (claimedbits & bits[pos]);
+            reduced.push(pos);
+          }
+        }
+        if (reducedbits == 0) continue;
+        var intersection = [];
+        for (var z = 0; z < 9; z++) {
+          var pos = posfor(block, z, 2);
+          if (axisfor(pos, axis) != x) continue;
+          if (bits[pos] & claimedbits) {
+            intersection.push(pos);
+          }
+        }
+        result.push({
+          exclude: claimedbits,
+          reduced: reduced,
+          hint: 'claiming',
+          size: 1,
+          support: intersection 
+        });
+      }
+    }
+  }
+  return result;
+}
+
+function pointing(board, unz, bits) {
   unz = fullbits(board, unz);
   var result = [];
   for (var block = 0; block < 9; block++) {
@@ -584,7 +632,7 @@ function candidatelines(board, unz, bits) {
         result.push({
           exclude: reducedbits,
           reduced: reduced,
-          hint: 'candidatelines',
+          hint: 'pointing',
           size: 1,
           support: candidates
         });
@@ -596,7 +644,7 @@ function candidatelines(board, unz, bits) {
 }
 
 
-function candidatelinepairs(board, unz, bits) {
+function doublepointing(board, unz, bits) {
   unz = fullbits(board, unz);
   var result = [];
   for (var block = 0; block < 9; block++) {
@@ -631,7 +679,7 @@ function candidatelinepairs(board, unz, bits) {
         result.push({
           exclude: reducedbits,
           reduced: reduced,
-          hint: 'candidatelines',
+          hint: 'pointing',
           size: 2,
           support: candidates 
         });
@@ -644,7 +692,7 @@ function candidatelinepairs(board, unz, bits) {
 
 function xwing(board, unz, bits, size) {
   var result = [];
-  bits = fullbits(board, bits);
+  unz = fullbits(board, unz);
   for (var axis = 0; axis < 2; axis++) {
     for (var num = 0; num < 9; num++) {
       var bit = 1 << num;
@@ -660,7 +708,7 @@ function xwing(board, unz, bits, size) {
             spotcount = 1;
             break;
           }
-          if (board[pos] === null && (unz[pos] & bit)) {
+          if (unz[pos] & bit) {
             spotcount += 1;
             spots |= (1 << y);
           }
@@ -765,13 +813,14 @@ function rawhints(puzzle, answer, work, nomistakes) {
     result = result.concat(singlenum(sofar, work));
     if (result.length) break;
     level = 3;
-    result = result.concat(candidatelines(sofar, unz, work));
+    result = result.concat(pointing(sofar, unz, work));
+    result = result.concat(claiming(sofar, unz, work));
     result = result.concat(nakedsets(sofar, unz, work, 2));
     result = result.concat(hiddensets(sofar, unz, work, 1));
     if (result.length) break;
     level = 4;
     result = result.concat(xwing(sofar, unz, work, 2));
-    result = result.concat(candidatelinepairs(sofar, unz, work));
+    result = result.concat(doublepointing(sofar, unz, work));
     result = result.concat(nakedsets(sofar, unz, work, 3));
     result = result.concat(hiddensets(sofar, unz, work, 2));
     if (result.length) break;
