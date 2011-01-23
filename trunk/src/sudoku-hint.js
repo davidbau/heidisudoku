@@ -498,6 +498,28 @@ function singlepos(board, unz) {
   return result;
 }
 
+// Look to find not-yet-noted conflicts that force an answer.
+function singlenum(board, bits) {
+  var hint = figurebits(board).allowed;
+  var result = [];
+  for (var pos = 0; pos < 81; pos++) {
+    if (board[pos] !== null) continue;
+    var b = bits[pos];
+    var forced = hint[pos] & b;
+    if (forced == b) continue;
+    result.push({
+      exclude: 511 ^ hint[pos],
+      reduced: [pos],
+      hint: 'singlenum',
+      size: 1,
+      support: whyexclude(board, [pos], b & ~forced)
+    });
+  }
+  result.sort(hintsort);
+  return result;
+}
+
+
 function fullbits(board, bits) {
   var result = bits.slice();
   for (var j = 0; j < 81; j++) {
@@ -618,7 +640,11 @@ function xwing(board, unz, bits, size) {
         var spotcount = 0;
         for (var y = 0; spotcount <= 2 && y < 9; y++) {
           var pos = posfor(x, y, axis);
-          if (unz[pos] & bit) {
+          if (board[pos] === num) {
+            spotcount = 1;
+            break;
+          }
+          if (board[pos] === null && (unz[pos] & bit)) {
             spotcount += 1;
             spots |= (1 << y);
           }
@@ -643,7 +669,9 @@ function xwing(board, unz, bits, size) {
             for (var m = 0; m < 9; m++) {
               if (m == twospotrows[cur[skip]]) { skip += 1; continue; }
               var pos = posfor(m, cols[k], axis);
-              if (bits[pos] & bit) { reduce.push(pos); }
+              if (board[pos] === null && (bits[pos] & bit)) {
+                reduce.push(pos);
+              }
             }
           }
           if (reduce.length > 0) {
@@ -715,22 +743,25 @@ function rawhints(puzzle, answer, work) {
     if (result.length) break;
     level = 2;
     result = result.concat(singlepos(sofar, unz));
+    result = result.concat(singlenum(sofar, work));
+    if (result.length) break;
+    level = 3;
     result = result.concat(candidatelines(sofar, unz, work));
     result = result.concat(nakedsets(sofar, unz, work, 2));
     result = result.concat(hiddensets(sofar, unz, work, 1));
     if (result.length) break;
-    level = 3;
+    level = 4;
     result = result.concat(xwing(sofar, unz, work, 2));
     result = result.concat(candidatelinepairs(sofar, unz, work));
     result = result.concat(nakedsets(sofar, unz, work, 3));
     result = result.concat(hiddensets(sofar, unz, work, 2));
     if (result.length) break;
-    level = 4;
+    level = 5;
     result = result.concat(xwing(sofar, unz, work, 3));
     result = result.concat(nakedsets(sofar, unz, work, 4));
     result = result.concat(hiddensets(sofar, unz, work, 3));
     if (result.length) break;
-    level = 5;
+    level = 6;
     result = result.concat(hiddensets(sofar, unz, work, 4));
     result = result.concat(xwing(sofar, unz, work, 4));
     // result = result.concat(hiddensets(sofar, unz, work, 5));
@@ -768,9 +799,11 @@ function hintgrade(puzzle) {
       steps += Math.floor(Math.pow(2, (unsolved - 3) / 3));
       break;
     }
-    steps += (h.level - 1) * 3 + 1;
+    var difficulty = (h.level - 1) * 3 + 1;
     // console.log("Level " + h.level + " options " + h.hints.length);
-    if (h.hints.length <= 2) { steps += (3 - h.hints.length); }
+    if (h.hints.length <= 2) { difficulty += (3 - h.hints.length); }
+    difficulty *= (unsolved / 36);
+    steps += difficulty;
     for (var k = 0; k < h.hints.length; k++) {
       var hint = h.hints[k];
       var oldwork = work.slice();
@@ -784,7 +817,7 @@ function hintgrade(puzzle) {
       if ((!modified && k == 0) ||
           mistakes(puzzle, answer, work).length) {
         console.log('problem', JSON.stringify(hint));
-        SudokuUI.savestate({
+        SudokuUI.commitstate({
           puzzle:puzzle,
           answer:answer,
           work:oldwork

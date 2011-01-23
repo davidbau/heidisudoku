@@ -17,6 +17,7 @@ function startnewgame(seed) {
   if (auto) { seed = now; }
   var puzzle = Sudoku.makepuzzle(seed);
   while (auto && SudokuHint.hintgrade(puzzle) > 120) {
+    // console.log('regenerating ' + SudokuHint.hintgrade(puzzle));
     seed += 1;
     puzzle = Sudoku.makepuzzle(seed);
   }
@@ -1035,6 +1036,7 @@ var filebox = (function() {
   return { show: show };
 })();
 
+lib.commitstate = commitstate;
 });
 
 function boardhtml() {
