@@ -397,8 +397,8 @@ function hiddensets(board, unz, bits, size) {
 }
 
 // Look to find not-yet-noted conflicts that force an answer.
-function singlenumdirect(board, unz) {
-  var hint = figurebits(board).allowed;
+function singlenumdirect(board, fb, unz) {
+  var hint = fb.allowed;
   var result = [];
   for (var pos = 0; pos < 81; pos++) {
     if (board[pos] !== null) continue;
@@ -419,12 +419,11 @@ function singlenumdirect(board, unz) {
 
 // Look in each block to find a number which needs to be placed, but which
 // is directly excluded in each available square except one.
-function singleposdirect(board) {
+function singleposdirect(board, fb) {
   var result = [];
-  var bits = figurebits(board);
   for (var axis = 2; axis >= 0; axis--) {
     for (var x = 0; x < 9; x++) {
-      var numbers = listbits(bits.needed[axis * 9 + x]);
+      var numbers = listbits(fb.needed[axis * 9 + x]);
       for (var j = 0; j < numbers.length; j++) {
         var num = numbers[j];
         bit = 1 << num;
@@ -432,7 +431,7 @@ function singleposdirect(board) {
         var poslist = [];
         for (var y = 0; y < 9; y++) {
           var pos = posfor(x, y, axis);
-          if (bits.allowed[pos] & bit) {
+          if (fb.allowed[pos] & bit) {
             if (hint !== null) { hint = null; break; }
             hint = pos;
           } else if (board[pos] === null) {
@@ -455,8 +454,14 @@ function singleposdirect(board) {
   return result;
 }
 
-function singlepos(board, unz) {
+function singlepos(board, fb, unz) {
   var result = [];
+  // quick check for bits that are all OK
+  var hint = fb.allowed;
+  for (var j = 0; j < 81; j++) {
+    if (hint[j] & unz[j]) { hint = null; break; }
+  }
+  if (hint != null) { return result; }
   var singlepos = emptyboard();
   for (var axis = 2; axis >= 0; axis--) {
     for (var x = 0; x < 9; x++) {
@@ -500,19 +505,30 @@ function singlepos(board, unz) {
 
 // Look to find not-yet-noted conflicts that force an answer.
 function singlenum(board, bits) {
-  var hint = figurebits(board).allowed;
   var result = [];
   for (var pos = 0; pos < 81; pos++) {
-    if (board[pos] !== null) continue;
-    var b = bits[pos];
-    var forced = hint[pos] & b;
-    if (forced == b) continue;
+    if (board[pos] === null) continue;
+    var num = board[pos];
+    var bit = 1 << num;
+    var reduced = [];
+    for (var axis = 0; axis < 3; axis++) {
+      var x = axisfor(pos, axis);
+      for (var y = 0; y < 9; y++) {
+        var pos2 = posfor(x, y, axis);
+        if (board[pos2] === null && (bits[pos2] & bit)) {
+          if (axis == 2 && (axisfor(pos, 0) == axisfor(pos2, 0) ||
+              axisfor(pos, 1) == axisfor(pos2, 1))) { continue; }
+          reduced.push(pos2);
+        }
+      }
+    }
+    if (reduced.length == 0) continue;
     result.push({
-      exclude: 511 ^ hint[pos],
-      reduced: [pos],
+      exclude: bit,
+      reduced: reduced,
       hint: 'singlenum',
       size: 1,
-      support: whyexclude(board, [pos], b & ~forced)
+      support: [pos]
     });
   }
   result.sort(hintsort);
@@ -720,29 +736,32 @@ function hintsort(x, y) {
 }
 
 function hint(puzzle, answer, work) {
-  var result = rawhints(puzzle, answer, work);
+  var result = rawhints(puzzle, answer, work, false);
   if (!result.hints.length) return null;
   result.hints.sort(hintsort);
   result.hints[0].level = result.level;
   return result.hints[0];
 }
 
-function rawhints(puzzle, answer, work) {
+function rawhints(puzzle, answer, work, nomistakes) {
   var sofar = boardsofar(puzzle, answer);
   var unz = unzeroedwork(puzzle, answer, work);
   var result = [];
   var level = 0;
+  var fb = figurebits(sofar);
   while (true) {
-    result = result.concat(conflicts(sofar));
-    if (result.length) break;
-    result = result.concat(mistakes(puzzle, answer, unz));
-    if (result.length) break;
+    if (!nomistakes) {
+      result = result.concat(conflicts(sofar));
+      if (result.length) break;
+      result = result.concat(mistakes(puzzle, answer, unz));
+      if (result.length) break;
+    }
     level = 1;
-    result = result.concat(singleposdirect(sofar));
-    result = result.concat(singlenumdirect(sofar, unz));
+    result = result.concat(singleposdirect(sofar, fb));
+    result = result.concat(singlenumdirect(sofar, fb, unz));
     if (result.length) break;
     level = 2;
-    result = result.concat(singlepos(sofar, unz));
+    result = result.concat(singlepos(sofar, fb, unz));
     result = result.concat(singlenum(sofar, work));
     if (result.length) break;
     level = 3;
@@ -794,7 +813,7 @@ function hintgrade(puzzle) {
   }
   var steps = 0;
   while (unsolved) {
-    var h = rawhints(puzzle, answer, work);
+    var h = rawhints(puzzle, answer, work, true);
     if (h.hints.length == 0) {
       steps += Math.floor(Math.pow(2, (unsolved - 3) / 3));
       break;
