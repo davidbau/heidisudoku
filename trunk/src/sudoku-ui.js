@@ -21,8 +21,9 @@ function startnewgame(seed) {
     seed += 1;
     puzzle = Sudoku.makepuzzle(seed);
   }
+  var finished = (new Date).getTime();
   commitstate({
-    puzzle: puzzle, seed: seed, gentime: now, savename: ''
+    puzzle: puzzle, seed: seed, gentime: finished, savename: ''
   });
 }
 
