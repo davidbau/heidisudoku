@@ -962,6 +962,7 @@ var filebox = (function() {
   var lastclickelt = null;
   $('.save-listbox').delegate('li', 'click', function(ev) {
     if (ev.target.tagName == 'INPUT') return;
+    if ($(ev.target).is(':first-child')) return;
     lastclickelt = ev.target;
     lastclicktime = (new Date).getTime();
     $(this).find('input').click();
