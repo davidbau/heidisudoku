@@ -267,14 +267,14 @@ function advancesubset(cur, choose, from) {
   return true;
 }
 
-function nakedsets(board, bits, size) {
+function nakedsets(board, unz, bits, size) {
   var result = [];
   for (var axis = 2; axis >= 0; axis--) {
     for (var x = 0; x < 9; x++) {
       var positions = [];
       for (var y = 0; y < 9; y++) {
         var pos = posfor(x, y, axis);
-        if (board[pos] !== null || bits[pos] == 0) continue;
+        if (board[pos] !== null || unz[pos] == 0) continue;
         positions.push(pos);
       }
       var naked = [];
@@ -282,7 +282,7 @@ function nakedsets(board, bits, size) {
         for (var cur = []; advancesubset(cur, size, positions.length); ) {
           var exclude = 0;
           for (var j = 0; j < size; j++) {
-            exclude |= bits[positions[cur[j]]];
+            exclude |= unz[positions[cur[j]]];
           }
           if (listbits(exclude).length == size) {
             var reduced = [];
@@ -604,7 +604,7 @@ function candidatelinepairs(board, unz, bits) {
   return result;
 }
 
-function xwing(board, bits, size) {
+function xwing(board, unz, bits, size) {
   var result = [];
   bits = fullbits(board, bits);
   for (var axis = 0; axis < 2; axis++) {
@@ -618,7 +618,7 @@ function xwing(board, bits, size) {
         var spotcount = 0;
         for (var y = 0; spotcount <= 2 && y < 9; y++) {
           var pos = posfor(x, y, axis);
-          if (bits[pos] & bit) {
+          if (unz[pos] & bit) {
             spotcount += 1;
             spots |= (1 << y);
           }
@@ -716,25 +716,25 @@ function rawhints(puzzle, answer, work) {
     level = 2;
     result = result.concat(singlepos(sofar, unz));
     result = result.concat(candidatelines(sofar, unz, work));
-    result = result.concat(nakedsets(sofar, unz, 2));
+    result = result.concat(nakedsets(sofar, unz, work, 2));
     result = result.concat(hiddensets(sofar, unz, work, 1));
     if (result.length) break;
     level = 3;
-    result = result.concat(xwing(sofar, unz, 2));
+    result = result.concat(xwing(sofar, unz, work, 2));
     result = result.concat(candidatelinepairs(sofar, unz, work));
-    result = result.concat(nakedsets(sofar, unz, 3));
+    result = result.concat(nakedsets(sofar, unz, work, 3));
     result = result.concat(hiddensets(sofar, unz, work, 2));
     if (result.length) break;
     level = 4;
-    result = result.concat(xwing(sofar, unz, 3));
-    result = result.concat(nakedsets(sofar, unz, 4));
+    result = result.concat(xwing(sofar, unz, work, 3));
+    result = result.concat(nakedsets(sofar, unz, work, 4));
     result = result.concat(hiddensets(sofar, unz, work, 3));
     if (result.length) break;
     level = 5;
     result = result.concat(hiddensets(sofar, unz, work, 4));
-    result = result.concat(xwing(sofar, unz, 4));
+    result = result.concat(xwing(sofar, unz, work, 4));
     // result = result.concat(hiddensets(sofar, unz, work, 5));
-    // result = result.concat(xwing(sofar, unz, 5));
+    // result = result.concat(xwing(sofar, unz, work, 5));
     break;
   }
   return {
