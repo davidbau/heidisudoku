@@ -50,7 +50,7 @@ gradepuzzle();
 redraw();
 
 $(window).bind('hashchange', function() {
-  hidepopups();
+  $('#file,#victory').css('display', 'none');
   gradepuzzle();
   redraw();
 });
@@ -801,7 +801,7 @@ var workmenu = (function() {
     }
   });
   function fade(x, y) {
-    if (!showing) return;
+    if (!showing) { return; }
     var topleft = $(menu).offset();
     var width = $(menu).outerWidth();
     var height = $(menu).outerHeight();
@@ -990,6 +990,7 @@ var filebox = (function() {
   $('.save-listbox').delegate('li', 'mousedown', function(ev) {
     if (ev.target === lastclickelt &&
         (new Date).getTime() - lastclicktime < 500) {
+      ev.preventDefault();
       $('.save-listbox ul li:not(:first) input').attr('checked', false);
       $(lastclickelt).find('input').attr('checked', true);
       redrawlist();
@@ -1017,8 +1018,7 @@ var filebox = (function() {
     var key = 'sudokusave_' + currentstate.gentime;
     savestate(key, currentstate);
     redrawlist(true);
-    loadstate(key);
-    setTimeout(function() { hidepopups(); }, 800);
+    setTimeout(function() { hidepopups(); loadstate(key); }, 800);
   });
 
   $('#loadselected').click(function() {
