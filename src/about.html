@@ -14,7 +14,7 @@ b { background-color: gainsboro; padding: 0 5px; }
 >About Heidi's Sudoku Hintpad</h1></center>
 <p style="text-align:center"
 ><a href="index.html"
-onclick="this.href=this.href.replace(/#.*$/,'')+location.hash"
+onclick="if (location.hash.indexOf('#',1)>0) this.href=location.hash.substr(1)"
 >Back to the game</a>
 
 <h2>Heidi's Helpful Hints</h2>
@@ -134,11 +134,11 @@ this time, but they are available to read
 <a href="https://www.assembla.com/code/jssudoku/subversion/nodes/trunk/src"
 >here on assembla.com</a>.
 
-<p style=text-align:center>Version 0.14</p>
+<p style=text-align:center>Version 0.15</p>
 </div>
 </center>
 
 <p style="text-align:center"
 ><a href="index.html"
-onclick="this.href=this.href.replace(/#.*$/,'')+location.hash"
+onclick="if (location.hash.indexOf('#',1)>0) this.href=location.hash.substr(1)"
 >Back to the game</a>
