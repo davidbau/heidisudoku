@@ -45,7 +45,7 @@ if (!window.location.hash) {
   starttime = (new Date).getTime() - state.elapsed;
 }
 
-
+var graded = null;
 gradepuzzle();
 redraw();
 
@@ -195,7 +195,6 @@ $('td.sudoku-cell').mousedown(function(ev) {
   ev.stopPropagation();
 });
 
-var graded = null;
 function gradepuzzle() {
   var state = currentstate();
   if ('savename' in state && state.savename.length > 0) {
@@ -808,11 +807,11 @@ var workmenu = (function() {
     var dx = Math.max(topleft.left - x, x - (topleft.left + width), 0);
     var dy = Math.max(topleft.top - y, y - (topleft.top + height), 0);
     var dist = Math.sqrt(dx * dx + dy * dy);
-    if (dist >= 36) {
+    if (dist >= 10) {
       hide();
       $(menu).css('opacity', '');
-    } else if (dist > 16) {
-      $(menu).css('opacity', (36 - dist) / 20);
+    } else if (dist > 2) {
+      $(menu).css('opacity', (10 - dist) / 8);
       sendcallback();
     } else {
       $(menu).css('opacity', '');

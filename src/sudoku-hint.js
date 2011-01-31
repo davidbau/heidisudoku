@@ -326,7 +326,7 @@ function nakedsets(board, unz, bits, size) {
       }
     }
   }
-  result.sort(hintsort);
+  // result.sort(hintsort);
   return result;
 }
 
@@ -392,7 +392,7 @@ function hiddensets(board, unz, bits, size) {
       }
     }
   }
-  result.sort(hintsort);
+  // result.sort(hintsort);
   return result;
 }
 
@@ -413,7 +413,7 @@ function singlenumdirect(board, fb, unz) {
       support: whyexclude(board, [pos], b & ~forced)
     });
   }
-  result.sort(hintsort);
+  // result.sort(hintsort);
   return result;
 }
 
@@ -450,7 +450,7 @@ function singleposdirect(board, fb) {
       }
     }
   }
-  result.sort(hintsort);
+  // result.sort(hintsort);
   return result;
 }
 
@@ -499,7 +499,7 @@ function singlepos(board, fb, unz) {
       }
     }
   }
-  result.sort(hintsort);
+  // result.sort(hintsort);
   return result;
 }
 
@@ -531,7 +531,7 @@ function singlenum(board, bits) {
       support: [pos]
     });
   }
-  result.sort(hintsort);
+  // result.sort(hintsort);
   return result;
 }
 
@@ -594,6 +594,7 @@ function claiming(board, unz, bits) {
       }
     }
   }
+  // result.sort(hintsort);
   return result;
 }
 
@@ -639,7 +640,7 @@ function pointing(board, unz, bits) {
       }
     }
   }
-  result.sort(hintsort);
+  // result.sort(hintsort);
   return result;
 }
 
@@ -686,7 +687,7 @@ function doublepointing(board, unz, bits) {
       }
     }
   }
-  result.sort(hintsort);
+  // result.sort(hintsort);
   return result;
 }
 
@@ -757,6 +758,151 @@ function xwing(board, unz, bits, size) {
       }
     }
   }
+  // result.sort(hintsort);
+  return result;
+}
+
+function ywing(board, unz, bits, maxsize, maxaxis) {
+  var paths = [];
+  // first build array of bits with only two-candidate cells
+  var pairs = emptyboard();
+  var pairlist = [];
+  for (var pos = 0; pos < 81; pos++) {
+    if (board[pos] !== null || bits[pos] == 0 ||
+        unz[pos] != bits[pos]) continue;
+    var listed = listbits(bits[pos]);
+    if (listed.length != 2) continue;
+    pairs[pos] = bits[pos];
+    pairlist.push([pos, listed[0]]);
+    pairlist.push([pos, listed[1]]);
+  }
+  if (pairlist.length < 3) return [];
+  for (var j = 0; j < pairlist.length; j++) {
+    var startpos = pairlist[j][0];
+    var startnum = pairlist[j][1];
+    var startbit = 1 << startnum;
+    var seen = 0;
+    var searchstate = emptyboard();
+    searchstate[startpos] = 1; // 'start'
+    // scan bits to find constrained numbers in seen by pos, num
+    for (var axis = 0; axis < maxaxis; axis++) {
+      var x = axisfor(startpos, axis);
+      for (var y = 0; y < 9; y++) {
+        var pos = posfor(x, y, axis);
+        if (pos != startpos && (bits[pos] & startbit) &&
+            searchstate[pos] === null) {
+          searchstate[pos] = 2; // 'seen'
+          seen += 1;
+        }
+      }
+    }
+    if (seen == 0) continue;
+    // scan pairs to find other pairs that see 'seen' numbers
+    var goalcount = 0;
+    for (var axis = 0; axis < maxaxis; axis++) {
+      for (var x = 0; x < 9; x++) {
+        var mark = false;
+        for (var y = 0; y < 9; y++) {
+          var pos = posfor(x, y, axis);
+          if (searchstate[pos] == 2) { mark = true; break; }
+        }
+        if (!mark) continue;
+        for (var y = 0; y < 9; y++) {
+          var pos = posfor(x, y, axis);
+          if (pairs[pos] !== null && (pairs[pos] & startbit) &&
+              searchstate[pos] === null) {
+            searchstate[pos] = 3; // 'goal'
+            goalcount += 1;
+          }
+        }
+      }
+    }
+    if (goalcount == 0) continue;
+    // do a breadthfirst search, enforcing maxsize, from 'start' to 'goal'.
+    var supposenum = listbits(bits[startpos] ^ startbit)[0];
+    tree = [{num: supposenum, pos: startpos, depth: 1, parent: null}];
+    for (var index = 0; index < tree.length; index++) {
+      nextchoice = tree[index]
+      var num = nextchoice.num;
+      var pos = nextchoice.pos;
+      var depth = nextchoice.depth;
+      if (depth >= maxsize) break;
+      // scan for forced numbers
+      var bit = (1 << num);
+      for (var axis = 0; axis < maxaxis; axis++) {
+        var x = axisfor(pos, axis);
+        for (var y = 0; y < 9; y++) {
+          var forcedpos = posfor(x, y, axis);
+          if (pairs[forcedpos] === null || !(pairs[forcedpos] & bit) ||
+              searchstate[forcedpos] == 4) continue;
+          var forcedbit = pairs[forcedpos] ^ bit;
+          var forcednum = listbits(forcedbit)[0];
+          // found a goal!
+          if (forcednum == startnum && searchstate[forcedpos] == 3) {
+            var path = [forcedpos];
+            for (var k = index; k !== null; k = tree[k].parent) {
+              path.push(tree[k].pos);
+            }
+            paths.push({
+              exclude: forcedbit,
+              support: path,
+              hint: 'ywing',
+              size: path.length,
+            }); // reduced not yet set
+            maxsize = path.length;
+            continue;
+          }
+          // note a new path to explore, if not too deep.
+          if (depth + 1 < maxsize && searchstate[forcedpos] === null) {
+            searchstate[forcedpos] = 4;
+            tree.push({pos: forcedpos, num: forcednum,
+                       depth: depth + 1, parent: index});
+          }
+        }
+      }
+    }
+  }
+  // Go through found path, eliminating paths longer than maxsize,
+  // and build 'reduced' arrays
+  var result = [];
+  var done = {};
+  for (var j = 0; j < paths.length; paths++) {
+    if (paths[j].size > maxsize) continue;
+    if (paths[j].support[0] > paths[j].support[paths[j].support.length - 1]) {
+      paths[j].support.reverse();
+    }
+    var startpos = paths[j].support[0];
+    var endpos = paths[j].support[paths[j].support.length - 1];
+    if ((startpos + 81 * endpos) in done) continue;
+    done[startpos + 81 * endpos] = 1;
+    var bit = paths[j].exclude;
+    var endposaxis = [];
+    for (var axis = 0; axis < maxaxis; axis++) {
+      endposaxis.push(axisfor(endpos, axis));
+    }
+    var marked = emptyboard();
+    marked[startpos] = marked[endpos] = 1;
+    var reduced = [];
+    for (var axis = 0; axis < maxaxis; axis++) {
+      var x = axisfor(startpos, axis);
+      for (var y = 0; y < 9; y++) {
+        var pos = posfor(x, y, axis);
+        if (marked[pos] !== null) continue;
+        if (bits[pos] & bit) {
+          for (var axis2 = 0; axis2 < maxaxis; axis2++) {
+            if (axisfor(pos, axis2) == endposaxis[axis2]) {
+              marked[pos] = 1;
+              reduced.push(pos);
+            }
+          }
+        }
+      }
+    }
+    // TODO: verify that reduced is nonempty
+    paths[j].reduced = reduced;
+    result.push(paths[j]);
+  }
+  // result.sort(hintsort);
   return result;
 }
 
@@ -820,6 +966,7 @@ function rawhints(puzzle, answer, work, nomistakes) {
     if (result.length) break;
     level = 4;
     result = result.concat(xwing(sofar, unz, work, 2));
+    result = result.concat(ywing(sofar, unz, work, 3, 2));
     result = result.concat(doublepointing(sofar, unz, work));
     result = result.concat(nakedsets(sofar, unz, work, 3));
     result = result.concat(hiddensets(sofar, unz, work, 2));
@@ -828,10 +975,12 @@ function rawhints(puzzle, answer, work, nomistakes) {
     result = result.concat(xwing(sofar, unz, work, 3));
     result = result.concat(nakedsets(sofar, unz, work, 4));
     result = result.concat(hiddensets(sofar, unz, work, 3));
+    result = result.concat(ywing(sofar, unz, work, 5, 3));
     if (result.length) break;
     level = 6;
     result = result.concat(hiddensets(sofar, unz, work, 4));
     result = result.concat(xwing(sofar, unz, work, 4));
+    result = result.concat(ywing(sofar, unz, work, 12, 3));
     // result = result.concat(hiddensets(sofar, unz, work, 5));
     // result = result.concat(xwing(sofar, unz, work, 5));
     break;
@@ -867,9 +1016,10 @@ function hintgrade(puzzle) {
       steps += Math.floor(Math.pow(2, (unsolved - 3) / 3));
       break;
     }
-    var difficulty = (h.level - 1) * 3 + 1;
-    // console.log("Level " + h.level + " options " + h.hints.length);
-    if (h.hints.length <= 2) { difficulty += (3 - h.hints.length); }
+    var difficulty = (h.level - 1) * 4 + 1;
+    // console.log("Level", h.level, "options", h.hints.length,
+    //             "eg", JSON.stringify(h.hints[0]));
+    if (h.hints.length <= 1) { difficulty += 2; }
     difficulty *= (unsolved / 36);
     steps += difficulty;
     for (var k = 0; k < h.hints.length; k++) {
