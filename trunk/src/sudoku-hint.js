@@ -975,7 +975,7 @@ function rawhints(puzzle, answer, work, nomistakes) {
     result = result.concat(xwing(sofar, unz, work, 3));
     result = result.concat(nakedsets(sofar, unz, work, 4));
     result = result.concat(hiddensets(sofar, unz, work, 3));
-    result = result.concat(ywing(sofar, unz, work, 5, 3));
+    result = result.concat(ywing(sofar, unz, work, 4, 3));
     if (result.length) break;
     level = 6;
     result = result.concat(hiddensets(sofar, unz, work, 4));
@@ -1013,14 +1013,14 @@ function hintgrade(puzzle) {
   while (unsolved) {
     var h = rawhints(puzzle, answer, work, true);
     if (h.hints.length == 0) {
-      steps += Math.floor(Math.pow(2, (unsolved - 3) / 3));
+      steps += Math.pow(2, (unsolved - 3) / 2);
       break;
     }
     var difficulty = (h.level - 1) * 4 + 1;
-    // console.log("Level", h.level, "options", h.hints.length,
-    //             "eg", JSON.stringify(h.hints[0]));
+    console.log("Level", h.level, "options", h.hints.length,
+               "eg", JSON.stringify(h.hints[0]));
     if (h.hints.length <= 1) { difficulty += 2; }
-    difficulty *= (unsolved / 36);
+    difficulty *= ((unsolved + 12)/ 48);
     steps += difficulty;
     for (var k = 0; k < h.hints.length; k++) {
       var hint = h.hints[k];
@@ -1053,6 +1053,7 @@ function hintgrade(puzzle) {
       else { unsolved += 1; }
     }
   }
+  console.log(steps);
   return steps;
 }
 
