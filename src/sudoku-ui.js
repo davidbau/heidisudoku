@@ -25,7 +25,9 @@ function startnewgame(seed) {
   gradepuzzle(puzzle, steps);
   var finished = (new Date).getTime();
   commitstate({
-    puzzle: puzzle, seed: seed, gentime: finished, savename: ''
+    puzzle: puzzle, seed: seed,
+    answer: [], work: [], marks: [], color: [],
+    gentime: finished, savename: ''
   });
 }
 
@@ -282,7 +284,7 @@ $('#newbutton').click(function(ev) {
     $('#grade').html('&nbsp;');
     $.getJSON('http://davidbau.com/sudoku/min.json?callback=?', function(p) {
       var puzzle = decodepuzzle81(p);
-      commitstate({puzzle: puzzle, answer: [], work: [], mark: [],
+      commitstate({puzzle: puzzle, answer: [], work: [], mark: [], color: [],
                    seed: 0, savename: '', gentime: (new Date).getTime()});
       gradepuzzle();
     });
