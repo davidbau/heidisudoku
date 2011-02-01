@@ -275,8 +275,10 @@ function gradepuzzle(puzzle, steps) {
 $('#newbutton').click(function(ev) {
   hidepopups();
   if (ev.ctrlKey) {
-    commitstate({puzzle: [], answer:[], work: [],
-                 seed: 0, savename: '', gentime: (new Date).getTime()});
+    redraw({puzzle: Sudoku.emptyboard(), answer: Sudoku.emptyboard(),
+            work: zdecodebits(''), mark: zdecodebits(''),
+            color: Sudoku.emptyboard(),
+            seed: 0, savename: '', gentime: (new Date).getTime()});
     $.getJSON('http://davidbau.com/sudoku/min.json?callback=?', function(p) {
       var puzzle = decodepuzzle81(p);
       commitstate({puzzle: puzzle, answer: [], work: [], mark: [],
