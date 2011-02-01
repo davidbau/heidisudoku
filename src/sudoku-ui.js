@@ -15,12 +15,14 @@ function startnewgame(seed) {
   var now = (new Date).getTime();
   var auto = (typeof seed == 'undefined');
   if (auto) { seed = now; }
-  var puzzle = Sudoku.makepuzzle(seed);
-  while (auto && SudokuHint.hintgrade(puzzle) > 120) {
-    // console.log('regenerating ' + SudokuHint.hintgrade(puzzle));
-    seed += 1;
+  var puzzle, steps;
+  for (;;) {
     puzzle = Sudoku.makepuzzle(seed);
+    steps = SudokuHint.hintgrade(puzzle);
+    if (!auto || steps <= 130) break;
+    seed += 1;
   }
+  gradepuzzle(puzzle, steps);
   var finished = (new Date).getTime();
   commitstate({
     puzzle: puzzle, seed: seed, gentime: finished, savename: ''
@@ -82,6 +84,8 @@ function setkeyfocus(kf) {
   }
 }
 
+var lastkeyat = { pos: null, num: null, timestamp: 0 };
+
 $(document).keydown(function(ev) {
   if (workmenu.showing()) { workmenu.keydown(ev); return; }
   // if (filebox.showing()) { filebox.keydown(ev); return; }
@@ -101,20 +105,48 @@ $(document).keydown(function(ev) {
   var state = currentstate();
   if (state.puzzle[pos] !== null) return;
   var num = ev.which - '1'.charCodeAt(0);
+
+  var doubletap = false;
+  var now = (new Date).getTime();
   if (num >= 0 && num < 9) {
-    var bit = (1 << num);
-    var bits = state.work[pos];
-    if (state.answer[pos] !== null) bits |= (1 << state.answer[pos]);
-    bits ^= bit;
-    state.mark[pos] &= ~bit;
-    var nums = listbits(bits);
-    if (nums.length == 1) {
+    if (lastkeyat.num == num &&
+        lastkeyat.pos == pos && now - lastkeyat.timestamp < 500) {
+      doubletap = true;
+      lastkeyat.num = null;
+    } else {
+      lastkeyat.num = num;
+      lastkeyat.pos = pos;
+      lastkeyat.timestamp = now;
+    }
+  } else if (ev.which == 13 && lastkeyat.num !== null &&
+      lastkeyat.pos == pos && now - lastkeyat.timestamp < 2000) {
+    doubletap = true;
+    num = lastkeyat.num;
+    lastkeyat.num = null;
+  } else {
+    lastkeyat.num = null;
+  }
+
+  if (num >= 0 && num < 9) {
+    if (doubletap) {
       state.work[pos] = 0;
       state.mark[pos] = 0;
-      state.answer[pos] = nums[0];
+      state.answer[pos] = num;
     } else {
-      state.answer[pos] = null;
-      state.work[pos] = bits;
+      var bit = (1 << num);
+      var bits = state.work[pos];
+      if (state.answer[pos] !== null) bits |= (1 << state.answer[pos]);
+      bits ^= bit;
+      state.mark[pos] &= ~bit;
+      var nums = listbits(bits);
+      if (nums.length == 1) {
+        state.work[pos] = 0;
+        state.mark[pos] = 0;
+        state.answer[pos] = nums[0];
+      } else {
+        state.answer[pos] = null;
+        state.work[pos] = bits;
+      }
     }
   } else if (num == -1 || ev.which == 32 || ev.which == 46 || ev.which == 189) {
     state.work[pos] = 0;
@@ -123,7 +155,11 @@ $(document).keydown(function(ev) {
   } else {
     return;
   }
-  commitstate(state);
+  // fast redraw of just the keyed cell, then commit state after a timeout
+  redraw(state, pos);
+  setTimeout(function() {
+    commitstate(state);
+  }, 0);
 });
 
 $('td.sudoku-cell').click(function(ev) {
@@ -195,13 +231,14 @@ $('td.sudoku-cell').mousedown(function(ev) {
   ev.stopPropagation();
 });
 
-function gradepuzzle() {
+function gradepuzzle(puzzle, steps) {
   var state = currentstate();
   if ('savename' in state && state.savename.length > 0) {
     $('#grade').html(htmlescape(state.savename));
     return;
   }
-  var current = encodepuzzle81(state.puzzle);
+  if (!puzzle) puzzle = state.puzzle;
+  var current = encodepuzzle81(puzzle);
   if (graded === current) return;
   graded = current;
 
@@ -209,11 +246,11 @@ function gradepuzzle() {
     $('#grade').html('&nbsp;');
     return;
   }
-  if (!Sudoku.uniquesolution(state.puzzle)) {
+  if (!Sudoku.uniquesolution(puzzle)) {
     $('#grade').html(lib.levels[0]);
     return;
   }
-  var steps = SudokuHint.hintgrade(state.puzzle);
+  if (!steps) steps = SudokuHint.hintgrade(puzzle);
   var level = Math.max(1, Math.min(lib.levels.length - 1,
               Math.floor(steps / 5)));
   $('#grade').html(lib.levels[level]);
@@ -462,14 +499,17 @@ function boardsofar(state) {
 // puzzle=[0-9]{81} &
 // work=[base64]{162}
 
-function redraw(s) {
+function redraw(s, pos) {
   var state = s ? s : currentstate();
+  var startpos = 0;
+  var endpos = 81;
+  if (typeof pos != 'undefined') { startpos = pos; endpos = pos + 1; }
   var puzzle = state.puzzle;
   var answer = state.answer;
   var work = state.work;
   var mark = state.mark;
   var color = state.color;
-  for (var j = 0; j < 81; j++) {
+  for (var j = startpos; j < endpos; j++) {
     if (puzzle[j] !== null) {
       $("#sn" + j).attr('class', 'sudoku-given').html(puzzle[j] + 1);
     } else {
