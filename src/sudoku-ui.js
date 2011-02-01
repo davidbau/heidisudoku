@@ -296,9 +296,9 @@ $('#newbutton').click(function(ev) {
 $('#clearbutton').click(function(ev) {
   hidepopups();
   var state = currentstate();
-  var cleared = {puzzle: state.puzzle, answer:[], work: [], mark: []};
+  var cleared = {puzzle: state.puzzle, answer:[], work:[], mark:[], color:[]};
   if (ev.ctrlKey) {
-    cleared = {puzzle: [], answer: [], work: [], mark: [],
+    cleared = {puzzle: [], answer: [], work: [], mark: [], color: [],
                seed: 0, savename: '', gentime: (new Date).getTime()};
     gradepuzzle();
     ev.preventDefault();
