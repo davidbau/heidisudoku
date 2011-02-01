@@ -103,8 +103,8 @@ $(document).keydown(function(ev) {
     return;
   }
   var state = currentstate();
-  if (state.puzzle[pos] !== null) return;
   var num = ev.which - '1'.charCodeAt(0);
+  if (num >= 0 && num < 9 && state.puzzle[pos] !== null) return;
 
   var doubletap = false;
   var now = (new Date).getTime();
@@ -152,6 +152,21 @@ $(document).keydown(function(ev) {
     state.work[pos] = 0;
     state.mark[pos] = 0;
     state.answer[pos] = null;
+    state.color[pos] = null;
+  } else if (ev.which == 'W'.charCodeAt(0)) {
+    state.color[pos] = null;
+  } else if (ev.which == 'G'.charCodeAt(0)) {
+    state.color[pos] = 1;
+  } else if (ev.which == 'B'.charCodeAt(0)) {
+    state.color[pos] = 2;
+  } else if (ev.which == 'R'.charCodeAt(0)) {
+    state.color[pos] = 3;
+  } else if (ev.which == 'Y'.charCodeAt(0)) {
+    state.color[pos] = 4;
+  } else if (ev.which == 'O'.charCodeAt(0)) {
+    state.color[pos] = 5;
+  } else if (ev.which == 'P'.charCodeAt(0) || ev.which == 'V'.charCodeAt(0)) {
+    state.color[pos] = 6;
   } else {
     return;
   }
@@ -313,7 +328,7 @@ $('#hintbutton').mousedown(function(ev) {
   var state = currentstate();
   var hint = SudokuHint.hint(state.puzzle, state.answer, state.work);
   for (j = 0; j < 81; j++) {
-    state.color[j] = 0;
+    state.color[j] = null;
   }
   if (hint !== null) {
     if (hint.errors) {
@@ -366,6 +381,7 @@ $('#markbutton').click(function(ev) {
   var sofar = boardsofar(state);
   if (ev.ctrlKey) {
     for (var j = 0; j < 81; j++) {
+      state.color[j] = null;
       if (sofar[j] !== null) continue;
       state.work[j] = 0;
       state.mark[j] = 0;
@@ -415,7 +431,7 @@ $('#checkbutton').mousedown(function(ev) {
   hidepopups();
   var state = currentstate();
   for (var j = 0; j < 81; j++) {
-    state.color[j] = 0;
+    state.color[j] = null;
   }
   var sofar = boardsofar(state);
   var conflicts = SudokuHint.conflicts(sofar);
@@ -531,7 +547,9 @@ function redraw(s, pos) {
         $("#sn" + j).attr('class', 'sudoku-work').html(text);
       }
     }
-    var c = ['', 'lightgreen', 'lightblue', 'pink'][color[j]];
+    var cn = color[j];
+    if (cn === null) cn = 0;
+    var c = ['', 'lightgreen', 'lightblue', 'pink', '#ff9', '#fc8', '#dbf'][cn];
     $("#sc" + j).css('background-color', c);
   }
 }
@@ -571,26 +589,14 @@ function savestate(name, state) {
   localStorage[name] = JSON.stringify(state);
 }
 
+// rlebits
+// bit offcount oncount offcount oncount
 function decodeboardstate(data) {
   var puzzle = decodepuzzle81('puzzle' in data ? data.puzzle : '');
   var answer = decodepuzzle81('answer' in data ? data.answer : '');
-  var bits = base64toarray('marks' in data ? data.marks : '');
-  var work = [];
-  var mark = [];
-  var color = [];
-  var w, c;
-  for (var j = 0; j < 81; j++) {
-    if (j < bits.length) {
-      w = bits[j] & 511;
-      m = (bits[j] >> 9) & 511;
-    } else {
-      w = 0;
-      m = 0;
-    }
-    work.push(w);
-    mark.push(m);
-    color.push(0);
-  }
+  var work = zdecodebits('work' in data ? data.work : '');
+  var mark = zdecodebits('mark' in data ? data.mark : '');
+  var color = decodepuzzle81('color' in data ? data.color : '');
   var result = {
     puzzle: puzzle,
     answer: answer,
@@ -606,17 +612,13 @@ function decodeboardstate(data) {
 }
 
 function encodeboardstate(state) {
-  var bits = state.work ? state.work.slice() : [];
-  if ('mark' in state) {
-    for (var j = 0; j < state.mark.length; j++) {
-      bits[j] |= ((state.mark[j] & 511) << 9);
-    }
-  }
   var result = {
-    puzzle: encodepuzzle81(state.puzzle),
-    answer: encodepuzzle81(state.answer),
-    marks: arraytobase64(bits)
-  };
+    puzzle: encodepuzzle81(state.puzzle)
+  }
+  if ('answer' in state) { result.answer = encodepuzzle81(state.answer); }
+  if ('work' in state) { result.work = zencodebits(state.work); }
+  if ('mark' in state) { result.mark = zencodebits(state.mark); }
+  if ('color' in state) { result.color = encodepuzzle81(state.color); }
   if ('seed' in state) { result.seed = state.seed; }
   if ('gentime' in state) { result.gentime = state.gentime; }
   if ('savename' in state) { result.savename = state.savename; }
@@ -682,15 +684,13 @@ function decodepuzzle81(str) {
 }
 
 function shorttobase64(int18) {
-  return base64chars[(int18 >> 12) & 63] +
-         base64chars[(int18 >> 6) & 63] +
+  return base64chars[(int18 >> 6) & 63] +
          base64chars[int18 & 63];
 }
 
 function base64toshort(base64, index) {
-  return (base64chars.indexOf(base64.charAt(index)) << 12) +
-         (base64chars.indexOf(base64.charAt(index + 1)) << 6) +
-          base64chars.indexOf(base64.charAt(index + 2));
+  return (base64chars.indexOf(base64.charAt(index)) << 6) +
+          base64chars.indexOf(base64.charAt(index + 1));
 }
 
 function arraytobase64(numbers) {
@@ -703,8 +703,48 @@ function arraytobase64(numbers) {
 
 function base64toarray(base64) {
   var result = [];
-  for (var j = 0; j + 2 < base64.length; j += 3) {
+  for (var j = 0; j + 1 < base64.length; j += 2) {
     result.push(base64toshort(base64, j));
+  }
+  return result;
+}
+
+function zencodebits(numbers) {
+  result = [];
+  for (var j = 0; j < numbers.length; j++) {
+    if (numbers[j] == 0) {
+      var zeroes = 1;
+      while (numbers[j + zeroes] == 0 && j + zeroes < numbers.length) {
+        zeroes += 1;
+      }
+      if (zeroes > 1) {
+        j += zeroes;
+        if (j < numbers.length) { result.push(512 | zeroes); }
+        j -= 1;
+        continue;
+      }
+    }
+    result.push(numbers[j] & 511);
+  }
+  return arraytobase64(result);
+}
+
+function zdecodebits(base64) {
+  var result = [];
+  var znums = base64toarray(base64);
+  for (var j = 0; j < znums.length; j++) {
+    if (znums[j] & 512) {
+      var zeroes = znums[j] & 511;
+      while (zeroes > 0) {
+        result.push(0);
+        zeroes -= 1;
+      }
+    } else {
+      result.push(znums[j])
+    }
+  }
+  while (result.length < 81) {
+    result.push(0);
   }
   return result;
 }
