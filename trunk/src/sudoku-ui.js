@@ -279,6 +279,7 @@ $('#newbutton').click(function(ev) {
             work: zdecodebits(''), mark: zdecodebits(''),
             color: Sudoku.emptyboard(),
             seed: 0, savename: '', gentime: (new Date).getTime()});
+    $('#grade').html('&nbsp;');
     $.getJSON('http://davidbau.com/sudoku/min.json?callback=?', function(p) {
       var puzzle = decodepuzzle81(p);
       commitstate({puzzle: puzzle, answer: [], work: [], mark: [],
