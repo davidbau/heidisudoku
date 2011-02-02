@@ -1006,8 +1006,8 @@ function hintgrade(puzzle) {
   var unsolved = 0;
   var level = 0;
   for (var j = 0; j < 81; j++) {
-    work.push(511);
-    if (puzzle[j] === null) { unsolved += 1; }
+    if (puzzle[j] === null) { work.push(511); unsolved += 1; }
+    else work.push(0);
   }
   var steps = 0;
   while (unsolved) {
@@ -1017,14 +1017,16 @@ function hintgrade(puzzle) {
       break;
     }
     var difficulty = (h.level - 1) * 4 + 1;
+    /*
     console.log("Level", h.level, "options", h.hints.length,
                "eg", JSON.stringify(h.hints[0]));
+    */
     if (h.hints.length <= 1) { difficulty += 2; }
     difficulty *= ((unsolved + 12)/ 48);
     steps += difficulty;
     for (var k = 0; k < h.hints.length; k++) {
       var hint = h.hints[k];
-      var oldwork = work.slice();
+      // var oldwork = work.slice();
       var modified = false;
       for (var j = 0; j < hint.reduced.length; j++) {
         var pos = hint.reduced[j];
@@ -1053,8 +1055,111 @@ function hintgrade(puzzle) {
       else { unsolved += 1; }
     }
   }
-  console.log(steps);
+  // console.log(steps);
   return steps;
+}
+
+function constraints(puzzle) {
+  var answer = emptyboard();
+  var level = emptyboard();
+  var maxlevel = 0;
+  var work = [];
+  var unsolved = 0;
+  for (var j = 0; j < 81; j++) {
+    if (puzzle[j] === null) { work.push(511); unsolved += 1; }
+    else work.push(0);
+  }
+  while (unsolved) {
+    var h = rawhints(puzzle, answer, work, true);
+    var modified = false;
+    if (h.hints.length > 0) {
+      if (h.level > maxlevel) { maxlevel = h.level; }
+      for (var k = 0; k < h.hints.length; k++) {
+        var hint = h.hints[k];
+        for (var j = 0; j < hint.reduced.length; j++) {
+          var pos = hint.reduced[j];
+          if (work[pos] & hint.exclude) {
+            work[pos] = (work[pos] & ~hint.exclude);
+            modified = true;
+          }
+        }
+      }
+      unsolved = 0;
+      for (var j = 0; j < 81; j++) {
+        if (answer[j] !== null || puzzle[j] !== null) continue;
+        var nums = listbits(work[j]);
+        if (nums.length == 1) {
+          answer[j] = nums[0];
+          level[j] = maxlevel;
+          work[j] = 0;
+        }
+        else { unsolved += 1; }
+      }
+    }
+    if (!modified && unsolved) { break; }
+    if (maxlevel < 2) maxlevel = 2;
+  }
+  var deduced = boardsofar(puzzle, answer);
+  if (Sudoku.uniquesolution(deduced)) {
+    // Remaining squares are marked as 'require guessing'
+    var solution = Sudoku.solution(deduced);
+    for (var j = 0; j < 81; j++) {
+      if (puzzle[j] === null && answer[j] === null) {
+        answer[j] = solution[j];
+        level[j] = 7;
+      }
+    }
+    return { answer: answer, level: level };
+  }
+  // Determine which squares are unconstrained
+  var probes = [];
+  var unconstrained = emptyboard();
+  for (var j = 0; j < 5; j++) {
+    probes.push(Sudoku.solution(deduced));
+  }
+  for (var pos = 0; pos < 81; pos++) {
+    for (var j = 1; j < 5; j++) {
+      if (probes[j][pos] != probes[j - 1][pos]) {
+        unconstrained[pos] = 1;
+      }
+    }
+  }
+  var unknown = work.slice();
+  for (var pos = 0; pos < 81; pos++) {
+    if (deduced[pos] !== null || unconstrained[pos]) {
+      unknown[pos] = 0;
+      continue;
+    }
+    unknown[pos] &= ~(1 << probes[0][pos]);
+    var nums = listbits(unknown[pos]);
+    for (var j = 0; j < nums.length; j++) {
+      var guessed = deduced.slice();
+      guessed[pos] = nums[j];
+      var solution = Sudoku.solution(guessed);
+      if (solution !== null) {
+        for (var pos2 = 0; pos2 < 81; pos2 += 1) {
+          if (solution[pos2] != probes[probes.length - 1][pos2]) {
+            unknown[pos2] = 0;
+            unconstrained[pos2] = 1;
+          }
+        }
+        probes.push(solution);
+        break;
+      } else {
+        unknown[pos] &= ~(1 << nums[j]);
+      }
+    }
+    if (unconstrained[pos] === null) {
+      deduced[pos] = probes[0][pos];
+    }
+  }
+  for (var j = 0; j < 81; j++) {
+    if (puzzle[j] === null && answer[j] === null) {
+      answer[j] = deduced[j];
+      level[j] = unconstrained[j] ? null : 7;
+    }
+  }
+  return { answer: answer, level: level };
 }
 
 
@@ -1065,6 +1170,7 @@ lib.unzeroedwork = unzeroedwork;
 lib.pencilmarks = pencilmarks;
 lib.hint = hint;
 lib.hintgrade = hintgrade;
+lib.constraints = constraints;
 
 })(SudokuHint);
 
