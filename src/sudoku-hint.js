@@ -834,7 +834,7 @@ function ywing(board, unz, bits, maxsize, maxaxis) {
         for (var y = 0; y < 9; y++) {
           var forcedpos = posfor(x, y, axis);
           if (pairs[forcedpos] === null || !(pairs[forcedpos] & bit) ||
-              searchstate[forcedpos] == 4) continue;
+              pos == forcedpos || searchstate[forcedpos] == 4) continue;
           var forcedbit = pairs[forcedpos] ^ bit;
           var forcednum = listbits(forcedbit)[0];
           // found a goal!
@@ -842,6 +842,9 @@ function ywing(board, unz, bits, maxsize, maxaxis) {
             var path = [forcedpos];
             for (var k = index; k !== null; k = tree[k].parent) {
               path.push(tree[k].pos);
+            }
+            if (path[0] > path[path.length - 1]) {
+              path.reverse();
             }
             paths.push({
               exclude: forcedbit,
@@ -866,11 +869,8 @@ function ywing(board, unz, bits, maxsize, maxaxis) {
   // and build 'reduced' arrays
   var result = [];
   var done = {};
-  for (var j = 0; j < paths.length; paths++) {
+  for (var j = 0; j < paths.length; j++) {
     if (paths[j].size > maxsize) continue;
-    if (paths[j].support[0] > paths[j].support[paths[j].support.length - 1]) {
-      paths[j].support.reverse();
-    }
     var startpos = paths[j].support[0];
     var endpos = paths[j].support[paths[j].support.length - 1];
     if ((startpos + 81 * endpos) in done) continue;
