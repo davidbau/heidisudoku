@@ -50,6 +50,8 @@ if (!window.location.hash) {
 }
 
 var graded = null;
+var entrymode = false;
+
 gradepuzzle();
 redraw();
 
@@ -106,6 +108,31 @@ $(document).keydown(function(ev) {
   }
   var state = currentstate();
   var num = ev.which - '1'.charCodeAt(0);
+  if (ev.which == 32 || ev.which == 46 || ev.which == 189) {
+    num = -1;
+  }
+
+  if (entrymode && num >= -1 && num < 9) {
+    if (num == -1) { num = null; }
+    if (state.puzzle[pos] !== num) {
+      state.puzzle[pos] = null;
+      if (num !== null) {
+        if (!(SudokuHint.simplehint(state.puzzle)[pos] & (1 << num))) return;
+        if (!Sudoku.solvable(state.puzzle)) return;
+        state.puzzle[pos] = num;
+      }
+      state.answer[pos] = null;
+      state.work[pos] = 0;
+      state.mark[pos] = 0;
+      state['seed'] = 0;
+      state['savename'] = '';
+      state['gentime'] = (new Date).getTime();
+      commitstate(state);
+      gradepuzzle();
+    }
+    return;
+  }
+
   if (num >= 0 && num < 9 && state.puzzle[pos] !== null) return;
 
   var doubletap = false;
@@ -150,24 +177,25 @@ $(document).keydown(function(ev) {
         state.work[pos] = bits;
       }
     }
-  } else if (num == -1 || ev.which == 32 || ev.which == 46 || ev.which == 189) {
+  }
+  else if (num == -1) {
     state.work[pos] = 0;
     state.mark[pos] = 0;
     state.answer[pos] = null;
     state.color[pos] = null;
   } else if (ev.which == 'W'.charCodeAt(0)) {
     state.color[pos] = null;
-  } else if (ev.which == 'G'.charCodeAt(0)) {
+  } else if (ev.which == 'P'.charCodeAt(0) || ev.which == 'V'.charCodeAt(0)) {
     state.color[pos] = 1;
   } else if (ev.which == 'B'.charCodeAt(0)) {
     state.color[pos] = 2;
-  } else if (ev.which == 'R'.charCodeAt(0)) {
+  } else if (ev.which == 'G'.charCodeAt(0)) {
     state.color[pos] = 3;
   } else if (ev.which == 'Y'.charCodeAt(0)) {
     state.color[pos] = 4;
   } else if (ev.which == 'O'.charCodeAt(0)) {
     state.color[pos] = 5;
-  } else if (ev.which == 'P'.charCodeAt(0) || ev.which == 'V'.charCodeAt(0)) {
+  } else if (ev.which == 'R'.charCodeAt(0)) {
     state.color[pos] = 6;
   } else {
     return;
@@ -203,7 +231,7 @@ $('td.sudoku-cell').mousedown(function(ev) {
   var pos = parseInt($(this).attr('id').substr(2));
   justclicked = pos;
   var state = currentstate();
-  if (ev.ctrlKey) {
+  if (ev.ctrlKey != entrymode) {
     ev.preventDefault();
     var bits = 0;
     var hint = Sudoku.puzzlechoices(state.puzzle, pos);
@@ -252,6 +280,7 @@ function gradepuzzle(puzzle, steps) {
   var state = currentstate();
   if ('savename' in state && state.savename.length > 0) {
     $('#grade').html(htmlescape(state.savename));
+    entrymode = false;
     return;
   }
   if (!puzzle) puzzle = state.puzzle;
@@ -261,16 +290,19 @@ function gradepuzzle(puzzle, steps) {
 
   if (current == '') {
     $('#grade').html('&nbsp;');
+    entrymode = true;
     return;
   }
   if (!Sudoku.uniquesolution(puzzle)) {
     $('#grade').html(lib.levels[0]);
+    entrymode = true;
     return;
   }
   if (!steps) steps = SudokuHint.hintgrade(puzzle);
   var level = Math.max(1, Math.min(lib.levels.length - 1,
               Math.floor(steps / 5)));
   $('#grade').html(lib.levels[level]);
+  entrymode = false;
   return;
 }
 
@@ -338,7 +370,7 @@ $('#hintbutton').mousedown(function(ev) {
   if (hint !== null) {
     if (hint.errors) {
       for (var j = 0; j < hint.errors.length; j++) {
-        state.color[hint.errors[j]] = 3;
+        state.color[hint.errors[j]] = 6;
       }
     } else {
       for (var j = 0; j < hint.support.length; j++) {
@@ -346,7 +378,7 @@ $('#hintbutton').mousedown(function(ev) {
       }
       if (hint.support.length == 0 || ev.ctrlKey) {
         for (var j = 0; j < hint.reduced.length; j++) {
-          state.color[hint.reduced[j]] = 1;
+          state.color[hint.reduced[j]] = 3;
         }
         if (ev.ctrlKey) {
           ev.preventDefault();
@@ -401,20 +433,13 @@ $('#markbutton').click(function(ev) {
   commitstate(state);
 });
 
-$('#solvebutton').click(function() {
+$('#solvebutton').click(function(ev) {
   hidepopups();
   var state = currentstate();
-  var solution = Sudoku.solution(state.puzzle);
-  if (solution === null) {
-    alert("No solution");
-    return;
-  }
-  for (var j = 0; j < 81; j++) {
-    if (state.puzzle[j] === null) {
-      state.answer[j] = solution[j];
-      state.work[j] = 0;
-      state.mark[j] = 0;
-    }
+  var constraints = SudokuHint.constraints(state.puzzle);
+  state.answer = constraints.answer;
+  if (ev.ctrlKey) {
+    state.color = constraints.level;
   }
   commitstate(state);
 });
@@ -422,6 +447,13 @@ $('#solvebutton').click(function() {
 $('#filebutton').click(function(ev) {
   hidepopups();
   var state = currentstate();
+  if (ev.ctrlKey) {
+    var constraints = SudokuHint.constraints(state.puzzle);
+    state.answer = constraints.answer;
+    state.color = constraints.level;
+    commitstate(state);
+    return;
+  }
   if (!('savename' in state) || state.savename.length == 0) {
     state.savename = $.trim($('#grade').text());
   }
@@ -554,7 +586,8 @@ function redraw(s, pos) {
     }
     var cn = color[j];
     if (cn === null) cn = 0;
-    var c = ['', 'lightgreen', 'lightblue', 'pink', '#ff9', '#fc8', '#dbf'][cn];
+    var c = ['', '#dbf', 'lightblue', 'lightgreen', '#ff9', '#fc8', 'pink',
+             'gainsboro', 'gray'][cn];
     $("#sc" + j).css('background-color', c);
   }
 }
