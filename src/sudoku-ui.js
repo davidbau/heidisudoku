@@ -118,8 +118,8 @@ $(document).keydown(function(ev) {
       state.puzzle[pos] = null;
       if (num !== null) {
         if (!(SudokuHint.simplehint(state.puzzle)[pos] & (1 << num))) return;
-        if (!Sudoku.solvable(state.puzzle)) return;
         state.puzzle[pos] = num;
+        if (!Sudoku.solvable(state.puzzle)) return;
       }
       state.answer[pos] = null;
       state.work[pos] = 0;
