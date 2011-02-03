@@ -226,13 +226,18 @@ $('td.sudoku-cell').mouseleave(function(ev) {
   ev.stopPropagation();
 });
 
+$(window).bind('contextmenu', function(ev) {
+  ev.preventDefault();
+  ev.stopPropagation();
+});
+
 $('td.sudoku-cell').mousedown(function(ev) {
+  ev.preventDefault();
   hidepopups();
   var pos = parseInt($(this).attr('id').substr(2));
   justclicked = pos;
   var state = currentstate();
-  if (ev.ctrlKey != entrymode) {
-    ev.preventDefault();
+  if (isalt(ev)) {
     var bits = 0;
     var hint = Sudoku.puzzlechoices(state.puzzle, pos);
     workmenu.show(this, $('div.puzzle-menu'), state.puzzle[pos], 0, 0,
@@ -308,7 +313,7 @@ function gradepuzzle(puzzle, steps) {
 
 $('#newbutton').click(function(ev) {
   hidepopups();
-  if (ev.ctrlKey) {
+  if (isalt(ev)) {
     redraw({puzzle: Sudoku.emptyboard(), answer: Sudoku.emptyboard(),
             work: zdecodebits(''), mark: zdecodebits(''),
             color: Sudoku.emptyboard(),
@@ -331,7 +336,7 @@ $('#clearbutton').click(function(ev) {
   hidepopups();
   var state = currentstate();
   var cleared = {puzzle: state.puzzle, answer:[], work:[], mark:[], color:[]};
-  if (ev.ctrlKey) {
+  if (isalt(ev)) {
     cleared = {puzzle: [], answer: [], work: [], mark: [], color: [],
                seed: 0, savename: '', gentime: (new Date).getTime()};
     gradepuzzle();
@@ -376,11 +381,11 @@ $('#hintbutton').mousedown(function(ev) {
       for (var j = 0; j < hint.support.length; j++) {
         state.color[hint.support[j]] = 2;
       }
-      if (hint.support.length == 0 || ev.ctrlKey) {
+      if (hint.support.length == 0 || isalt(ev)) {
         for (var j = 0; j < hint.reduced.length; j++) {
           state.color[hint.reduced[j]] = 3;
         }
-        if (ev.ctrlKey) {
+        if (isalt(ev)) {
           ev.preventDefault();
           if (ev.shiftKey) {
             var hintlog = JSON.parse(JSON.stringify(hint));
@@ -416,7 +421,7 @@ $('#markbutton').click(function(ev) {
   hidepopups();
   var state = currentstate();
   var sofar = boardsofar(state);
-  if (ev.ctrlKey) {
+  if (isalt(ev)) {
     for (var j = 0; j < 81; j++) {
       state.color[j] = null;
       if (sofar[j] !== null) continue;
@@ -438,7 +443,8 @@ $('#solvebutton').click(function(ev) {
   var state = currentstate();
   var constraints = SudokuHint.constraints(state.puzzle);
   state.answer = constraints.answer;
-  if (ev.ctrlKey) {
+  if (isalt(ev)) {
+    ev.preventDefault();
     state.color = constraints.level;
   }
   commitstate(state);
@@ -447,7 +453,8 @@ $('#solvebutton').click(function(ev) {
 $('#filebutton').click(function(ev) {
   hidepopups();
   var state = currentstate();
-  if (ev.ctrlKey) {
+  if (isalt(ev)) {
+    ev.preventDefault();
     var constraints = SudokuHint.constraints(state.puzzle);
     state.answer = constraints.answer;
     state.color = constraints.level;
@@ -472,7 +479,7 @@ $('#checkbutton').mousedown(function(ev) {
   }
   var sofar = boardsofar(state);
   var conflicts = SudokuHint.conflicts(sofar);
-  if (conflicts.length == 0 && ev.ctrlKey) {
+  if (conflicts.length == 0 && isalt(ev)) {
     ev.preventDefault();
     var unz = SudokuHint.unzeroedwork(state.puzzle, state.answer, state.work);
     conflicts = SudokuHint.mistakes(state.puzzle, state.answer, unz);
@@ -1225,6 +1232,10 @@ function menuhtml() {
   }
   result.push('</table></div>');
   return result.join('');
+}
+
+function isalt(ev) {
+  return (ev.which == 3) || (ev.ctrlKey);
 }
 
 function htmlescape(s) {
