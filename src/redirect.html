@@ -1,5 +1,26 @@
-// Redirect script
+<title>Loading Heidi's Sudoku</title>
+<style>
+div.box { max-width: 360pt; text-align:left; }
+h1 { font: 20pt "arial black", "arial bold", "sans-serif" }
+h2 { font: 14pt "arial black", "arial bold", "sans-serif" }
+p { font: 10pt arial }
+b { background-color: gainsboro; padding: 0 5px; }
+</style>
+<body>
 
-location.href =
-  'chrome-extension://ccbhekjfmokgloklnjnidfhlaofegeno/app.html' +
-  location.hash;
+<center>
+<div class=box>
+<center><h1 style='font: 20pt "arial black", "arial bold", "sans-serif"'
+>Loading Heidi's Sudoku</h1>
+
+<p><a href="chrome-extension://ccbhekjfmokgloklnjnidfhlaofegeno/app.html" onclick=decorate(this)>Load the game in Heidi's Sudoku Chrome App</a>
+
+<p><a href="index.html" onclick=decorate(this)>Load the game on davidbau.com</a>
+
+<p><a href="https://chrome.google.com/webstore/detail/ccbhekjfmokgloklnjnidfhlaofegeno">Install Heidi's Sudoku Chrome App Here</a>
+
+<script>
+function decorate(anchor) {
+  anchor.href = anchor.href.replace('#.*$', '') + location.hash
+}
+</script>
