@@ -1170,7 +1170,8 @@ var filebox = (function() {
 
   $('#shortenurl').click(function(ev) {
     ev.preventDefault();
-    googlurl('http://davidbau.com/sudoku/' + location.hash, function(s) {
+    googlurl('http://davidbau.com/sudoku/redirect.html' +
+             location.hash, function(s) {
       if (!s) return;
       $('#shortenurl').css('display', 'none');
       $('#shortenedurl').val(s).css('display', 'block').focus().select();
