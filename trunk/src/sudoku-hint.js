@@ -326,7 +326,6 @@ function nakedsets(board, unz, bits, size) {
       }
     }
   }
-  // result.sort(hintsort);
   return result;
 }
 
@@ -392,7 +391,6 @@ function hiddensets(board, unz, bits, size) {
       }
     }
   }
-  // result.sort(hintsort);
   return result;
 }
 
@@ -413,7 +411,6 @@ function singlenumdirect(board, fb, unz) {
       support: whyexclude(board, [pos], b & ~forced)
     });
   }
-  // result.sort(hintsort);
   return result;
 }
 
@@ -450,7 +447,6 @@ function singleposdirect(board, fb) {
       }
     }
   }
-  // result.sort(hintsort);
   return result;
 }
 
@@ -499,7 +495,6 @@ function singlepos(board, fb, unz) {
       }
     }
   }
-  // result.sort(hintsort);
   return result;
 }
 
@@ -531,7 +526,6 @@ function singlenum(board, bits) {
       support: [pos]
     });
   }
-  // result.sort(hintsort);
   return result;
 }
 
@@ -594,7 +588,6 @@ function claiming(board, unz, bits) {
       }
     }
   }
-  // result.sort(hintsort);
   return result;
 }
 
@@ -640,7 +633,6 @@ function pointing(board, unz, bits) {
       }
     }
   }
-  // result.sort(hintsort);
   return result;
 }
 
@@ -687,7 +679,6 @@ function doublepointing(board, unz, bits) {
       }
     }
   }
-  // result.sort(hintsort);
   return result;
 }
 
@@ -758,7 +749,6 @@ function xwing(board, unz, bits, size) {
       }
     }
   }
-  // result.sort(hintsort);
   return result;
 }
 
@@ -915,7 +905,6 @@ function coloring(board, unz, bits, maxsize, maxaxis) {
     paths[j].reduced = reduced;
     result.push(paths[j]);
   }
-  // result.sort(hintsort);
   return result;
 }
 
@@ -1061,11 +1050,14 @@ function ywing(board, unz, bits, maxsize, maxaxis) {
     paths[j].reduced = reduced;
     result.push(paths[j]);
   }
-  // result.sort(hintsort);
   return result;
 }
 
 function hintsort(x, y) {
+  // favor more squares fully solved
+  if (x.solved != y.solved) {
+    return y.solved - x.solved;
+  }
   // favor more bits elminiated
   var xb = listbits(x.exclude);
   var yb = listbits(y.exclude);
@@ -1088,9 +1080,24 @@ function hintsort(x, y) {
   return 0;
 }
 
+function countsolved(hint, work) {
+  var solvedcount = 0;
+  for (var j = 0; j < hint.reduced.length; j++) {
+    var pos = hint.reduced[j];
+    var bits = work[pos] & ~hint.exclude;
+    if (listbits(bits).length == 1) {
+      solvedcount += 1;
+    }
+  }
+  return solvedcount;
+}
+
 function hint(puzzle, answer, work) {
   var result = rawhints(puzzle, answer, work, false);
   if (!result.hints.length) return null;
+  for (var j = 0; j < result.hints.length; j++) {
+    result.hints[j].solved = countsolved(result.hints[j], work);
+  }
   result.hints.sort(hintsort);
   result.hints[0].level = result.level;
   return result.hints[0];
