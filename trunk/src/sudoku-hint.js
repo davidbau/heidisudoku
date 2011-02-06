@@ -762,6 +762,163 @@ function xwing(board, unz, bits, size) {
   return result;
 }
 
+function coloring(board, unz, bits, maxsize, maxaxis) {
+  var paths = [];
+  for (var num = 0; num < 9; num++) {
+    // Mark any row, col, or block with only two possible positions
+    var startbit = (1 << num);
+    var twopos = emptyboard();
+    for (var axis = 0; axis < 3; axis++) {
+      for (var x = 0; x < 9; x++) {
+        var poslist = [], countu = 0;
+        for (var y = 0; y < 9; y++) {
+          var pos = posfor(x, y, axis);
+          if (unz[pos] & startbit) { countu += 1; }
+          if (bits[pos] & startbit) { poslist.push(pos); }
+        }
+        if (poslist.length == 2 && countu == 2) {
+          if (axis > 2 || axisfor(poslist[0], 3) != axisfor(poslist[1], 3)) {
+            for (var j = 0; j < 2; j++) {
+              if (twopos[poslist[j]] === null) { twopos[poslist[j]] = []; }
+              twopos[poslist[j]].push(poslist[1 - j]);
+            }
+          }
+        }
+      }
+    }
+    for (var startpos = 0; startpos < 81; startpos++) {
+      if (twopos[startpos] === null) continue;
+      var goalstate = emptyboard();
+      goalstate[startpos] = 1; // 'start'
+
+      // scan bits to find constrained numbers in seen by startpos
+      var seen = 0;
+      for (var axis = 0; axis < maxaxis; axis++) {
+        var x = axisfor(startpos, axis);
+        for (var y = 0; y < 9; y++) {
+          var pos = posfor(x, y, axis);
+          if (pos != startpos && (bits[pos] & startbit) &&
+              goalstate[pos] === null) {
+            goalstate[pos] = 2; // 'seen'
+            seen += 1;
+          }
+        }
+      }
+      if (seen == 0) continue;
+
+      // scan twopos to find other twopos that see 'seen' numbers
+      var goalcount = 0;
+      for (var axis = 0; axis < 3; axis++) {
+        for (var x = 0; x < 9; x++) {
+          var mark = false;
+          for (var y = 0; y < 9; y++) {
+            var pos = posfor(x, y, axis);
+            if (goalstate[pos] == 2) { mark = true; break; }
+          }
+          if (!mark) continue;
+          for (var y = 0; y < 9; y++) {
+            var pos = posfor(x, y, axis);
+            if (twopos[pos] !== null && goalstate[pos] === null) {
+              goalstate[pos] = 3; // 'goal'
+              goalcount += 1;
+            }
+          }
+        }
+      }
+      if (goalcount == 0) continue;
+
+      // do a breadthfirst search, enforcing maxsize, from 'start' to 'goal'.
+      var searchstate = emptyboard();
+      searchstate[startpos] = 1;
+      var tree = [{color: false, pos: startpos, depth: 1, parent: null}];
+      for (var index = 0; index < tree.length; index++) {
+        var size = tree[index].depth;
+        var searchpos = tree[index].pos
+        if (size >= maxsize) break;
+        if (tree[index].color == false) {
+          var forcedlist = twopos[searchpos];
+          for (var j = 0; j < forcedlist.length; j++) {
+            var forced = forcedlist[j];
+            if (goalstate[forced] == 3) {
+              // found a goal
+              var path = [forced];
+              for (var k = index; k !== null; k = tree[k].parent) {
+                path.push(tree[k].pos);
+              }
+              if (path[0] > path[path.length - 1]) {
+                path.reverse();
+              }
+              paths.push({
+                exclude: startbit,
+                support: path,
+                hint: 'coloring',
+                size: path.length,
+              }); // reduced not yet set
+              maxsize = path.length;
+            } else if (size + 1 < maxsize && searchstate[forced] === null) {
+              searchstate[forced] = 1; // 'colored'
+              tree.push({
+                  color: true, pos: forced, depth: size + 1, parent: index});
+            }
+          }
+        } else {
+          for (var axis = 0; axis < maxaxis; axis++) {
+            var x = axisfor(searchpos, axis);
+            for (var y = 0; y < 9; y++) {
+              var forced = posfor(x, y, axis);
+              if (forced == searchpos) continue;
+              if (twopos[forced] !== null && searchstate[forced] === null) {
+                searchstate[forced] = 1;
+                tree.push({
+                    color: false, pos: forced, depth: size + 1, parent: index});
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  // Go through found path, eliminating paths longer than maxsize,
+  // and build 'reduced' arrays
+  var result = [];
+  var done = {};
+  for (var j = 0; j < paths.length; j++) {
+    if (paths[j].size > maxsize) continue;
+    var startpos = paths[j].support[0];
+    var endpos = paths[j].support[paths[j].support.length - 1];
+    if ((startpos + 81 * endpos) in done) continue;
+    done[startpos + 81 * endpos] = 1;
+    var bit = paths[j].exclude;
+    var endposaxis = [];
+    for (var axis = 0; axis < 3; axis++) {
+      endposaxis.push(axisfor(endpos, axis));
+    }
+    var marked = emptyboard();
+    marked[startpos] = marked[endpos] = 1;
+    var reduced = [];
+    for (var axis = 0; axis < 3; axis++) {
+      var x = axisfor(startpos, axis);
+      for (var y = 0; y < 9; y++) {
+        var pos = posfor(x, y, axis);
+        if (marked[pos] !== null) continue;
+        if (bits[pos] & bit) {
+          for (var axis2 = 0; axis2 < 3; axis2++) {
+            if (axisfor(pos, axis2) == endposaxis[axis2]) {
+              marked[pos] = 1;
+              reduced.push(pos);
+            }
+          }
+        }
+      }
+    }
+    // TODO: verify that reduced is nonempty
+    paths[j].reduced = reduced;
+    result.push(paths[j]);
+  }
+  // result.sort(hintsort);
+  return result;
+}
+
 function ywing(board, unz, bits, maxsize, maxaxis) {
   var paths = [];
   // first build array of bits with only two-candidate cells
@@ -782,16 +939,16 @@ function ywing(board, unz, bits, maxsize, maxaxis) {
     var startnum = pairlist[j][1];
     var startbit = 1 << startnum;
     var seen = 0;
-    var searchstate = emptyboard();
-    searchstate[startpos] = 1; // 'start'
+    var goalstate = emptyboard();
+    goalstate[startpos] = 1; // 'start'
     // scan bits to find constrained numbers in seen by pos, num
-    for (var axis = 0; axis < maxaxis; axis++) {
+    for (var axis = 0; axis < 3; axis++) {
       var x = axisfor(startpos, axis);
       for (var y = 0; y < 9; y++) {
         var pos = posfor(x, y, axis);
         if (pos != startpos && (bits[pos] & startbit) &&
-            searchstate[pos] === null) {
-          searchstate[pos] = 2; // 'seen'
+            goalstate[pos] === null) {
+          goalstate[pos] = 2; // 'seen'
           seen += 1;
         }
       }
@@ -799,19 +956,19 @@ function ywing(board, unz, bits, maxsize, maxaxis) {
     if (seen == 0) continue;
     // scan pairs to find other pairs that see 'seen' numbers
     var goalcount = 0;
-    for (var axis = 0; axis < maxaxis; axis++) {
+    for (var axis = 0; axis < 3; axis++) {
       for (var x = 0; x < 9; x++) {
         var mark = false;
         for (var y = 0; y < 9; y++) {
           var pos = posfor(x, y, axis);
-          if (searchstate[pos] == 2) { mark = true; break; }
+          if (goalstate[pos] == 2) { mark = true; break; }
         }
         if (!mark) continue;
         for (var y = 0; y < 9; y++) {
           var pos = posfor(x, y, axis);
           if (pairs[pos] !== null && (pairs[pos] & startbit) &&
-              searchstate[pos] === null) {
-            searchstate[pos] = 3; // 'goal'
+              goalstate[pos] === null) {
+            goalstate[pos] = 3; // 'goal'
             goalcount += 1;
           }
         }
@@ -820,7 +977,9 @@ function ywing(board, unz, bits, maxsize, maxaxis) {
     if (goalcount == 0) continue;
     // do a breadthfirst search, enforcing maxsize, from 'start' to 'goal'.
     var supposenum = listbits(bits[startpos] ^ startbit)[0];
-    tree = [{num: supposenum, pos: startpos, depth: 1, parent: null}];
+    var searchstate = emptyboard();
+    searchstate[pos] = 1;
+    var tree = [{num: supposenum, pos: startpos, depth: 1, parent: null}];
     for (var index = 0; index < tree.length; index++) {
       nextchoice = tree[index]
       var num = nextchoice.num;
@@ -834,11 +993,11 @@ function ywing(board, unz, bits, maxsize, maxaxis) {
         for (var y = 0; y < 9; y++) {
           var forcedpos = posfor(x, y, axis);
           if (pairs[forcedpos] === null || !(pairs[forcedpos] & bit) ||
-              pos == forcedpos || searchstate[forcedpos] == 4) continue;
+              pos == forcedpos || searchstate[forcedpos] !== null) continue;
           var forcedbit = pairs[forcedpos] ^ bit;
           var forcednum = listbits(forcedbit)[0];
           // found a goal!
-          if (forcednum == startnum && searchstate[forcedpos] == 3) {
+          if (forcednum == startnum && goalstate[forcedpos] == 3) {
             var path = [forcedpos];
             for (var k = index; k !== null; k = tree[k].parent) {
               path.push(tree[k].pos);
@@ -877,19 +1036,19 @@ function ywing(board, unz, bits, maxsize, maxaxis) {
     done[startpos + 81 * endpos] = 1;
     var bit = paths[j].exclude;
     var endposaxis = [];
-    for (var axis = 0; axis < maxaxis; axis++) {
+    for (var axis = 0; axis < 3; axis++) {
       endposaxis.push(axisfor(endpos, axis));
     }
     var marked = emptyboard();
     marked[startpos] = marked[endpos] = 1;
     var reduced = [];
-    for (var axis = 0; axis < maxaxis; axis++) {
+    for (var axis = 0; axis < 3; axis++) {
       var x = axisfor(startpos, axis);
       for (var y = 0; y < 9; y++) {
         var pos = posfor(x, y, axis);
         if (marked[pos] !== null) continue;
         if (bits[pos] & bit) {
-          for (var axis2 = 0; axis2 < maxaxis; axis2++) {
+          for (var axis2 = 0; axis2 < 3; axis2++) {
             if (axisfor(pos, axis2) == endposaxis[axis2]) {
               marked[pos] = 1;
               reduced.push(pos);
@@ -976,11 +1135,13 @@ function rawhints(puzzle, answer, work, nomistakes) {
     result = result.concat(nakedsets(sofar, unz, work, 4));
     result = result.concat(hiddensets(sofar, unz, work, 3));
     result = result.concat(ywing(sofar, unz, work, 4, 3));
+    result = result.concat(coloring(sofar, unz, work, 3, 3));
     if (result.length) break;
     level = 6;
     result = result.concat(hiddensets(sofar, unz, work, 4));
     result = result.concat(xwing(sofar, unz, work, 4));
     result = result.concat(ywing(sofar, unz, work, 12, 3));
+    result = result.concat(coloring(sofar, unz, work, 7, 3));
     // result = result.concat(hiddensets(sofar, unz, work, 5));
     // result = result.concat(xwing(sofar, unz, work, 5));
     break;
@@ -1026,25 +1187,26 @@ function hintgrade(puzzle) {
     steps += difficulty;
     for (var k = 0; k < h.hints.length; k++) {
       var hint = h.hints[k];
-      // var oldwork = work.slice();
       var modified = false;
       for (var j = 0; j < hint.reduced.length; j++) {
         var pos = hint.reduced[j];
-        if (work[pos] & hint.exclude) { modified = true; }
-        work[pos] = (work[pos] & ~hint.exclude);
+        if (work[pos] & hint.exclude) {
+          modified = true;
+          work[pos] = (work[pos] & ~hint.exclude);
+        }
       }
       /*
       if ((!modified && k == 0) ||
           mistakes(puzzle, answer, work).length) {
         console.log('problem', JSON.stringify(hint));
-        SudokuUI.commitstate({
+        SudokuUI.debugstate({
           puzzle:puzzle,
           answer:answer,
-          work:oldwork
+          work:work
         });
         alert('problem');
         return 0;
-      } 
+      }
       */
     }
     unsolved = 0;

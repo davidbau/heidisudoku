@@ -442,10 +442,11 @@ $('#solvebutton').click(function(ev) {
   hidepopups();
   var state = currentstate();
   var constraints = SudokuHint.constraints(state.puzzle);
-  state.answer = constraints.answer;
   if (isalt(ev)) {
     ev.preventDefault();
     state.color = constraints.level;
+  } else {
+    state.answer = constraints.answer;
   }
   commitstate(state);
 });
@@ -456,7 +457,7 @@ $('#filebutton').click(function(ev) {
   if (isalt(ev)) {
     ev.preventDefault();
     var constraints = SudokuHint.constraints(state.puzzle);
-    state.answer = constraints.answer;
+    // state.answer = constraints.answer;
     state.color = constraints.level;
     commitstate(state);
     return;
@@ -593,8 +594,8 @@ function redraw(s, pos) {
     }
     var cn = color[j];
     if (cn === null) cn = 0;
-    var c = ['', '#dbf', 'lightblue', 'lightgreen', '#ff9', '#fc8', 'pink',
-             'gainsboro', 'gray'][cn];
+    var c = ['', '#ecf', '#bef', '#afb', '#ffa', '#fea', '#fdd',
+             '#ddd', '#888'][cn];
     $("#sc" + j).css('background-color', c);
   }
 }
@@ -626,6 +627,8 @@ function commitstate(state) {
   $.bbq.pushState(encodeboardstate(state));
   savestate('sudokustate', state);
 }
+
+lib.debugstate = commitstate;
 
 function savestate(name, state) {
   if (!('localStorage' in window) || !('JSON' in window)) {
@@ -1271,6 +1274,9 @@ function googlurl(url, cb) {
 
 lib.boardhtml = boardhtml;
 lib.menuhtml = menuhtml;
+lib.debugstate = function(s) {
+  setTimeout(function() { lib.debugstate(s); }, 10);
+};
 
 })(SudokuUI);
 
