@@ -594,7 +594,7 @@ function redraw(s, pos) {
     }
     var cn = color[j];
     if (cn === null) cn = 0;
-    var c = ['', '#ecf', '#bef', '#afb', '#ffa', '#fea', '#fdd',
+    var c = ['', '#ecf', '#bef', '#bfb', '#ffa', '#fea', '#fdd',
              '#ddd', '#888'][cn];
     $("#sc" + j).css('background-color', c);
   }
