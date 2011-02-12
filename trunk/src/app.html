@@ -1,7 +1,8 @@
 <title>Heidi's Sudoku</title>
 <link rel=stylesheet href=sudoku-ui.css>
 <body>
-<center><h1>Heidi's Sudoku</h1>
+<table style="width:100%;height:100%;"><tr><td align=center>
+<center style="display:table-cell;vertical-align:middle;">
 <script src=jquery-1.4.4.min.js></script>
 <script src=jquery-bbq-1.2.1.min.js></script>
 <script src=jsonlib.js></script>
@@ -17,11 +18,12 @@ document.write(SudokuUI.menuhtml());
 <input type=button value="File" id=filebutton
 ><input type=button value="Clear" id=clearbutton
 ><input type=button value="New Puzzle" id=newbutton
+><input type=button value="Color" id=colorbutton
 ><input type=button value="Marks" id=markbutton
 ><input type=button value="Hint" id=hintbutton
 ><input type=button value="Check" id=checkbutton
 ><input type=button value="Timer" id=timerbutton
-></center>
+>
 <div class=sudoku-popup id=victory>You Win!</div>
 <div class=sudoku-popup id=ok>ok so far</div>
 <div class=sudoku-popup id=nohint>no hint</div>
@@ -43,10 +45,10 @@ document.write(SudokuUI.menuhtml());
 ><input type=button value="Delete Selected" id=deleteselected
 ><input type=button value="Load Selected" id=loadselected
 ></div></div></div>
-<p align=center style="font: 10pt arial">
+<p align=center style="padding-top:20px;font: 10pt arial">
 <a href="about.html"
 onclick="this.href=this.href.replace(/#.*$/,'')+'#app.html'+location.hash"
->About this game</a>
+>About Heidi's Sudoku</a>
 </p>
 <script>
 SudokuUI.levels = [
@@ -92,3 +94,5 @@ SudokuUI.timeago = function timeago(ms) {
   return messages[j - 1].join(' ');
 }
 </script>
+</td></tr>
+</table>

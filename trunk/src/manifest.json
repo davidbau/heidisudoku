@@ -1,8 +1,8 @@
 {
   "name": "Heidi's Sudoku",
   "description":
-    "Sudoku is puzzling, fast, and fun with Heidi's helpful hint pad.",
-  "version": "0.0.0.19",
+    "Play sudoku and learn clever strategies with Heidi's helpful hint pad.",
+  "version": "0.0.0.20",
   "app": {
     "launch": {
       "local_path": "app.html"

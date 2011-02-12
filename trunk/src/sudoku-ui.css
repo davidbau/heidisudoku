@@ -4,11 +4,12 @@ body {
    font: 10pt Arial;
 }
 h1 {
-   font: 20pt "arial black", "arial bold", "sans-serif";
+   font: 24pt "arial black", "arial bold", "sans-serif";
 }
 .puzzlename {
    text-align:center;
-   font:16pt "arial black","arial bold","sans-serif";
+   font:20pt "arial black","arial bold","sans-serif";
+   padding-bottom: 10px;
 }
 /* Font loading for firefox */
 @font-face {
@@ -46,47 +47,48 @@ table.sudoku-work-table td {
         padding: 0;
         margin: 0;
         line-height: 0;
-        width: 12px; height: 12px;
+        width: 16px; height: 16px;
         text-align: center;
         overflow: hidden;
         vertical-align: top; }
 table.sudoku-work-table div {
         color: #22c;
-        font: 14px 'Covered By Your Grace', sans-serif;
-        width: 12px;
-        margin: -4px 0; }
+        font: 15px 'Covered By Your Grace', sans-serif;
+        width: 14px;
+        margin: -5px 0; }
 table.sudoku-work-table tr:nth-child(1) div {
-        margin: -6px 0; }
+        margin: -5px 0; }
 table.sudoku-work-table tr:nth-child(3) div {
-        margin: -2px 0; }
+        margin: -5px 0; }
 td.sudoku-cell {
-        width: 38px; height: 38px;
+        width: 46px; height: 46px;
         text-align: center; vertical-align: middle;
         line-height: 0;
         border: 1px solid black; }
 div.sudoku-border {
-        width: 36px; height: 36px;
+        width: 44px; height: 44px;
+        text-align: center; vertical-align: middle;
         border: 1px solid transparent; overflow: hidden; }
 div.sudoku-work {
-        width: 34px; height: 34px;
+        width: 44px; height: 44px;
         text-align: center;
         cursor: hand;
         padding: 0; margin: 0; border: 0; }
 div.sudoku-answer {
-        width: 54px; height: 54px;
+        width: 62px; height: 62px;
         text-align: center;
         cursor: hand;
         padding: 0; margin: -10px; border: 0;
         color: #22c;
-        font: 40px 'Covered By Your Grace', sans-serif;}
+        font: 48px 'Covered By Your Grace', sans-serif;}
 div.sudoku-given {
-        width: 40px; height: 40px;
+        width: 48px; height: 48px;
         text-align: center; vertical-align: middle;
         cursor: default;
         padding: 0; margin: -3px;
         line-height: 0;
         font-weight: bold;
-        font: 27px 'arial black', sans-serif;}
+        font: 33px 'arial black', sans-serif;}
 td.sudoku-border {
         background: black; height: 1px; width: 1px;
         border: 1px solid black;}
