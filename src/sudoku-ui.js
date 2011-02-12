@@ -451,6 +451,19 @@ $('#solvebutton').click(function(ev) {
   commitstate(state);
 });
 
+$('#colorbutton').click(function(ev) {
+  hidepopups();
+  var state = currentstate();
+  if (isalt(ev)) {
+    ev.preventDefault();
+    state.color = Sudoku.emptyboard();
+  } else {
+    var constraints = SudokuHint.constraints(state.puzzle);
+    state.color = constraints.level;
+  }
+  commitstate(state);
+});
+
 $('#filebutton').click(function(ev) {
   hidepopups();
   var state = currentstate();
