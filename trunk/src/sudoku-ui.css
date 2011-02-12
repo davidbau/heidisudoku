@@ -75,12 +75,12 @@ div.sudoku-work {
         cursor: hand;
         padding: 0; margin: 0; border: 0; }
 div.sudoku-answer {
-        width: 62px; height: 62px;
+        width: 66px; height: 66px;
         text-align: center;
         cursor: hand;
-        padding: 0; margin: -10px; border: 0;
+        padding: 0; margin: -12px; border: 0;
         color: #22c;
-        font: 48px 'Covered By Your Grace', sans-serif;}
+        font: 50px 'Covered By Your Grace', sans-serif;}
 div.sudoku-given {
         width: 48px; height: 48px;
         text-align: center; vertical-align: middle;
@@ -88,7 +88,7 @@ div.sudoku-given {
         padding: 0; margin: -3px;
         line-height: 0;
         font-weight: bold;
-        font: 33px 'arial black', sans-serif;}
+        font: 34px 'arial black', sans-serif;}
 td.sudoku-border {
         background: black; height: 1px; width: 1px;
         border: 1px solid black;}
