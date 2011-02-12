@@ -47,19 +47,15 @@ table.sudoku-work-table td {
         padding: 0;
         margin: 0;
         line-height: 0;
-        width: 16px; height: 16px;
+        width: 15px; height: 14px;
         text-align: center;
         overflow: hidden;
         vertical-align: top; }
 table.sudoku-work-table div {
         color: #22c;
         font: 15px 'Covered By Your Grace', sans-serif;
-        width: 14px;
-        margin: -5px 0; }
-table.sudoku-work-table tr:nth-child(1) div {
-        margin: -5px 0; }
-table.sudoku-work-table tr:nth-child(3) div {
-        margin: -5px 0; }
+        width: 15px;
+        margin: -3px 0; }
 td.sudoku-cell {
         width: 46px; height: 46px;
         text-align: center; vertical-align: middle;
