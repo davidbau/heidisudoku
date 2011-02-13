@@ -1,7 +1,7 @@
 {
   "name": "Heidi's Sudoku",
   "description":
-    "Play sudoku and learn clever strategies with Heidi's helpful hint pad.",
+    "Play sudoku and learn clever strategies with Heidi's hint pad for Chrome.",
   "version": "0.0.0.24",
   "app": {
     "launch": {
