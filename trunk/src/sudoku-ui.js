@@ -347,10 +347,15 @@ $('#clearbutton').click(function(ev) {
 
 $('#timerbutton').mousedown(function(ev) {
   hidepopups();
+  var state = currentstate();
   showpopup('#timer');
+  if (victorious(state)) {
+    $('#timer').text(formatelapsed(state.elapsed));
+    return;
+  }
   function updatetime() {
     if ($('#timer').is(':visible')) {
-      rendertime();
+      $('#timer').text(formatelapsed((new Date).getTime() - starttime));
       setTimeout(updatetime, 1500 - ((new Date).getTime() % 1000));
     }
   }
@@ -359,6 +364,9 @@ $('#timerbutton').mousedown(function(ev) {
 
 $('#hintbutton,#checkbutton,#timerbutton').bind(
     'mouseup mouseleave', function() {
+  if ($('#victory').css('display') != 'none') {
+    return;
+  }
   hidepopups();
   var state = currentstate();
   redraw(state);
@@ -501,17 +509,13 @@ $('#checkbutton').mousedown(function(ev) {
   if (conflicts.length > 0 && conflicts[0].errors) {
     var errors = conflicts[0].errors;
     for (var j = 0; j < errors.length; j++) {
-      state.color[errors[j]] = 3;
+      state.color[errors[j]] = 6;
     }
   }
   redraw(state);
   // now check for a win.
   if (conflicts.length == 0) {
-    var unfinished = 0;
-    for (var j = 0; j < 81; j++) {
-      if (sofar[j] === null) unfinished += 1;
-    }
-    showpopup(unfinished == 0 ? '#victory' : '#ok');
+    showpopup(countempty(sofar) == 0 ? '#victory' : '#ok');
   }
   ev.stopPropagation();
 });
@@ -549,10 +553,6 @@ function formatelapsed(elapsed) {
   return formatted;
 }
 
-function rendertime() {
-  $('#timer').text(formatelapsed((new Date).getTime() - starttime));
-}
-
 function listbits(bits) {
   var result = [];
   for (var y = 0; y < 9; y++) {
@@ -567,6 +567,21 @@ function boardsofar(state) {
     if (state.answer[j] !== null) sofar[j] = state.answer[j];
   }
   return sofar;
+}
+
+function countempty(board) {
+  var count = 0;
+  for (var j = 0; j < 81; j++) {
+    if (board[j] === null) count += 1;
+  } 
+  return count;
+}
+
+function victorious(state) {
+  var sofar = boardsofar(state);
+  if (countempty(sofar) != 0) return false;
+  if (SudokuHint.conflicts(sofar).length != 0) return false;
+  return true;
 }
 
 // location hash state serialization:
@@ -856,6 +871,7 @@ var workmenu = (function() {
     called = false;
     mode = 0; // 0: auto; 1: pencil; 2: highlight
     if (listbits(state).length == 1) { mode = 1; }
+    if (listbits(marked).length > 0) { mode = 2; }
     else if (n !== null) { state = (1 << n); }
     redrawmenu();
     var offset = $(elt).offset();
@@ -903,6 +919,15 @@ var workmenu = (function() {
         if (0 == (hint & bit)) return;
         state = (state & bit) ^ bit;
         hide();
+      } else if (mode == 2) {
+        if (!(state & bit)) {
+          state |= bit;
+        } else if (!(marked & bit)) {
+          marked |= bit;
+        } else {
+          state &= ~bit;
+          marked &= ~bit;
+        }
       } else {
         state ^= bit;
         if (mode == 2 && !(marked & bit)) { state |= bit; }
