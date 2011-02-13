@@ -1,8 +1,8 @@
 {
   "name": "Heidi's Sudoku",
   "description":
-    "A simple and powerful sudoku notepad for solving puzzles quickly. Hints, accurate ratings, and more.",
-  "version": "0.0.0.26",
+    "A simple and powerful sudoku notepad for solving puzzles quickly. Hints, strategies, accurate ratings, and more.",
+  "version": "0.0.0.27",
   "app": {
     "launch": {
       "local_path": "app.html"
