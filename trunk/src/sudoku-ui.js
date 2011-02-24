@@ -92,7 +92,7 @@ var lastkeyat = { pos: null, num: null, timestamp: 0 };
 
 $(document).keydown(function(ev) {
   if (workmenu.showing()) { workmenu.keydown(ev); return; }
-  // if (filebox.showing()) { filebox.keydown(ev); return; }
+  if (filebox.showing()) { filebox.keydown(ev); return; }
   if (keyfocus === null) return;
   var pos = parseInt($(keyfocus).attr('id').substr(2));
   if (!(pos >= 0 && pos < 81)) return;
@@ -453,6 +453,7 @@ $('#solvebutton').click(function(ev) {
   if (isalt(ev)) {
     ev.preventDefault();
     state.color = constraints.level;
+    state.answer = constraints.answer;
   } else {
     state.answer = constraints.answer;
   }
@@ -466,7 +467,14 @@ $('#colorbutton').click(function(ev) {
     ev.preventDefault();
     state.color = Sudoku.emptyboard();
   } else {
-    var constraints = SudokuHint.constraints(state.puzzle);
+    var solution = SudokuHint.constraints(state.puzzle);
+    var sofar = boardsofar(state);
+    for (var j = 0; j < 81; j++) {
+      if (solution.answer[j] !== null && sofar[j] != solution.answer[j]) {
+        sofar[j] = null;
+      }
+    }
+    var constraints = SudokuHint.constraints(sofar);
     state.color = constraints.level;
   }
   commitstate(state);
@@ -478,7 +486,7 @@ $('#filebutton').click(function(ev) {
   if (isalt(ev)) {
     ev.preventDefault();
     var constraints = SudokuHint.constraints(state.puzzle);
-    // state.answer = constraints.answer;
+    state.answer = constraints.answer;
     state.color = constraints.level;
     commitstate(state);
     return;
@@ -501,21 +509,25 @@ $('#checkbutton').mousedown(function(ev) {
   }
   var sofar = boardsofar(state);
   var conflicts = SudokuHint.conflicts(sofar);
-  if (conflicts.length == 0 && isalt(ev)) {
-    ev.preventDefault();
+  if (conflicts.length == 0) {
     var unz = SudokuHint.unzeroedwork(state.puzzle, state.answer, state.work);
     conflicts = SudokuHint.mistakes(state.puzzle, state.answer, unz);
   }
-  if (conflicts.length > 0 && conflicts[0].errors) {
-    var errors = conflicts[0].errors;
-    for (var j = 0; j < errors.length; j++) {
-      state.color[errors[j]] = 6;
+  if (isalt(ev)) {
+    ev.preventDefault();
+    if (conflicts.length > 0 && conflicts[0].errors) {
+      var errors = conflicts[0].errors;
+      for (var j = 0; j < errors.length; j++) {
+        state.color[errors[j]] = 6;
+      }
     }
+    redraw(state);
   }
-  redraw(state);
   // now check for a win.
   if (conflicts.length == 0) {
     showpopup(countempty(sofar) == 0 ? '#victory' : '#ok');
+  } else if (!isalt(ev)) {
+    showpopup('#errors');
   }
   ev.stopPropagation();
 });
@@ -1057,6 +1069,19 @@ var filebox = (function() {
     showpopup('#file');
   }
 
+  function showing() {
+    return ($('#file').is(':visible'));
+  }
+
+  // key handling
+  function keydown(ev) {
+    var txt = null;
+    if (ev.which == 27) {
+      hidepopups();
+      return;
+    }
+  }
+
   function summarize(state) {
     var summary = [];
     var needed = 0, finished = 0;
@@ -1219,7 +1244,7 @@ var filebox = (function() {
     });
   });
 
-  return { show: show };
+  return { show: show, showing: showing, keydown: keydown };
 })();
 
 lib.commitstate = commitstate;
