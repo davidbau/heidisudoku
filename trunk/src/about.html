@@ -3,7 +3,8 @@
 div.box { max-width: 360pt; text-align:left; }
 h1 { font: 20pt "arial black", "arial bold", "sans-serif" }
 h2 { font: 14pt "arial black", "arial bold", "sans-serif" }
-p { font: 10pt arial }
+p, td { font: 10pt arial }
+td { padding-right: 20px; }
 b { background-color: gainsboro; padding: 0 5px; }
 </style>
 <body>
@@ -19,26 +20,57 @@ onclick="if (location.hash.indexOf('#',1)>0) this.href=location.hash.substr(1)"
 
 <h2>Heidi's Helpful Hints</h2>
 
-<p>This Sudoku workpad is inspired by the author's wife's favorite
+<p>This Sudoku game is inspired by the author's wife's favorite
 Sudoku solving style: she loves to speed through the squares quickly
 filling in fully constrained digits before slowing down to
 eliminate candidates.  When she gets stuck, she enjoys an
 occassional hint.
 
-<p>Solving sudoku puzzles by quickly recognizing forced single positions
-is dynamic and fun.  The hintpad is excellent way to help you learn to
-solve sudoku quickly, and it can also help you learn more advanced techniques.
+<p>The hintpad is excellent way to help you learn to solve sudoku
+quickly, and it can also help you learn more advanced techniques.
 
 <h2>Difficulty Ratings</h3>
 
 <p>Good puzzles are rated on a 24-level scale from "Beginner" (the easiest)
-to "Counfounding" (the hardest).
+to "Counfounding" (the hardest).  The whole scale is as follows:
 
-<p>Puzzles rated "Impossible" are solvable, but the solution
+<center><table><tr><td>
+1: Beginner<br>
+2: Easy<br>
+3: Simple<br>
+4: Basic<br>
+5: Moderate<br>
+6: Tricky<br>
+</td><td>
+7: Clever<br>
+8: Puzzling<br>
+9: Subtle<br>
+10: Difficult<br>
+11: Knotty<br>
+12: Thorny<br>
+</td><td>
+13: Baffling<br>
+14: Intricate<br>
+15: Perplexing<br>
+16: Obscure<br>
+17: Labyrinthine<br>
+18: Obstinate<br>
+</td><td>
+19: Abstruse<br>
+20: Vexing<br>
+21: Enigmatic<br>
+22: Formidable<br>
+23: Diabolical<br>
+24: Confounding<br>
+</td></tr></table>
+</center>
+
+<p>Generated puzzles are always created at one of these levels, but
+there are two other ratings that can be given to a puzzle entered manually.
+Puzzles rated "Impossible" are actually solvable, but the solution
 may be impossible for a person to find without some lucky guessing.
-
-<p>Puzzles rated "Unsolvable" have no unique solution: an unsolvable
-puzzle has either no complete solution or multiple different solutions.
+Puzzles rated "Unsolvable" are incorrect puzzles that have either no
+complete solution or multiple different solutions.
 
 <h2>Getting Hints</h2>
 
@@ -181,7 +213,7 @@ this time, but they are available to read
 <a href="https://www.assembla.com/code/jssudoku/subversion/nodes/trunk/src"
 >here on assembla.com</a>.
 
-<p style=text-align:center>Version 0.32</p>
+<p style=text-align:center>Version 0.33</p>
 </div>
 </center>
 
