@@ -307,6 +307,7 @@ function gradepuzzle(puzzle, steps) {
   var level = Math.max(1, Math.min(lib.levels.length - 1,
               Math.floor(steps / 5)));
   $('#grade').html(lib.levels[level]);
+  $('#grade').attr('title', 'Level ' + level);
   entrymode = false;
   return;
 }
