@@ -21,18 +21,22 @@ onclick="if (location.hash.indexOf('#',1)>0) this.href=location.hash.substr(1)"
 <h2>Heidi's Helpful Hints</h2>
 
 <p>This Sudoku game is inspired by the author's wife's favorite
-Sudoku solving style: she loves to speed through the squares quickly
-filling in fully constrained digits before slowing down to
-eliminate candidates.  When she gets stuck, she enjoys an
-occassional hint.
+way to play Sudoku: she loves to speed through the squares quickly,
+and when she gets stuck, she enjoys puzzling together with a friend
+and sharing an occassional hint.
 
-<p>The hintpad is excellent way to help you learn to solve sudoku
+<p>Heidi's Sudoku is your puzzling companion, always ready
+with a bit of guidance or a hint if you get stuck.  You can
+get explicit hints, or you can get a colored map showing where
+something clever is worth mulling over.
+
+<p>The hintpad is excellent way to learn to solve sudoku
 quickly, and it can also help you learn more advanced techniques.
 
 <h2>Difficulty Ratings</h3>
 
 <p>Good puzzles are rated on a 24-level scale from "Beginner" (the easiest)
-to "Counfounding" (the hardest).  The whole scale is as follows:
+to "Counfounding" (the hardest).  The whole scale:
 
 <center><table><tr><td>
 1: Beginner<br>
@@ -65,16 +69,37 @@ to "Counfounding" (the hardest).  The whole scale is as follows:
 </td></tr></table>
 </center>
 
+<p>Puzzles that can be solved by just avoiding direct conflicts
+are "Basic" or easier, depending on how easy it is to see the
+constraints.  "Subtle" puzzles require one or two clever deductions.
+And it gets more difficult from there: "Confounding" puzzles
+will involve untangling a mass of complex clues.
+
 <p>Generated puzzles are always created at one of these levels, but
 there are two other ratings that can be given to a puzzle entered manually.
-Puzzles rated "Impossible" are actually solvable, but the solution
-may be impossible for a person to find without some lucky guessing.
-Puzzles rated "Unsolvable" are incorrect puzzles that have either no
-complete solution or multiple different solutions.
+Puzzles rated "Impossible" have a solution, but they are no fun because
+they require some lucky guessing to solve.  Puzzles rated "Unsolvable"
+are incorrect puzzles that have either no complete solution or
+multiple different solutions.
+
+<h2>Visualizing Difficulty</h2>
+
+<p>When speeding through games or when choosing puzzles to play, it can
+be helpful to visualize the difficulty of a puzzle.
+
+<p>The difficulty of each square of a puzzle can be shown by clicking
+the <b>Color</b> button.  This will show every cell constrained by the
+puzzle, with a color that indicates the difficulty of solving that
+square.  All colors can be erased again by holding <b>ctrl</b> while
+clicking <b>Color</b>.
+
+<p>Squares colored violet are the easiest; then blue, green, yellow,
+and orange are progressively harder.  Red squares are the hardest, and
+gray squares require guessing.
 
 <h2>Getting Hints</h2>
 
-<p>To get a hint, hold down the <b>Hint</b> button.  Red squares point
+<p>To get a specific hint, hold down the <b>Hint</b> button.  Red squares point
 out any mistakes.  Blue squares will be places that constrain the puzzle
 in some way, and green squares will be locations where a number can be
 filled in, or where the possibilities can be narrowed down.
@@ -94,7 +119,7 @@ or triples</a> or recognize an
 <h2>Checking and Fixing Mistakes</h2>
 
 <p>The <b>Check</b> button can be used to quickly check if you
-have penciled in any mistakes self-contradictory squares without
+have penciled in any mistakes or contradictory squares without
 revealing what the mistakes are.
 
 <p>Holding <b>ctrl</b> while clicking <b>Check</b> will show
@@ -145,10 +170,12 @@ browser and the timer will go back to the time you made your last move.
 Similarly, if you save a game, the time saved will be the time of the
 last move made.
 
-<h2>Loading Puzzles</h2>
+<h2>Mathematically Minimal Puzzles</h2>
 
 <p>If you click <b>New Puzzle</b>, a new puzzle with a random level of
-difficulty will be randomly generated.
+difficulty will be randomly generated.  Usually the puzzle will have
+25-30 hints.  Naturally, if there are fewer hints, you enjoy a
+slightly longer game.
 
 <p>The smallest number of hints that can be given on a solvable Suduoku
 game is believed to be 17, and Gordon Royle maintains a database of all
@@ -156,9 +183,17 @@ game is believed to be 17, and Gordon Royle maintains a database of all
 <b>ctrl</b> while clicking <b>New Puzzle</b>, one of these 17-hint
 puzzles will be loaded from the internet.
 
+<h2>Saving and Sharing Puzzles</a>
+
 <p>Puzzles can also be saved and loaded using the <b>File</b> button.
-The <b>Save as Url</b> link will create a short URL for your current
-puzzle that can be emailed.
+Saved games are identified by rating, date, and progress, or you can rename
+them yourself.
+
+<p>If you discover a gem of a game that you would like to share, the
+<b>Save as Url</b> link will create a short URL for your current
+puzzle that can be emailed.  Any markup and colors you put on the
+game will be saved along with the URL, so you can share a particularly
+clever sudoku step with other puzzlers.
 
 <h2>Editing Puzzles</h2>
 
@@ -172,21 +207,6 @@ no solution.
 <p>As soon as you have entered a puzzle with a unique solution, a
 difficulty rating will be shown and the keyboard will switch back to
 game mode.
-
-<h2>Visualizing Difficulty</h2>
-
-<p>When building your own puzzles or choosing puzzles to play, it can
-be helpful to visualize the difficulty of your puzzle.
-
-<p>The difficulty of each square of a puzzle can be shown by clicking
-the <b>Color</b> button.  This will show every cell
-constrained by the puzzle entered so far, with a color that indicates
-the difficulty of solving that square.  All colors can be erased
-by holding <b>ctrl</b> while clicking <b>Color</b>.
-
-<p>Squares colored violet are the easiest; then blue, green, yellow,
-and orange are progressively harder.  Red squares are the hardest, and
-gray squares require guessing.
 
 <h2>Credits</h2>
 
@@ -213,7 +233,7 @@ this time, but they are available to read
 <a href="https://www.assembla.com/code/jssudoku/subversion/nodes/trunk/src"
 >here on assembla.com</a>.
 
-<p style=text-align:center>Version 0.33</p>
+<p style=text-align:center>Version 0.34</p>
 </div>
 </center>
 
