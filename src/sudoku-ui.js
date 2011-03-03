@@ -77,6 +77,7 @@ $('body').click(function(ev) {
 });
 
 var keyfocus = null;
+var lastkeyfocus = $('#sc40');
 
 function setkeyfocus(kf) {
   if (keyfocus !== null) {
@@ -84,6 +85,7 @@ function setkeyfocus(kf) {
   }
   keyfocus = kf;
   if (keyfocus !== null) {
+    lastkeyfocus = keyfocus;
     $(keyfocus).find('div.sudoku-border').css('border', '1px dotted blue');
   }
 }
@@ -93,7 +95,10 @@ var lastkeyat = { pos: null, num: null, timestamp: 0 };
 $(document).keydown(function(ev) {
   if (workmenu.showing()) { workmenu.keydown(ev); return; }
   if (filebox.showing()) { filebox.keydown(ev); return; }
-  if (keyfocus === null) return;
+  if (keyfocus === null) {
+    setkeyfocus(lastkeyfocus);
+    return;
+  }
   var pos = parseInt($(keyfocus).attr('id').substr(2));
   if (!(pos >= 0 && pos < 81)) return;
   if (ev.which >= 37 && ev.which <= 40) {
@@ -923,6 +928,7 @@ var workmenu = (function() {
   }
   function entry(txt) {
     if (txt == '') { togglemode(); }
+    else if (txt == 'OK') { hide(); }
     else if (txt == '\u2014') { state = 0; marked = 0;}
     else if (txt == '?') { state = hint; }
     else {
@@ -935,10 +941,10 @@ var workmenu = (function() {
       } else if (mode == 2) {
         if (!(state & bit)) {
           state |= bit;
-        } else if (!(marked & bit)) {
           marked |= bit;
-        } else {
+        } else if (!(marked & bit)) {
           state &= ~bit;
+        } else {
           marked &= ~bit;
         }
       } else {
@@ -1279,8 +1285,9 @@ function boardhtml() {
 
 function menuhtml() {
   var result = ['<div class=work-menu><table>'];
-  var cells = [1,2,3,4,5,6,7,8,9,'&mdash;','?',
-               '<div class=menu-mode></div>'];
+  var cells = [1,2,3,4,5,6,7,8,9,'&mdash;', // '?',
+               '<div class=menu-mode></div>',
+               '<div class=menu-ok>OK</div>'];
   for (var j = 0; j < cells.length; j++) {
     if (j % 3 == 0) result.push('<tr>');
     result.push('<td><div class=menu-clip><div class=menu-text>');
