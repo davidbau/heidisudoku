@@ -1,8 +1,8 @@
 {
   "name": "Heidi's Sudoku",
   "description":
-    "A powerful sudoku game for speed play.  Strategy hints, accurate ratings, automarks, coloring, saving, keyboard, infinte undo.",
-  "version": "0.0.0.33",
+    "Sudoku for puzzle lovers.  Strategy hints, accurate ratings, automarks, coloring, saving, keyboard, infinte undo.",
+  "version": "0.0.0.34",
   "app": {
     "launch": {
       "local_path": "app.html"
