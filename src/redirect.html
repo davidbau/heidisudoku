@@ -5,6 +5,13 @@ h1 { font: 20pt "arial black", "arial bold", "sans-serif" }
 h2 { font: 14pt "arial black", "arial bold", "sans-serif" }
 p { font: 10pt arial }
 b { background-color: gainsboro; padding: 0 5px; }
+table { border-collapse: collapse; }
+td { width: 24px; height: 24px; border: 1px solid black;
+  text-align: center;
+  font: 14pt "arial black", "arial bold", "sans-serif" }
+td.answer { color: lightblue; }
+td.separator { backround-color: black; padding: 0 0; margin: 0;
+  width: 0px; height: 0px; }
 </style>
 <body>
 
@@ -24,3 +31,74 @@ function decorate(anchor) {
   anchor.href = anchor.href.replace('#.*$', '') + location.hash
 }
 </script>
+
+<script src=jquery-1.4.4.min.js></script>
+<script src=jquery-bbq-1.2.1.min.js></script>
+
+<script>
+var base64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+                  "abcdefghijklmnopqrstuvwxyz" +
+                  "0123456789" +
+                  "-_";
+
+function decodepuzzle81(str) {
+  var puzzle = [];
+  var c = 0;
+  for (var j = 0; j < 81;) {
+    var num = null;
+    var repeat = 1;
+    if (c < str.length) {
+      num = str.charCodeAt(c) - '0'.charCodeAt(0);
+      if (num < 0 || num > 9) {
+        num = null;
+        repeat = base64chars.indexOf(str.charAt(c)) + 2;
+      } else if (num == 0) {
+        num = null;
+      } else {
+        num -= 1;
+      }
+      c += 1;
+    }
+    while (repeat && j < 81) {
+      puzzle.push(num);
+      repeat -= 1;
+      j += 1;
+    }
+  }
+  return puzzle;
+}
+
+function puzzlestate() {
+  var data = $.deparam.fragment();
+  var puzzle = decodepuzzle81('puzzle' in data ? data.puzzle : '');
+  var answer = decodepuzzle81('answer' in data ? data.answer : '');
+  var result = {
+    puzzle: puzzle,
+    answer: answer,
+  };
+  return result;
+}
+
+var state = puzzlestate();
+var puzzle = state.puzzle;
+var answer = state.answer;
+document.write('<p><table>');
+for (var pos = 0; pos < 81; pos++) {
+  if (pos % 27 == 0) {
+    document.write('<tr><td colspan=13 class=separator></td></tr>');
+  }
+  if (pos % 9 == 0) { document.write('<tr>'); }
+  if (pos % 3 == 0) { document.write('<td class=separator></td>'); }
+  if (puzzle[pos] !== null) {
+    document.write('<td>' + puzzle[pos] + '</td>');
+  } else if (answer[pos] !== null) {
+    document.write('<td class=answer>' + answer[pos] + '</td>');
+  } else {
+    document.write('<td>&nbsp;</td>');
+  }
+  if (pos % 9 == 8) { document.write('<td class=separator></td></tr>'); }
+}
+document.write('<tr><td colspan=13 class=separator></td></tr>');
+document.write('</table>');
+</script>
+
