@@ -25,7 +25,7 @@ function startnewgame(seed) {
   gradepuzzle(puzzle, steps);
   var finished = (new Date).getTime();
   commitstate({
-    puzzle: puzzle, seed: seed,
+    puzzle: puzzle, seed: seed, hints: 0,
     answer: [], work: [], marks: [], color: [],
     gentime: finished, savename: ''
   });
@@ -36,6 +36,7 @@ function startnewgame(seed) {
 // a game) or when commitstate() is called with a newer gentime
 // (i.e., when a new game is started).
 var starttime = (new Date).getTime();
+var shownhint = false;
 
 if (!window.location.hash) {
   if (!loadstate('sudokustate')) {
@@ -47,6 +48,7 @@ if (!window.location.hash) {
   // If you link to a game, time starts at the moment of the last move.
   state = currentstate();
   starttime = (new Date).getTime() - state.elapsed;
+  shownhint = false;
 }
 
 var graded = null;
@@ -322,13 +324,14 @@ $('#newbutton').click(function(ev) {
   if (isalt(ev)) {
     redraw({puzzle: Sudoku.emptyboard(), answer: Sudoku.emptyboard(),
             work: zdecodebits(''), mark: zdecodebits(''),
-            color: Sudoku.emptyboard(),
-            seed: 0, savename: '', gentime: (new Date).getTime()});
+            color: Sudoku.emptyboard(), seed: 0, hints: 0,
+            savename: '', gentime: (new Date).getTime()});
     $('#grade').html('&nbsp;');
     $.getJSON('http://davidbau.com/sudoku/min.json?callback=?', function(p) {
       var puzzle = decodepuzzle81(p);
       commitstate({puzzle: puzzle, answer: [], work: [], mark: [], color: [],
-                   seed: 0, savename: '', gentime: (new Date).getTime()});
+                   seed: 0, hints: 0,
+                   savename: '', gentime: (new Date).getTime()});
       gradepuzzle();
     });
     ev.preventDefault();
@@ -344,28 +347,41 @@ $('#clearbutton').click(function(ev) {
   var cleared = {puzzle: state.puzzle, answer:[], work:[], mark:[], color:[]};
   if (isalt(ev)) {
     cleared = {puzzle: [], answer: [], work: [], mark: [], color: [],
-               seed: 0, savename: '', gentime: (new Date).getTime()};
+               seed: 0, hints: 0, savename: '', gentime: (new Date).getTime()};
     gradepuzzle();
     ev.preventDefault();
   }
   commitstate(cleared);
 });
 
+var runningtime = false;
+function updatetime() {
+  if (runningtime && $('.timer').is(':visible')) {
+    $('.timer').text(formatelapsed((new Date).getTime() - starttime));
+    setTimeout(updatetime,
+        1000 - (((new Date).getTime() - starttime) % 1000));
+  } else {
+    runningtime = false;
+  }
+}
+
 $('#timerbutton').mousedown(function(ev) {
   hidepopups();
   var state = currentstate();
-  showpopup('#timer');
+  if (true || isalt(ev)) {
+    showpopup('#timer');
+  } else {
+    var hidden = ($('.timescore').css('visibility') != 'visible');
+    $('.timescore').css('visibility', hidden ? 'visible' : '');
+    $('.timescore .timer').css('display', hidden ? 'inline' : 'none');
+  }
   if (victorious(state)) {
-    $('#timer').text(formatelapsed(state.elapsed));
+    $('.timer').text(formatelapsed(state.elapsed));
     return;
+  } else if (!runningtime) {
+    runningtime = true;
+    updatetime();
   }
-  function updatetime() {
-    if ($('#timer').is(':visible')) {
-      $('#timer').text(formatelapsed((new Date).getTime() - starttime));
-      setTimeout(updatetime, 1500 - ((new Date).getTime() % 1000));
-    }
-  }
-  updatetime();
 });
 
 $('#hintbutton,#checkbutton,#timerbutton').bind(
@@ -387,6 +403,7 @@ $('#hintbutton').mousedown(function(ev) {
     state.color[j] = null;
   }
   if (hint !== null) {
+    shownhint = true;
     if (hint.errors) {
       for (var j = 0; j < hint.errors.length; j++) {
         state.color[hint.errors[j]] = 6;
@@ -475,13 +492,20 @@ $('#colorbutton').click(function(ev) {
   } else {
     var solution = SudokuHint.constraints(state.puzzle);
     var sofar = boardsofar(state);
+    var unsolved = false;
     for (var j = 0; j < 81; j++) {
       if (solution.answer[j] !== null && sofar[j] != solution.answer[j]) {
         sofar[j] = null;
       }
+      if (sofar[j] === null) {
+        unsolved = true;
+      }
     }
     var constraints = SudokuHint.constraints(sofar);
     state.color = constraints.level;
+    if (unsolved) {
+      shownhint = true;
+    }
   }
   commitstate(state);
 });
@@ -526,12 +550,13 @@ $('#checkbutton').mousedown(function(ev) {
       for (var j = 0; j < errors.length; j++) {
         state.color[errors[j]] = 6;
       }
+      shownhint = true;
     }
     redraw(state);
   }
   // now check for a win.
   if (conflicts.length == 0) {
-    showpopup(countempty(sofar) == 0 ? '#victory' : '#ok');
+    showpopup(countfilled(sofar) == 81 ? '#victory' : '#ok');
   } else if (!isalt(ev)) {
     showpopup('#errors');
   }
@@ -587,17 +612,17 @@ function boardsofar(state) {
   return sofar;
 }
 
-function countempty(board) {
+function countfilled(board) {
   var count = 0;
   for (var j = 0; j < 81; j++) {
-    if (board[j] === null) count += 1;
+    if (board[j] !== null) count += 1;
   } 
   return count;
 }
 
 function victorious(state) {
   var sofar = boardsofar(state);
-  if (countempty(sofar) != 0) return false;
+  if (countfilled(sofar) != 81) return false;
   if (SudokuHint.conflicts(sofar).length != 0) return false;
   return true;
 }
@@ -616,6 +641,8 @@ function redraw(s, pos) {
   var work = state.work;
   var mark = state.mark;
   var color = state.color;
+  var hints = ('hints' in state ? state.hints : 0) + (shownhint ? 1 : 0);
+  $('.hints').text(hints);
   for (var j = startpos; j < endpos; j++) {
     if (puzzle[j] !== null) {
       $("#sn" + j).attr('class', 'sudoku-given').html(puzzle[j] + 1);
@@ -656,6 +683,7 @@ function loadstate(name) {
   if ('elapsed' in state) {
     starttime = (new Date).getTime() - state.elapsed;
   }
+  shownhint = false;
   commitstate(state);
   return true;
 }
@@ -670,6 +698,15 @@ function commitstate(state) {
     starttime = state.gentime;
   }
   state.elapsed = (now - starttime);
+  if (shownhint) {
+    if (!('hints' in state)) state.hints = 0;
+    state.hints += 1;
+    shownhint = false;
+  }
+  if (victorious(state)) {
+    runningtime = false;
+    $('.timer').text(formatelapsed(state.elapsed));
+  }
   $.bbq.pushState(encodeboardstate(state));
   savestate('sudokustate', state);
 }
@@ -702,6 +739,7 @@ function decodeboardstate(data) {
   if ('gentime' in data) { result.gentime = data.gentime; }
   if ('savename' in data) { result.savename = data.savename; }
   if ('elapsed' in data) { result.elapsed = data.elapsed; }
+  if ('hints' in data) { result.hints = parseInt(data.hints); }
   return result;
 }
 
@@ -717,6 +755,7 @@ function encodeboardstate(state) {
   if ('gentime' in state) { result.gentime = state.gentime; }
   if ('savename' in state) { result.savename = state.savename; }
   if ('elapsed' in state) { result.elapsed = state.elapsed; }
+  if ('hints' in state) { result.hints = state.hints; }
   return result;
 }
 
