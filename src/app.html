@@ -11,6 +11,10 @@
 <script src=sudoku-hint.js></script>
 <script src=sudoku-ui.js></script>
 <div class=puzzlename id=grade>&nbsp;</div>
+<table class=timescore><tr>
+<td style=text-align:left>Time <span class=timer>0</span></td>
+<td style=text-align:right>Hints <span class=hints>0</span></td>
+</tr></table>
 <script>
 document.write(SudokuUI.boardhtml());
 document.write(SudokuUI.menuhtml());
@@ -36,7 +40,7 @@ document.write(SudokuUI.menuhtml());
 <div class=sudoku-popup id=ok>ok so far</div>
 <div class=sudoku-popup id=errors>mistake</div>
 <div class=sudoku-popup id=nohint>no hint</div>
-<div class=sudoku-popup id=timer>0:00</div>
+<div class="sudoku-popup timer" id=timer>0:00</div>
 <div class=sudoku-popup id=file><div class=save-outerbox>
 <div class=save-closebutton></div>
 <center>Saved Games</center>

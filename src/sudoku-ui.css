@@ -28,6 +28,20 @@ h1 {
         src: local('Covered By Your Grace'),
              local('CoveredByYourGrace'),
              url('CoveredByYourGrace.ttf') format('truetype'); } }
+table.timescore {
+        visibility: hidden;
+        margin-top: -15px;
+        border: 0;
+        border-collapse: collapse;
+        width: 450px;
+}
+table.timescore td {
+        font: 10pt "arial black", "arial bold", "sans-serif";
+}
+table.timescore .timer {
+        display: none;
+}
+
 table.sudoku {
         border-collapse: collapse; }
 table.sudoku-select {
