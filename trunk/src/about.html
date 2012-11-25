@@ -20,11 +20,6 @@ onclick="if (location.hash.indexOf('#',1)>0) this.href=location.hash.substr(1)"
 
 <h2>Heidi's Helpful Hints</h2>
 
-<p>This Sudoku game is inspired by the author's wife's favorite
-way to play Sudoku: she loves to speed through the squares quickly,
-and when she gets stuck, she enjoys puzzling together with a friend
-and sharing an occassional hint.
-
 <p>Heidi's Sudoku is your puzzling companion, always ready
 with a bit of guidance or a hint if you get stuck.  You can
 get explicit hints, or you can get a colored map showing where
@@ -32,6 +27,26 @@ something clever is worth mulling over.
 
 <p>The hintpad is excellent way to learn to solve sudoku
 quickly, and it can also help you learn more advanced techniques.
+
+<h2>Controls</h2>
+
+<p>Click on a number on the right and then click on any square to
+pencil in that number.
+
+<p>Keyboard controls also work: use arrow keys to move the dotted blue
+rectangle, and use numbers to fill in numbers.  Typing multiple numbers
+in a square will mark all those numbers, but a double-tapped number
+will clear all marks and just write the number as the answer.  Space
+or delete to clear the selected square.
+
+<p>Click outside the board to deselect the number.  When a square
+is clicked without any selected number, you get a menu that lets
+you mark off multiple numbers.  The comma key also brings up
+this menu; press the escape key or move the mouse away to dismiss it.
+
+<p>Clicking on a color to the left will show you which squares are
+that level of difficulty: purple squares are the easiest, and red
+squares are the hardest.
 
 <h2>Difficulty Ratings</h3>
 
@@ -87,15 +102,12 @@ multiple different solutions.
 <p>When speeding through games or when choosing puzzles to play, it can
 be helpful to visualize the difficulty of a puzzle.
 
-<p>The difficulty of each square of a puzzle can be shown by clicking
-the <b>Color</b> button.  This will show every cell constrained by the
-puzzle, with a color that indicates the difficulty of solving that
-square.  All colors can be erased again by holding <b>ctrl</b> while
-clicking <b>Color</b>.
+<p>Squares of a given difficulty can be revealed by clicking on one
+of the colored buttons.  That will show every cell with the
+color that indicates the difficulty of solving that square.
 
 <p>Squares colored violet are the easiest; then blue, green, yellow,
-and orange are progressively harder.  Red squares are the hardest, and
-gray squares require guessing.
+and orange are progressively harder.  Red squares are the hardest.
 
 <h2>Getting Hints</h2>
 
@@ -217,10 +229,9 @@ using <a href="http://ejohn.org/">John Resig's</a>
 with <a href="http://benalman.com/">Ben Alman's</a> handy <a
 href="http://benalman.com/projects/jquery-bbq-plugin/">BBQ plugin</a>
 to manage "back" button state.
-<a href="http://www.kimberlygeswein.com/">Kimberly Geswein's</a> terrific
-<a href="http://code.google.com/webfonts/family?family=Covered+By+Your+Grace&subset=latin"
->Covered-By-Your-Grace</a> font provides digits that look just like
-Heidi's handwriting; <a href="http://www.deleket.com/">Jojo Mendoza</a>
+<a href="http://www.unique-design.at/">Patrick Wagesreiter's</a> terrific
+<a href="http://code.google.com/webfonts/family?family=Patrick Hand&subset=latin">Patrick Hand</a> font provides handwritten digits;
+<a href="http://www.deleket.com/">Jojo Mendoza</a>
 provided the yellow highlighter icon;
 and <a href="http://en.wikipedia.org/wiki/Gordon_Royle">Gordon Royle's</a>
 mathematically beautiful <a
@@ -233,7 +244,7 @@ this time, but they are available to read
 <a href="https://www.assembla.com/code/jssudoku/subversion/nodes/trunk/src"
 >here on assembla.com</a>.
 
-<p style=text-align:center>Version 0.34</p>
+<p style=text-align:center>Version 0.40</p>
 </div>
 </center>
 
