@@ -275,6 +275,8 @@ function togglecolor(state, level) {
   for (var j = 0; j < 81; j++) {
     if (advice.colors[j] == level) {
       state.color[j] = (makecolor ? level : 0);
+    } else if (makecolor && state.color[j] == level) {
+      state.color[j] = 0;
     }
   }
   if (makecolor && advice.unsolved) {
