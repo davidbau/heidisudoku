@@ -132,7 +132,9 @@ function handlekeydown(ev) {
     showmenu(state, pos);
     return;
   }
-  setkeymode(num + 1);
+  if (num >= -1 && num < 9) {
+    setkeymode(num + 1);
+  }
 
   if (entrymode && num >= -1 && num < 9) {
     if (num == -1) { num = null; }
