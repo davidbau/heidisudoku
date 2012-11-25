@@ -1,27 +1,40 @@
 <title>Heidi's Sudoku</title>
 <link rel=stylesheet href=sudoku-ui.css>
-<body>
-<center><h1>Heidi's Sudoku</h1>
-<p><a id=promo href="https://chrome.google.com/webstore/detail/ccbhekjfmokgloklnjnidfhlaofegeno">Install the Chrome Web App to save and time games</a></p>
 <script src=jquery-1.4.4.min.js></script>
 <script src=jquery-bbq-1.2.1.min.js></script>
 <script src=seedrandom-min.js></script>
 <script src=sudoku.js></script>
 <script src=sudoku-hint.js></script>
 <script src=sudoku-ui.js></script>
+<body>
+<center><h1>Heidi's Sudoku</h1>
+<p><a id=promo href="https://chrome.google.com/webstore/detail/ccbhekjfmokgloklnjnidfhlaofegeno">Install the Chrome Web App to save and time games</a></p>
 <div class=puzzlename id=grade>&nbsp;</div>
+<table><tr>
+<td>
+<script>
+document.write(SudokuUI.colorkeyhtml('Easiest', 'Hardest'));
+</script>
+</td>
+<td>
 <script>
 document.write(SudokuUI.boardhtml());
 document.write(SudokuUI.menuhtml());
 </script>
+</td>
+<td>
+<script>
+document.write(SudokuUI.numberkeyhtml());
+</script>
+</td>
+</tr>
+</table>
 <input type=button value="Clear" id=clearbutton
    title="Reset puzzle.  Ctrl to for empty puzzle."
 ><input type=button value="Solve" id=solvebutton
    title="Solve puzzle.  Ctrl to color too."
 ><input type=button value="New Puzzle" id=newbutton
    title="New puzzle.  Ctrl for 17-puzzle."
-><input type=button value="Color" id=colorbutton
-   title="Color difficulty.  Ctrl to clear color."
 ><input type=button value="Marks" id=markbutton
    title="Auto pencilmarks.  Ctrl to clear marks."
 ><input type=button value="Hint" id=hintbutton

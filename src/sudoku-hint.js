@@ -7,6 +7,8 @@ var SudokuHint = {};
 
 (function(lib) {
 
+var debugging_enabled = false;
+
 function emptyboard() {
   var result = [];
   for (var pos = 0; pos < 81; pos++) {
@@ -1054,6 +1056,12 @@ function ywing(board, unz, bits, maxsize, maxaxis) {
 }
 
 function hintsort(x, y) {
+  if (x.hint == 'singleposdirect' && y.hint == 'singlenumdirect') {
+    return 1;
+  }
+  if (y.hint == 'singleposdirect' && x.hint == 'singlenumdirect') {
+    return -1;
+  }
   // favor more squares fully solved
   if (x.solved != y.solved) {
     return y.solved - x.solved;
@@ -1100,6 +1108,7 @@ function hint(puzzle, answer, work) {
   }
   result.hints.sort(hintsort);
   result.hints[0].level = result.level;
+  dumphints(result);
   return result.hints[0];
 }
 
@@ -1168,6 +1177,13 @@ function pencilmarks(board, work) {
   return hint;
 }
 
+function dumphints(h) {
+  if (debugging_enabled) {
+    console.log("Level", h.level, "options", h.hints.length,
+                "eg", JSON.stringify(h.hints[0]));
+  }
+}
+
 function hintgrade(puzzle) {
   var answer = emptyboard();
   work = [];
@@ -1185,10 +1201,7 @@ function hintgrade(puzzle) {
       break;
     }
     var difficulty = (h.level - 1) * 4 + 1;
-    /*
-    console.log("Level", h.level, "options", h.hints.length,
-               "eg", JSON.stringify(h.hints[0]));
-    */
+    dumphints(h);
     if (h.hints.length <= 1) { difficulty += 2; }
     difficulty *= ((unsolved + 12)/ 48);
     steps += difficulty;

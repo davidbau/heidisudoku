@@ -13,21 +13,21 @@ h1 {
 }
 /* Font loading for firefox */
 @font-face {
-        font-family: 'Covered By Your Grace';
+        font-family: 'Patrick Hand';
         font-style: normal;
         font-weight: normal;
-        src: local('Covered By Your Grace'),
-             local('CoveredByYourGrace'),
-             url('CoveredByYourGrace.ttf') format('truetype'); }
+        src: local('Patrick Hand'),
+             local('PatrickHand'),
+             url('PatrickHand-Regular.ttf') format('truetype'); }
 /* Font loading for chrome */
 @media screen {
   @font-face {
-        font-family: 'Covered By Your Grace';
+        font-family: 'Patrick Hand';
         font-style: normal;
         font-weight: normal;
-        src: local('Covered By Your Grace'),
-             local('CoveredByYourGrace'),
-             url('CoveredByYourGrace.ttf') format('truetype'); } }
+        src: local('Patrick Hand'),
+             local('PatrickHand'),
+             url('PatrickHand-Regular.ttf') format('truetype'); } }
 table.timescore {
         visibility: hidden;
         margin-top: -15px;
@@ -40,6 +40,35 @@ table.timescore td {
 }
 table.timescore .timer {
         display: none;
+}
+
+table.colorkey {
+        border-collapse: collapse;
+	margin: 0 30px;
+}
+
+table.numberkey {
+        border-collapse: collapse;
+	margin: 0 30px;
+}
+
+td.colorkey-cell {
+        width: 46px; height: 46px;
+        text-align: center; vertical-align: middle;
+        line-height: 0;
+        border: 1px solid black;
+}
+
+td.numberkey-cell {
+        width: 46px; height: 46px;
+        text-align: center; vertical-align: middle;
+        line-height: 0;
+	opacity: 0.25;
+        border: 1px solid black;
+}
+
+td.numberkey-cell:hover {
+	opacity: 1;
 }
 
 table.sudoku {
@@ -67,9 +96,9 @@ table.sudoku-work-table td {
         vertical-align: top; }
 table.sudoku-work-table div {
         color: #22c;
-        font: 15px 'Covered By Your Grace', sans-serif;
+        font: 12px 'Patrick Hand', sans-serif;
         width: 15px;
-        margin: -3px 0; }
+        margin: 0 0; }
 td.sudoku-cell {
         width: 46px; height: 46px;
         text-align: center; vertical-align: middle;
@@ -85,12 +114,12 @@ div.sudoku-work {
         cursor: hand;
         padding: 0; margin: 0; border: 0; }
 div.sudoku-answer {
-        width: 66px; height: 66px;
+        width: 44px; height: 44px;
         text-align: center;
         cursor: hand;
-        padding: 0; margin: -12px; border: 0;
+        padding: 0; margin: 0px; border: 0;
         color: #22c;
-        font: 50px 'Covered By Your Grace', sans-serif;}
+        font: 40px 'Patrick Hand', sans-serif;}
 div.sudoku-given {
         width: 48px; height: 48px;
         text-align: center; vertical-align: middle;
@@ -139,15 +168,15 @@ div.menu-clip {
         overflow:hidden; }
 div.work-menu div.menu-text {
         color: #aaa;
-        font: 24px Covered By Your Grace; padding:0; margin:0;
-        height: 34px; width: 34px; border:0;
-        margin: -5px;
+        font: 20px Patrick Hand; padding:0; margin:0;
+        height: 24px; width: 24px; border:0;
+        margin: 0px;
         vertical-align:middle;
         cursor: pointer;
         background-color:#fff;
         opacity:1; }
 div.menu-mode {
-        height: 34px; width: 34px; border:0;
+        height: 24px; width: 24px; border:0;
         background-repeat:no-repeat;
         background-image:url(pencilgray.png);
         background-position:center;
@@ -157,7 +186,7 @@ div.menu-mode {
         opacity:1; }
 div.menu-ok {
         color: #aaa;
-        font: 12px Arial; padding:10px 6px; margin:0;
+        font: 12px Arial; padding:6px 0px; margin:0;
         height: 24px; width: 24px; border:0;
         margin: -0px;
         vertical-align:middle;

@@ -2,7 +2,7 @@
   "name": "Heidi's Sudoku",
   "description":
     "Sudoku for puzzle lovers.  Strategy hints, accurate ratings, automarks, coloring, saving, keyboard, infinte undo.",
-  "version": "0.0.0.34",
+  "version": "0.0.0.40",
   "app": {
     "launch": {
       "local_path": "app.html"

@@ -9,6 +9,9 @@ var SudokuUI = {};
 lib.levels = [];
 for (var j = 0; j <= 10; j++) { lib.levels.push(j); }
 
+var bgcolors = [
+  '', '#ecf', '#bef', '#bfb', '#ffb', '#fdb', '#fcd', '#ddd', '#888'];
+
 $(function() {
 
 function startnewgame(seed) {
@@ -75,11 +78,15 @@ function hidepopups() {
 
 $('body').click(function(ev) {
   if ($(ev.target).closest('#file').length > 0) return;
+  if (!$(ev.target).is('a,input')) {
+    setkeymode(0);
+  }
   hidepopups();
 });
 
 var keyfocus = null;
 var lastkeyfocus = $('#sc40');
+var keymode = null;
 
 function setkeyfocus(kf) {
   if (keyfocus !== null) {
@@ -94,11 +101,18 @@ function setkeyfocus(kf) {
 
 var lastkeyat = { pos: null, num: null, timestamp: 0 };
 
-$(document).keydown(function(ev) {
+function handlekeydown(ev) {
   if (workmenu.showing()) { workmenu.keydown(ev); return; }
   if (filebox.showing()) { filebox.keydown(ev); return; }
+  var num = ev.which - '1'.charCodeAt(0);
+  if (ev.which == 32 || ev.which == 46 || ev.which == 189) {
+    num = -1;
+  }
   if (keyfocus === null) {
     setkeyfocus(lastkeyfocus);
+    if (num >= -1 && num < 9) {
+      setkeymode(num + 1);
+    }
     return;
   }
   var pos = parseInt($(keyfocus).attr('id').substr(2));
@@ -114,10 +128,11 @@ $(document).keydown(function(ev) {
     return;
   }
   var state = currentstate();
-  var num = ev.which - '1'.charCodeAt(0);
-  if (ev.which == 32 || ev.which == 46 || ev.which == 189) {
-    num = -1;
+  if (ev.which == 188) {
+    showmenu(state, pos);
+    return;
   }
+  setkeymode(num + 1);
 
   if (entrymode && num >= -1 && num < 9) {
     if (num == -1) { num = null; }
@@ -212,6 +227,66 @@ $(document).keydown(function(ev) {
   setTimeout(function() {
     commitstate(state);
   }, 0);
+}
+
+$(document).keydown(handlekeydown);
+
+function setkeymode(num) {
+  $('td.numberkey-cell').css('opacity', '');
+  if (num >= 1 && num <= 9) {
+    $('#nk' + num).css('opacity', '1');
+    keymode = num;
+  } else {
+    keymode = null;
+  }
+}
+
+$('td.numberkey-cell').click(function(ev) {
+  var num = parseInt($(this).attr('id').substr(2));
+  setkeymode(num);
+  ev.stopPropagation();
+});
+
+function colorlevels(s) {
+  var solution = SudokuHint.constraints(s.puzzle);
+  var sofar = boardsofar(s);
+  var unsolved = false;
+  for (var j = 0; j < 81; j++) {
+    if (solution.answer[j] !== null && sofar[j] != solution.answer[j]) {
+      sofar[j] = null;
+    }
+    if (sofar[j] === null) {
+      unsolved = true;
+    }
+  }
+  var constraints = SudokuHint.constraints(sofar);
+  return { colors: constraints.level, unsolved: unsolved };
+}
+
+function togglecolor(state, level) {
+  var advice = colorlevels(state);
+  var makecolor = false;
+  for (var j = 0; j < 81; j++) {
+    if (advice.colors[j] == level && state.color[j] != level) {
+      makecolor = true;
+      break;
+    }
+  }
+  for (var j = 0; j < 81; j++) {
+    if (advice.colors[j] == level) {
+      state.color[j] = (makecolor ? level : 0);
+    }
+  }
+  if (makecolor && advice.unsolved) {
+    shownhint = true;
+  }
+  commitstate(state);
+}
+
+$('td.colorkey-cell').click(function(ev) {
+  var level = parseInt($(this).attr('id').substr(2));
+  togglecolor(currentstate(), level);
+  ev.stopPropagation();
 });
 
 $('td.sudoku-cell').click(function(ev) {
@@ -237,6 +312,27 @@ $(window).bind('contextmenu', function(ev) {
   ev.preventDefault();
   ev.stopPropagation();
 });
+
+function showmenu(state, pos) {
+  var sofar = boardsofar(state);
+  var elt = $('#sc' + pos);
+  sofar[pos] = null;
+  var hint = SudokuHint.simplehint(sofar)[pos];
+  workmenu.show(elt, $('div.work-menu'),
+                state.answer[pos], state.work[pos], state.mark[pos],
+                hint, false,
+  function(num, w, m) {
+    state = currentstate();
+    if (state.answer[pos] !== num ||
+        state.work[pos] !== w ||
+        state.mark[pos] !== m) {
+      state.answer[pos] = num;
+      state.work[pos] = w;
+      state.mark[pos] = m;
+      commitstate(state);
+    }
+  });
+}
 
 $('td.sudoku-cell').mousedown(function(ev) {
   ev.preventDefault();
@@ -267,23 +363,12 @@ $('td.sudoku-cell').mousedown(function(ev) {
     });
   } else {
     if (state.puzzle[pos] !== null) return;
-    var sofar = boardsofar(state);
-    sofar[pos] = null;
-    var hint = SudokuHint.simplehint(sofar)[pos];
-    workmenu.show(this, $('div.work-menu'),
-                  state.answer[pos], state.work[pos], state.mark[pos],
-                  hint, false,
-    function(num, w, m) {
-      state = currentstate();
-      if (state.answer[pos] !== num ||
-          state.work[pos] !== w ||
-          state.mark[pos] !== m) {
-        state.answer[pos] = num;
-        state.work[pos] = w;
-        state.mark[pos] = m;
-        commitstate(state);
-      }
-    });
+    if (keymode !== null) {
+      var ev2 = { ctrlKey: ev.ctrlKey, which: '0'.charCodeAt(0) + keymode };
+      handlekeydown(ev2);
+      return;
+    }
+    showmenu(state, pos);
   }
   ev.stopPropagation();
 });
@@ -414,7 +499,7 @@ $('#hintbutton').mousedown(function(ev) {
       }
       if (hint.support.length == 0 || isalt(ev)) {
         for (var j = 0; j < hint.reduced.length; j++) {
-          state.color[hint.reduced[j]] = 3;
+          state.color[hint.reduced[j]] = hint.level;
         }
         if (isalt(ev)) {
           ev.preventDefault();
@@ -486,25 +571,25 @@ $('#solvebutton').click(function(ev) {
 $('#colorbutton').click(function(ev) {
   hidepopups();
   var state = currentstate();
+  ev.preventDefault();
   if (isalt(ev)) {
-    ev.preventDefault();
     state.color = Sudoku.emptyboard();
   } else {
-    var solution = SudokuHint.constraints(state.puzzle);
-    var sofar = boardsofar(state);
-    var unsolved = false;
-    for (var j = 0; j < 81; j++) {
-      if (solution.answer[j] !== null && sofar[j] != solution.answer[j]) {
-        sofar[j] = null;
-      }
-      if (sofar[j] === null) {
-        unsolved = true;
+    var advice = colorlevels(state);
+    var same = true;
+    for (var j = 0; j < 81; ++j) {
+      if (state.color[j] != advice.colors[j]) {
+        same = false;
+        break;
       }
     }
-    var constraints = SudokuHint.constraints(sofar);
-    state.color = constraints.level;
-    if (unsolved) {
-      shownhint = true;
+    if (same) {
+      state.color = Sudoku.emptyboard();
+    } else {
+      state.color = advice.colors;
+      if (advice.unsolved) {
+        shownhint = true;
+      }
     }
   }
   commitstate(state);
@@ -667,9 +752,7 @@ function redraw(s, pos) {
     }
     var cn = color[j];
     if (cn === null) cn = 0;
-    var c = ['', '#ecf', '#bef', '#bfb', '#ffa', '#fea', '#fdd',
-             '#ddd', '#888'][cn];
-    $("#sc" + j).css('background-color', c);
+    $("#sc" + j).css('background-color', bgcolors[cn]);
   }
 }
 
@@ -961,6 +1044,9 @@ var workmenu = (function() {
     } else if (ev.which == '0'.charCodeAt(0) ||
                ev.which == 32 || ev.which == 46 || ev.which == 189) {
       txt = '-';
+    } else if (ev.which == 27 || ev.which == 13) {
+      hide();
+      return;
     }
     if (txt === null) return;
     entry(txt);
@@ -1348,6 +1434,32 @@ function menuhtml() {
   return result.join('');
 }
 
+function colorkeyhtml(em, hm) {
+  var result = '<table class=colorkey>';
+  result += '<tr><td>' + hm + '</td></tr>';
+  result += '<tr><td><table>';
+  for (var j = 6; j >= 1; --j) {
+    result += '<tr><td class=colorkey-cell' +
+       ' id=ck' + j +
+       ' style="background-color:' + bgcolors[j] + '">&nbsp;</td></tr>';
+    if (j != 1) result += '<tr><td style=height:16px;></td></tr>';
+  }
+  result += '</table></td></tr>';
+  result += '<tr><td>' + em + '</td></tr>';
+  result += '</table>';
+  return result;
+}
+
+function numberkeyhtml() {
+  var result = '<table class=numberkey style=padding:20px>';
+  for (var j = 1; j <= 9; ++j) {
+    result += '<tr><td class=numberkey-cell id=nk' + j + '>' +
+        '<div class=sudoku-answer>' + j + '</div></td></tr>';
+  }
+  result += '</table>';
+  return result;
+}
+
 function isalt(ev) {
   return (ev.which == 3) || (ev.ctrlKey);
 }
@@ -1384,6 +1496,8 @@ function googlurl(url, cb) {
 
 lib.boardhtml = boardhtml;
 lib.menuhtml = menuhtml;
+lib.numberkeyhtml = numberkeyhtml;
+lib.colorkeyhtml = colorkeyhtml;
 lib.debugstate = function(s) {
   setTimeout(function() { lib.debugstate(s); }, 10);
 };
