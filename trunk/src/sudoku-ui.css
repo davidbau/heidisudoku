@@ -6,6 +6,17 @@ body {
 h1 {
    font: 24pt "arial black", "arial bold", "sans-serif";
 }
+input[type="button"] {
+	background: gainsboro;
+	border: 0;
+        font-size: 15px;
+	padding: 4px 12px;
+	border-radius: 8px;
+}
+input[type="button"]:hover {
+	background: silver;
+}
+
 .puzzlename {
    text-align:center;
    font:20pt "arial black","arial bold","sans-serif";
