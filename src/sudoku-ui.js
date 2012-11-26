@@ -144,7 +144,7 @@ function handlekeydown(ev) {
     return;
   }
   var state = currentstate();
-  if (ev.which == 188) {
+  if (ev.which == 188) { // comma
     showmenu(state, pos);
     return;
   }
@@ -1068,7 +1068,7 @@ var workmenu = (function() {
       ['pencilgray.png', 'pencil.png', 'highlighter.png'][mode] + '")' });
   }
   function togglemode() {
-    mode = (mode + 1) % 3;
+    mode = 2 - mode; // (mode + 1) % 3;
     redrawmenu();
   }
   function show(elt, m, n, bits, mrk, h, ex, cb) {
@@ -1118,9 +1118,11 @@ var workmenu = (function() {
     } else if (ev.which == '0'.charCodeAt(0) ||
                ev.which == 32 || ev.which == 46 || ev.which == 189) {
       txt = '-';
-    } else if (ev.which == 27 || ev.which == 13) {
+    } else if (ev.which == 27 || ev.which == 13 || ev.which == 188) {
       hide();
       return;
+    } else if (ev.which == 'M'.charCodeAt(0)) {
+      txt = '';
     }
     if (txt === null) return;
     entry(txt);
@@ -1128,7 +1130,7 @@ var workmenu = (function() {
   function entry(txt) {
     if (txt == '') { togglemode(); }
     else if (txt == 'OK') { hide(); }
-    else if (txt == '\u2014') { state = 0; marked = 0;}
+    else if (txt == '\u2014' || txt == '-') { state = 0; marked = 0;}
     else if (txt == '?') { state = hint; }
     else {
       var clicktime = (new Date()).getTime();
