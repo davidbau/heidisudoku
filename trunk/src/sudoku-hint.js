@@ -127,13 +127,26 @@ function unzeroedwork(puzzle, answer, work) {
     if (unmarked != 0) {
       for (var y = 0; y < 9; y++) {
         var pos = posfor(block, y, 2);
-        if (sofar[pos] === null) result[pos] |= unmarked;
-        // benefit of the doubt: assume the player thinks the correct
-        // solution is one of the options in an empty square.
-        if (work[pos] == 0 && solution !== null) {
-          result[pos] |= (1 << solution[pos]);
+        if (sofar[pos] === null) {
+          result[pos] |= unmarked;
+          // benefit of the doubt: assume the player thinks the correct
+          // solution is one of the options in an empty square.
+          if (work[pos] == 0 && solution !== null) {
+            result[pos] |= (1 << solution[pos]);
+          }
         }
       }
+    }
+  }
+  return result;
+}
+
+function fillzeroeswork(puzzle, answer, work) {
+  var result = work.slice();
+  var sofar = boardsofar(puzzle, answer);
+  for (var j = 0; j < 81; j++) {
+    if (result[j] == 0 && sofar[j] === null) {
+      result[j] = 511;
     }
   }
   return result;
@@ -1115,6 +1128,7 @@ function hint(puzzle, answer, work) {
 function rawhints(puzzle, answer, work, nomistakes) {
   var sofar = boardsofar(puzzle, answer);
   var unz = unzeroedwork(puzzle, answer, work);
+  var fzw = fillzeroeswork(puzzle, answer, work);
   var result = [];
   var level = 0;
   var fb = figurebits(sofar);
@@ -1131,35 +1145,35 @@ function rawhints(puzzle, answer, work, nomistakes) {
     if (result.length) break;
     level = 2;
     result = result.concat(singlepos(sofar, fb, unz));
-    result = result.concat(singlenum(sofar, work));
+    result = result.concat(singlenum(sofar, fzw));
     if (result.length) break;
     level = 3;
-    result = result.concat(pointing(sofar, unz, work));
-    result = result.concat(claiming(sofar, unz, work));
-    result = result.concat(nakedsets(sofar, unz, work, 2));
-    result = result.concat(hiddensets(sofar, unz, work, 1));
+    result = result.concat(pointing(sofar, unz, fzw));
+    result = result.concat(claiming(sofar, unz, fzw));
+    result = result.concat(nakedsets(sofar, unz, fzw, 2));
+    result = result.concat(hiddensets(sofar, unz, fzw, 1));
     if (result.length) break;
     level = 4;
-    result = result.concat(xwing(sofar, unz, work, 2));
-    result = result.concat(ywing(sofar, unz, work, 3, 2));
-    result = result.concat(doublepointing(sofar, unz, work));
-    result = result.concat(nakedsets(sofar, unz, work, 3));
-    result = result.concat(hiddensets(sofar, unz, work, 2));
+    result = result.concat(xwing(sofar, unz, fzw, 2));
+    result = result.concat(ywing(sofar, unz, fzw, 3, 2));
+    result = result.concat(doublepointing(sofar, unz, fzw));
+    result = result.concat(nakedsets(sofar, unz, fzw, 3));
+    result = result.concat(hiddensets(sofar, unz, fzw, 2));
     if (result.length) break;
     level = 5;
-    result = result.concat(xwing(sofar, unz, work, 3));
-    result = result.concat(nakedsets(sofar, unz, work, 4));
-    result = result.concat(hiddensets(sofar, unz, work, 3));
-    result = result.concat(ywing(sofar, unz, work, 4, 3));
-    result = result.concat(coloring(sofar, unz, work, 3, 3));
+    result = result.concat(xwing(sofar, unz, fzw, 3));
+    result = result.concat(nakedsets(sofar, unz, fzw, 4));
+    result = result.concat(hiddensets(sofar, unz, fzw, 3));
+    result = result.concat(ywing(sofar, unz, fzw, 4, 3));
+    result = result.concat(coloring(sofar, unz, fzw, 3, 3));
     if (result.length) break;
     level = 6;
-    result = result.concat(hiddensets(sofar, unz, work, 4));
-    result = result.concat(xwing(sofar, unz, work, 4));
-    result = result.concat(ywing(sofar, unz, work, 12, 3));
-    result = result.concat(coloring(sofar, unz, work, 7, 3));
-    // result = result.concat(hiddensets(sofar, unz, work, 5));
-    // result = result.concat(xwing(sofar, unz, work, 5));
+    result = result.concat(hiddensets(sofar, unz, fzw, 4));
+    result = result.concat(xwing(sofar, unz, fzw, 4));
+    result = result.concat(ywing(sofar, unz, fzw, 12, 3));
+    result = result.concat(coloring(sofar, unz, fzw, 7, 3));
+    // result = result.concat(hiddensets(sofar, unz, fzw, 5));
+    // result = result.concat(xwing(sofar, unz, fzw, 5));
     break;
   }
   return {
@@ -1203,8 +1217,7 @@ function hintgrade(puzzle) {
     var difficulty = (h.level - 1) * 4 + 1;
     dumphints(h);
     if (h.hints.length <= 1) { difficulty += 2; }
-    difficulty *= ((unsolved + 12)/ 48);
-    steps += difficulty;
+    steps += difficulty * ((unsolved + 12) / 48);
     for (var k = 0; k < h.hints.length; k++) {
       var hint = h.hints[k];
       var modified = false;
@@ -1229,6 +1242,7 @@ function hintgrade(puzzle) {
       }
       */
     }
+    var wasunsolved = unsolved;
     unsolved = 0;
     for (var j = 0; j < 81; j++) {
       if (answer[j] !== null || puzzle[j] !== null) continue;
@@ -1236,8 +1250,10 @@ function hintgrade(puzzle) {
       if (nums.length == 1) { answer[j] = nums[0]; work[j] = 0; }
       else { unsolved += 1; }
     }
+    if (unsolved == wasunsolved && difficulty > 2) {
+      steps += 1;
+    }
   }
-  // console.log(steps);
   return steps;
 }
 

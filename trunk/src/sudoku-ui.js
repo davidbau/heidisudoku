@@ -108,6 +108,18 @@ function setkeyfocus(kf) {
   }
 }
 
+function setkeymode(num) {
+  $('td.numberkey-cell').css('opacity', '');
+  if (num >= 1 && num <= 9) {
+    $('#nk' + num).css('opacity', '1');
+    keymode = num;
+  } else {
+    $('#nk0').css('opacity', '1');
+    keymode = null;
+  }
+}
+
+setkeymode(0);
 var lastkeyat = { pos: null, num: null, timestamp: 0 };
 
 function handlekeydown(ev) {
@@ -223,6 +235,10 @@ function handlekeydown(ev) {
     state.mark[pos] = 0;
     state.answer[pos] = null;
     state.color[pos] = null;
+  } else if (ev.which == 'M'.charCodeAt(0)) {
+    var sofar = boardsofar(state);
+    sofar[pos] = null;
+    state.work[pos] = SudokuHint.simplehint(sofar)[pos];
   } else if (ev.which == 'W'.charCodeAt(0)) {
     state.color[pos] = null;
   } else if (ev.which == 'V'.charCodeAt(0)) {
@@ -248,16 +264,6 @@ function handlekeydown(ev) {
 }
 
 $(document).keydown(handlekeydown);
-
-function setkeymode(num) {
-  $('td.numberkey-cell').css('opacity', '');
-  if (num >= 1 && num <= 9) {
-    $('#nk' + num).css('opacity', '1');
-    keymode = num;
-  } else {
-    keymode = null;
-  }
-}
 
 $('td.numberkey-cell').click(function(ev) {
   var num = parseInt($(this).attr('id').substr(2));
@@ -1084,7 +1090,7 @@ var workmenu = (function() {
     lastclick = null;
     called = false;
     mode = 0; // 0: auto; 1: pencil; 2: highlight
-    if (listbits(state).length == 1) { mode = 1; }
+    if (listbits(state).length == 1) { mode = 2; }
     if (listbits(marked).length > 0) { mode = 2; }
     else if (n !== null) { state = (1 << n); }
     redrawmenu();
@@ -1121,8 +1127,10 @@ var workmenu = (function() {
     } else if (ev.which == 27 || ev.which == 13 || ev.which == 188) {
       hide();
       return;
-    } else if (ev.which == 'M'.charCodeAt(0)) {
+    } else if (ev.which == 'H'.charCodeAt(0)) {
       txt = '';
+    } else if (ev.which == 'M'.charCodeAt(0)) {
+      txt = '?';
     }
     if (txt === null) return;
     entry(txt);
@@ -1131,7 +1139,7 @@ var workmenu = (function() {
     if (txt == '') { togglemode(); }
     else if (txt == 'OK') { hide(); }
     else if (txt == '\u2014' || txt == '-') { state = 0; marked = 0;}
-    else if (txt == '?') { state = hint; }
+    else if (txt == '?' || txt == 'M') { state = hint; }
     else {
       var clicktime = (new Date()).getTime();
       var bit = (1 << (parseInt(txt) - 1));
@@ -1532,6 +1540,12 @@ function numberkeyhtml() {
     result += '<tr><td class=numberkey-cell id=nk' + j + '>' +
         '<div class=sudoku-answer>' + j + '</div></td></tr>';
   }
+  result += '<tr><td class=numberkey-cell id=nk0>' +
+   '<div class=sudoku-work><table class=sudoku-work-table>' +
+   '<tr><td><div>1</div></td><td><div>2</div></td><td><div>3</div></td></tr>' +
+   '<tr><td><div>4</div></td><td><div>5</div></td><td><div>6</div></td></tr>' +
+   '<tr><td><div>7</div></td><td><div>8</div></td><td><div>9</div></td></tr>' +
+   '</table></div></td></tr>';
   result += '</table>';
   return result;
 }
