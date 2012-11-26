@@ -1,4 +1,4 @@
-<title>About Heidi's Sudoku Hintpad</title>
+<title>About Heidi's Infinite Sudoku</title>
 <style>
 div.box { max-width: 360pt; text-align:left; }
 h1 { font: 20pt "arial black", "arial bold", "sans-serif" }
@@ -12,109 +12,47 @@ b { background-color: gainsboro; padding: 0 5px; }
 <center>
 <div class=box>
 <center><h1 style='font: 20pt "arial black", "arial bold", "sans-serif"'
->About Heidi's Sudoku Hintpad</h1></center>
+>About Heidi's Infinite Sudoku</h1></center>
 <p style="text-align:center"
 ><a href="index.html"
 onclick="if (location.hash.indexOf('#',1)>0) this.href=location.hash.substr(1)"
 >Back to the game</a>
 
-<h2>Heidi's Helpful Hints</h2>
+<h2>How to Play</h2>
 
-<p>Heidi's Sudoku is your puzzling companion, always ready
-with a bit of guidance or a hint if you get stuck.  You can
-get explicit hints, or you can get a colored map showing where
-something clever is worth mulling over.
+<p>Flip through puzzles with the <b>Next</b> and <b>Prev</b> buttons.
+You can work on the puzzles in any order and come back to them at
+any time.
 
-<p>The hintpad is excellent way to learn to solve sudoku
-quickly, and it can also help you learn more advanced techniques.
+<p>To fill in a puzzle, click on a number on the right and then click
+on any square to pencil in that number.  The rules of Sudoku are that
+every digit 1-9 must appear once in each row, column, and 3x3 block.
 
-<h2>Controls</h2>
+<h2>Keyboard Shortcuts</h2>
 
-<p>Click on a number on the right and then click on any square to
-pencil in that number.
+<p>You can also use the keyboard.  Point at a square or use arrow
+<b>&larr;</b> <b>&uarr;</b> <b>&darr;</b> <b>&rarr;</b> keys
+to move the dotted blue rectangle, and then type a digit <b>1</b> -
+<b>9</b> to fill it in.
+Typing multiple numbers in a square will mark all those numbers, but
+a double-tapped number will clear all marks and write the number as
+the answer.  Use the <b>space</b> or <b>delete</b> key to clear the
+selected square again.
 
-<p>Keyboard controls also work: use arrow keys to move the dotted blue
-rectangle, and use numbers to fill in numbers.  Typing multiple numbers
-in a square will mark all those numbers, but a double-tapped number
-will clear all marks and just write the number as the answer.  Space
-or delete to clear the selected square.
-
-<p>Click outside the board to deselect the number.  When a square
-is clicked without any selected number, you get a menu that lets
-you mark off multiple numbers.  The comma key also brings up
-this menu; press the escape key or move the mouse away to dismiss it.
-
-<p>Clicking on a color to the left will show you which squares are
-that level of difficulty: purple squares are the easiest, and red
-squares are the hardest.
-
-<h2>Difficulty Ratings</h3>
-
-<p>Good puzzles are rated on a 24-level scale from "Beginner" (the easiest)
-to "Counfounding" (the hardest).  The whole scale:
-
-<center><table><tr><td>
-1: Beginner<br>
-2: Easy<br>
-3: Simple<br>
-4: Basic<br>
-5: Moderate<br>
-6: Tricky<br>
-</td><td>
-7: Clever<br>
-8: Puzzling<br>
-9: Subtle<br>
-10: Difficult<br>
-11: Knotty<br>
-12: Thorny<br>
-</td><td>
-13: Baffling<br>
-14: Intricate<br>
-15: Perplexing<br>
-16: Obscure<br>
-17: Labyrinthine<br>
-18: Obstinate<br>
-</td><td>
-19: Abstruse<br>
-20: Vexing<br>
-21: Enigmatic<br>
-22: Formidable<br>
-23: Diabolical<br>
-24: Confounding<br>
-</td></tr></table>
-</center>
-
-<p>Puzzles that can be solved by just avoiding direct conflicts
-are "Basic" or easier, depending on how easy it is to see the
-constraints.  "Subtle" puzzles require one or two clever deductions.
-And it gets more difficult from there: "Confounding" puzzles
-involve untangling a mass of complex clues.
-
-<p>Generated puzzles are always created at one of these levels, but
-there are two other ratings that can be given to a puzzle entered manually.
-Puzzles rated "Impossible" have a solution, but they are no fun because
-they require some lucky guessing to solve.  Puzzles rated "Unsolvable"
-are incorrect puzzles that have either no complete solution or
-multiple different solutions.
-
-<h2>Visualizing Difficulty</h2>
-
-<p>When speeding through games or when choosing puzzles to play, it can
-be helpful to visualize the difficulty of a puzzle.
-
-<p>Squares of a given difficulty can be revealed by clicking on one
-of the colored buttons.  That will show every cell with the
-color that indicates the difficulty of solving that square.
-
-<p>Squares colored violet are the easiest; then blue, green, yellow,
-and orange are progressively harder.  Red squares are the hardest.
+<p>Use the comma <b>,</b> key or click a square without any selected number
+to bring up a menu that lets you mark off, clear, or highlight multiple
+numbers.
 
 <h2>Getting Hints</h2>
 
-<p>To get a specific hint, hold down the <b>Hint</b> button.  Red squares point
-out any mistakes.  Blue squares will be places that constrain the puzzle
-in some way, and green squares will be locations where a number can be
-filled in, or where the possibilities can be narrowed down.
+<p>Click a color on the left to reveal squares that are
+that level of difficulty: violet squares are the easiest, and red
+squares are the hardest.
+
+<p>Hold down the <b>Hint</b> button to get a specific hint.  Red squares
+point out any mistakes.  Blue squares will be places that constrain the
+puzzle in some way, and green squares will be locations where a number
+can be filled in, or where the possibilities can be narrowed down.
 
 <p>If you are still stuck, you can try a more explicit hint by holding
 down <b>ctrl</b> while clicking the <b>Hint</b> button.  Sometimes
@@ -155,16 +93,6 @@ Click again to make a
 <img style="margin:-1px" src="highlighter.png" alt="highligher">
 that lets you highlight specific numbers.
 
-<h2>Advanced Markup</h2>
-
-<p>You can also use the keyboard to enter candidates.  Type numbers
-to write candidates, delete or space to clear, and arrows or mouse to
-move.  If you double-tap a number, it will write that number and
-clear other candidates.
-
-<p>To color a square, use the keys <b>R</b> <b>O</b> <b>Y</b> <b>G</b>
-<b>B</b> <b>V</b>, or <b>W</b> to return the color to white.
-
 <h2>The Timer</h2>
 
 <p>The game will keep track of the amount of time it has taken you to
@@ -176,19 +104,6 @@ counted against you, don't worry: press the "Refresh" button in your
 browser and the timer will go back to the time you made your last move.
 Similarly, if you save a game, the time saved will be the time of the
 last move made.
-
-<h2>Mathematically Minimal Puzzles</h2>
-
-<p>If you click <b>New Puzzle</b>, a new puzzle with a random level of
-difficulty will be randomly generated.  Usually the puzzle will have
-25-30 hints.  Naturally, if there are fewer hints, you enjoy a
-slightly longer game.
-
-<p>The smallest number of hints that can be given on a solvable Suduoku
-game is believed to be 17, and Gordon Royle maintains a database of all
-17-hint puzzles that have been discovered so far.  If you hold
-<b>ctrl</b> while clicking <b>New Puzzle</b>, one of these 17-hint
-puzzles will be loaded from the internet.
 
 <h2>Saving and Sharing Puzzles</a>
 
@@ -202,7 +117,7 @@ puzzle that can be emailed.  Any markup and colors you put on the
 game will be saved along with the URL, so you can share a particularly
 clever sudoku step with other puzzlers.
 
-<h2>Editing Puzzles</h2>
+<h2>Entering Your Own Puzzles</h2>
 
 <p>If you right-click or hold down <b>ctrl</b> while clicking a square,
 you can change the puzzle at any time.  Holding <b>ctrl</b> while
@@ -214,6 +129,48 @@ no solution.
 <p>As soon as you have entered a puzzle with a unique solution, a
 difficulty rating will be shown and the keyboard will switch back to
 game mode.
+
+<h2>Difficulty Ratings</h3>
+
+<p>Sudoku puzzles are rated on a 24-level scale from "Beginner" (the easiest)
+to "Counfounding" (the hardest).  The whole scale:
+
+<center><table><tr><td>
+1: Beginner<br>
+2: Easy<br>
+3: Simple<br>
+4: Basic<br>
+5: Moderate<br>
+6: Tricky<br>
+</td><td>
+7: Clever<br>
+8: Puzzling<br>
+9: Subtle<br>
+10: Difficult<br>
+11: Knotty<br>
+12: Thorny<br>
+</td><td>
+13: Baffling<br>
+14: Intricate<br>
+15: Perplexing<br>
+16: Obscure<br>
+17: Labyrinthine<br>
+18: Obstinate<br>
+</td><td>
+19: Abstruse<br>
+20: Vexing<br>
+21: Enigmatic<br>
+22: Formidable<br>
+23: Diabolical<br>
+24: Confounding<br>
+</td></tr></table>
+</center>
+
+<p>Puzzles that can be solved by just avoiding direct conflicts
+are "Basic" or easier, depending on how easy it is to see the
+constraints.  "Subtle" puzzles require one or two clever deductions.
+And it gets more difficult from there: "Confounding" puzzles
+involve untangling a mass of complex clues.
 
 <h2>Credits</h2>
 
@@ -239,7 +196,7 @@ this time, but they are available to read
 <a href="https://www.assembla.com/code/jssudoku/subversion/nodes/trunk/src"
 >here on assembla.com</a>.
 
-<p style=text-align:center>Version 0.43</p>
+<p style=text-align:center>Version 0.52</p>
 </div>
 </center>
 
