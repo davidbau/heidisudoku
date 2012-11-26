@@ -1,4 +1,4 @@
-<title>Heidi's Sudoku</title>
+<title>Heidi's Infinite Sudoku Pad</title>
 <link rel=stylesheet href=sudoku-ui.css>
 <script src=jquery-1.4.4.min.js></script>
 <script src=jquery-bbq-1.2.1.min.js></script>
@@ -37,9 +37,11 @@ document.write(SudokuUI.numberkeyhtml());
 <input type=button value="File" id=filebutton
    title="Load or save.  Ctrl to reveal solution."
 ><input type=button value="Clear" id=clearbutton
-   title="Reset puzzle.  Ctrl to for empty puzzle."
-><input type=button value="New Puzzle" id=newbutton
-   title="New puzzle.  Ctrl for 17-puzzle."
+   title="Reset puzzle.  Ctrl for empty puzzle."
+><input type=button value="&laquo; Prev" id=prevbutton
+   title="Previous puzzle.  Ctrl to go back 10."
+><input type=button value="Next &raquo;" id=nextbutton
+   title="Next puzzle.  Ctrl to go forward 10."
 ><input type=button value="Hint" id=hintbutton
    title="Show a hint.  Ctrl for an explicit hint."
 ><input type=button value="Check" id=checkbutton
@@ -72,7 +74,7 @@ document.write(SudokuUI.numberkeyhtml());
 <p align=center style="padding-top:20px;font: 10pt arial">
 <a href="about.html"
 onclick="this.href=this.href.replace(/#.*$/,'')+'#app.html'+location.hash"
->About Heidi's Sudoku</a>
+>About Heidi's Infinite Sudoku Pad</a>
 </p>
 <script>
 SudokuUI.levels = [

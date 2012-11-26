@@ -1,6 +1,6 @@
-// UI for Heidi's Sudoku Hintpad
+// UI for Heidi's Infinite Sudoku Pad
 //
-// Copyright 2010 David Bau, all rights reserved.
+// Copyright 2012 David Bau, all rights reserved.
 
 var SudokuUI = {};
 
@@ -14,18 +14,27 @@ var bgcolors = [
 
 $(function() {
 
-function startnewgame(seed) {
+function startnewgame(seed, autoload) {
   var now = (new Date).getTime();
   var auto = (typeof seed == 'undefined');
+  if (typeof increment == 'undefined') { increment = 1; }
   if (auto) { seed = now; }
   var puzzle, steps;
+  var extra = 0;
   for (;;) {
-    puzzle = Sudoku.makepuzzle(seed);
+    if (loadstate('sudokupage_' + seed)) {
+      return;
+    }
+    var xseed = seed;
+    if (extra) {
+      xseed += '.' + extra;
+    }
+    puzzle = Sudoku.makepuzzle(xseed);
     steps = SudokuHint.hintgrade(puzzle);
-    if (!auto || steps <= 130) break;
-    seed += 1;
+    if (steps <= 130) break;
+    extra += 1;
   }
-  gradepuzzle(puzzle, steps);
+  // gradepuzzle(puzzle, steps);
   var finished = (new Date).getTime();
   commitstate({
     puzzle: puzzle, seed: seed, hints: 0,
@@ -43,10 +52,10 @@ var shownhint = false;
 
 if (!window.location.hash) {
   if (!loadstate('sudokustate')) {
-    startnewgame();
+    startnewgame(1, true);
   }
 } else if (/^#seed=[^&]*$/.test(location.hash)) {
-  startnewgame(location.hash.substr(6));
+  startnewgame(parseInt(location.hash.substr(6)), 0);
 } else {
   // If you link to a game, time starts at the moment of the last move.
   state = currentstate();
@@ -104,6 +113,13 @@ var lastkeyat = { pos: null, num: null, timestamp: 0 };
 function handlekeydown(ev) {
   if (workmenu.showing()) { workmenu.keydown(ev); return; }
   if (filebox.showing()) { filebox.keydown(ev); return; }
+  if (ev.which == 'P'.charCodeAt(0)) {
+    $('#prevbutton').click();
+    return;
+  } else if (ev.which == 'N'.charCodeAt(0)) {
+    $('#nextbutton').click();
+    return;
+  }
   var num = ev.which - '1'.charCodeAt(0);
   if (ev.which == 32 || ev.which == 46 || ev.which == 189) {
     num = -1;
@@ -209,7 +225,7 @@ function handlekeydown(ev) {
     state.color[pos] = null;
   } else if (ev.which == 'W'.charCodeAt(0)) {
     state.color[pos] = null;
-  } else if (ev.which == 'P'.charCodeAt(0) || ev.which == 'V'.charCodeAt(0)) {
+  } else if (ev.which == 'V'.charCodeAt(0)) {
     state.color[pos] = 1;
   } else if (ev.which == 'B'.charCodeAt(0)) {
     state.color[pos] = 2;
@@ -277,7 +293,7 @@ function togglecolor(state, level) {
   for (var j = 0; j < 81; j++) {
     if (advice.colors[j] == level) {
       state.color[j] = (makecolor ? level : 0);
-    } else if (makecolor && state.color[j] == level) {
+    } else if (state.color[j] == level) {
       state.color[j] = 0;
     }
   }
@@ -384,7 +400,11 @@ function gradepuzzle(puzzle, steps) {
     entrymode = false;
     return;
   }
-  if (!puzzle) puzzle = state.puzzle;
+  var seed = 0;
+  if (!puzzle) {
+    puzzle = state.puzzle;
+    seed = state.seed;
+  }
   var current = encodepuzzle81(puzzle);
   if (graded === current) return;
   graded = current;
@@ -402,11 +422,50 @@ function gradepuzzle(puzzle, steps) {
   if (!steps) steps = SudokuHint.hintgrade(puzzle);
   var level = Math.max(1, Math.min(lib.levels.length - 1,
               Math.floor(steps / 5)));
-  $('#grade').html(lib.levels[level]);
+  var numtext = '';
+  if (seed >= 1 && seed <= 10000000000) {
+    numtext = seed + '. ';
+  }
+  $('#grade').html(numtext + lib.levels[level]);
   $('#grade').attr('title', 'Level ' + level);
   entrymode = false;
   return;
 }
+
+var lastseenpage = 1;
+
+function flippage(skip) {
+  var state = currentstate();
+  var seed = parseInt(state.seed);
+  var oldseed = seed;
+  if (seed >= 1 && seed <= 10000000000) {
+    if (seed < 100 || needsave(state)) {
+      savestate('sudokupage_' + seed, state);
+    } else {
+      localStorage.removeItem('sudokupage_' + seed);
+    }
+  } else {
+    seed = lastseenpage;
+  }
+  seed += skip;
+  if (seed < 1) {
+    seed = 1;
+  }
+  if (seed == oldseed) {
+    return;
+  }
+  lastseenpage = seed;
+  startnewgame(seed, true);
+  gradepuzzle();
+}
+
+$('#nextbutton').click(function(ev) {
+  flippage(isalt(ev) ? 10 : 1);
+});
+
+$('#prevbutton').click(function(ev) {
+  flippage(isalt(ev) ? -10 : -1);
+});
 
 $('#newbutton').click(function(ev) {
   hidepopups();
@@ -433,7 +492,8 @@ $('#newbutton').click(function(ev) {
 $('#clearbutton').click(function(ev) {
   hidepopups();
   var state = currentstate();
-  var cleared = {puzzle: state.puzzle, answer:[], work:[], mark:[], color:[]};
+  var cleared = {puzzle: state.puzzle, answer:[], work:[], mark:[], color:[],
+                 gentime: (new Date).getTime()};
   if (isalt(ev)) {
     cleared = {puzzle: [], answer: [], work: [], mark: [], color: [],
                seed: 0, hints: 0, savename: '', gentime: (new Date).getTime()};
@@ -765,7 +825,8 @@ function loadstate(name) {
       !(name in window.localStorage)) {
     return false;
   }
-  var state = JSON.parse(localStorage[name]);
+  var data = localStorage[name];
+  var state = JSON.parse(data);
   if (!state.puzzle || !state.puzzle.length) return false;
   if ('elapsed' in state) {
     starttime = (new Date).getTime() - state.elapsed;
@@ -805,6 +866,15 @@ function savestate(name, state) {
     return;
   }
   localStorage[name] = JSON.stringify(state);
+}
+
+function needsave(state) {
+  for (var j = 0; j < 81; ++j) {
+    if (state.answer[j] || state.work[j] || state.mark[j] || state.color[j]) {
+      return true;
+    }
+  }
+  return false;
 }
 
 // rlebits
