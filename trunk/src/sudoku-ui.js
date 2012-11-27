@@ -523,13 +523,24 @@ function updatetime() {
 $('#timerbutton').mousedown(function(ev) {
   hidepopups();
   var state = currentstate();
-  if (true || isalt(ev)) {
-    showpopup('#timer');
+  if (isalt(ev)) {
+    // Show solution.
+    ev.preventDefault();
+    var constraints = SudokuHint.constraints(state.puzzle);
+    state.answer = constraints.answer;
+    state.color = constraints.level;
+    commitstate(state);
+    return;
   } else {
+    showpopup('#timer');
+  }
+  /*
+  {
     var hidden = ($('.timescore').css('visibility') != 'visible');
     $('.timescore').css('visibility', hidden ? 'visible' : '');
     $('.timescore .timer').css('display', hidden ? 'inline' : 'none');
   }
+  */
   if (victorious(state)) {
     $('.timer').text(formatelapsed(state.elapsed));
     return;
@@ -609,7 +620,7 @@ $('#markbutton').click(function(ev) {
   var sofar = boardsofar(state);
   if (isalt(ev)) {
     for (var j = 0; j < 81; j++) {
-      state.color[j] = null;
+      // state.color[j] = null;
       if (sofar[j] !== null) continue;
       state.work[j] = 0;
       state.mark[j] = 0;
@@ -669,11 +680,20 @@ $('#filebutton').click(function(ev) {
   hidepopups();
   var state = currentstate();
   if (isalt(ev)) {
+    // Load minimal 17-hint puzzle
+    redraw({puzzle: Sudoku.emptyboard(), answer: Sudoku.emptyboard(),
+            work: zdecodebits(''), mark: zdecodebits(''),
+            color: Sudoku.emptyboard(), seed: 0, hints: 0,
+            savename: '', gentime: (new Date).getTime()});
+    $('#grade').html('&nbsp;');
+    $.getJSON('http://davidbau.com/sudoku/min.json?callback=?', function(p) {
+      var puzzle = decodepuzzle81(p);
+      commitstate({puzzle: puzzle, answer: [], work: [], mark: [], color: [],
+                   seed: 0, hints: 0,
+                   savename: '', gentime: (new Date).getTime()});
+      gradepuzzle();
+    });
     ev.preventDefault();
-    var constraints = SudokuHint.constraints(state.puzzle);
-    state.answer = constraints.answer;
-    state.color = constraints.level;
-    commitstate(state);
     return;
   }
   if (!('savename' in state) || state.savename.length == 0) {
