@@ -1541,9 +1541,9 @@ function menuhtml() {
 }
 
 function colorkeyhtml(em, hm) {
-  var result = '<table class=colorkey>';
+  var result = '<table style=text-align:center>';
   result += '<tr><td>' + hm + '</td></tr>';
-  result += '<tr><td><table>';
+  result += '<tr><td><table class=colorkey>';
   for (var j = 6; j >= 1; --j) {
     result += '<tr><td class=colorkey-cell' +
        ' id=ck' + j +

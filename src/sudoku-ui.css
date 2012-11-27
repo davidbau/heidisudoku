@@ -70,6 +70,10 @@ td.colorkey-cell {
         border: 1px solid black;
 }
 
+td.colorkey-cell:hover {
+        opacity: 0.5;
+}
+
 td.numberkey-cell {
         width: 46px; height: 46px;
         text-align: center; vertical-align: middle;
