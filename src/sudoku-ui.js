@@ -109,12 +109,12 @@ function setkeyfocus(kf) {
 }
 
 function setkeymode(num) {
-  $('td.numberkey-cell').css('opacity', '');
+  $('td.numberkey-cell').css('opacity', '').css('background', '');
   if (num >= 1 && num <= 9) {
-    $('#nk' + num).css('opacity', '1');
+    $('#nk' + num).css('opacity', '1').css('background', 'white');
     keymode = num;
   } else {
-    $('#nk0').css('opacity', '1');
+    $('#nk0').css('opacity', '1').css('background', 'white');
     keymode = null;
   }
 }
