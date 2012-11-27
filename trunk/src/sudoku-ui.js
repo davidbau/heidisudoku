@@ -622,14 +622,30 @@ $('#markbutton').click(function(ev) {
   hidepopups();
   var state = currentstate();
   var sofar = boardsofar(state);
+  var doclear = false;
   if (isalt(ev)) {
+    doclear = true;
+    ev.preventDefault();
+  } else {
+    var boringwork = SudokuHint.pencilmarks(sofar, Sudoku.emptyboard());
+    var unchanged = true;
+    for (var j = 0; j < 81; j++) {
+      if (boringwork[j] != state.work[j] || state.mark[j]) {
+        unchanged = false;
+        break;
+      }
+    }
+    if (unchanged) {
+      doclear = true;
+    }
+  }
+  if (doclear) {
     for (var j = 0; j < 81; j++) {
       // state.color[j] = null;
       if (sofar[j] !== null) continue;
       state.work[j] = 0;
       state.mark[j] = 0;
     }
-    ev.preventDefault();
   } else {
     state.work = SudokuHint.pencilmarks(sofar, state.work);
     for (var j = 0; j < 81; j++) {
