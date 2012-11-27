@@ -125,6 +125,7 @@ var lastkeyat = { pos: null, num: null, timestamp: 0 };
 function handlekeydown(ev) {
   if (workmenu.showing()) { workmenu.keydown(ev); return; }
   if (filebox.showing()) { filebox.keydown(ev); return; }
+  ev.preventDefault();
   if (ev.which == 'P'.charCodeAt(0)) {
     $('#prevbutton').click();
     return;
@@ -552,7 +553,8 @@ $('#timerbutton').mousedown(function(ev) {
 
 $('#hintbutton,#checkbutton,#timerbutton').bind(
     'mouseup mouseleave', function() {
-  if ($('#victory').css('display') != 'none') {
+  if ($('#victory').css('display') != 'none' ||
+      $('#file').css('display') != 'none') {
     return;
   }
   hidepopups();
