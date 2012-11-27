@@ -1128,7 +1128,7 @@ function hint(puzzle, answer, work) {
 function rawhints(puzzle, answer, work, nomistakes) {
   var sofar = boardsofar(puzzle, answer);
   var unz = unzeroedwork(puzzle, answer, work);
-  var fzw = fillzeroeswork(puzzle, answer, work);
+  var fzw = work.slice(); // fillzeroeswork(puzzle, answer, work);
   var result = [];
   var level = 0;
   var fb = figurebits(sofar);

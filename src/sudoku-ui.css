@@ -8,9 +8,9 @@ h1 {
 }
 input[type="button"] {
 	background: gainsboro;
-	border: 0;
-        font-size: 15px;
-	padding: 4px 12px;
+	border: 2px solid white;
+        font-size: 12px;
+	padding: 4px 8px;
 	border-radius: 8px;
 }
 input[type="button"]:hover {
