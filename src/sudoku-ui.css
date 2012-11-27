@@ -62,16 +62,16 @@ td.colorkey-cell {
         width: 46px; height: 46px;
         text-align: center; vertical-align: middle;
         line-height: 0;
-        border: 1px solid black;
+        border: 1px solid white;
 }
 
 td.colorkey-cell:hover {
-        opacity: 0.5;
+        border: 1px solid black;
 }
 
 table.numberkey {
-        border-collapse: collapse;
-	margin: 0 30px;
+        border-collapse: no-collapse;
+        border-spacing: 0;
 }
 
 td.numberkey-cell {
@@ -79,13 +79,14 @@ td.numberkey-cell {
         width: 46px; height: 46px;
         text-align: center; vertical-align: middle;
         line-height: 0;
-	opacity: 0.35;
-        border: 1px solid black;
+	opacity: 0.38;
+        border: 1px solid white;
 }
 
 td.numberkey-cell:hover {
 	/* background: white; */
 	opacity: 1;
+        border: 1px solid black;
 }
 
 table.sudoku {

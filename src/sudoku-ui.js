@@ -109,12 +109,14 @@ function setkeyfocus(kf) {
 }
 
 function setkeymode(num) {
-  $('td.numberkey-cell').css('opacity', '').css('background', '');
+  $('td.numberkey-cell').css({'opacity': '', 'background': '', 'border': ''});
   if (num >= 1 && num <= 9) {
-    $('#nk' + num).css('opacity', '1').css('background', 'white');
+    $('#nk' + num).css(
+        {'opacity': '1', 'background': 'white', 'border': '1px solid black'});
     keymode = num;
   } else {
-    $('#nk0').css('opacity', '1').css('background', 'white');
+    $('#nk0').css('opacity', '1').css(
+        {'opacity': '1', 'background': 'white', 'border': '1px solid black'});
     keymode = null;
   }
 }
@@ -1548,7 +1550,7 @@ function colorkeyhtml(em, hm) {
     result += '<tr><td class=colorkey-cell' +
        ' id=ck' + j +
        ' style="background-color:' + bgcolors[j] + '">&nbsp;</td></tr>';
-    if (j != 1) result += '<tr><td style=height:16px;></td></tr>';
+    if (j != 1) result += '<tr><td style=height:20px;></td></tr>';
   }
   result += '</table></td></tr>';
   result += '<tr><td>' + em + '</td></tr>';

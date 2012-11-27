@@ -16,24 +16,19 @@
 <td style=text-align:right>Hints <span class=hints>0</span></td>
 </tr></table>
 <table><tr>
-<td>
+<td style=text-align:center>
 <script>
 document.write(SudokuUI.colorkeyhtml('Easiest', 'Hardest'));
 </script>
+<p>
+<input type=button value="Color" id=colorbutton
+   title="Show colors.  Ctrl to clear colors."
 </td>
 <td>
 <script>
 document.write(SudokuUI.boardhtml());
 document.write(SudokuUI.menuhtml());
 </script>
-</td>
-<td>
-<script>
-document.write(SudokuUI.numberkeyhtml());
-</script>
-</td>
-</tr>
-</table>
 <input type=button value="File" id=filebutton
    title="Load or save.  Ctrl to load a 17-hint Sudoku."
 ><input type=button value="Clear" id=clearbutton
@@ -51,6 +46,14 @@ document.write(SudokuUI.numberkeyhtml());
 ><input type=button value="Timer" id=timerbutton
    title="Show timer.  Ctrl to reveal solution."
 >
+</td>
+<td>
+<script>
+document.write(SudokuUI.numberkeyhtml());
+</script>
+</td>
+</tr>
+</table>
 <div class=sudoku-popup id=victory>You Win!</div>
 <div class=sudoku-popup id=ok>ok so far</div>
 <div class=sudoku-popup id=errors>mistake</div>
