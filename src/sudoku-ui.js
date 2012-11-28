@@ -393,7 +393,11 @@ $('td.sudoku-cell').mousedown(function(ev) {
   } else {
     if (state.puzzle[pos] !== null) return;
     if (keymode !== null) {
-      var ev2 = { ctrlKey: ev.ctrlKey, which: '0'.charCodeAt(0) + keymode };
+      var ev2 = {
+        ctrlKey: ev.ctrlKey,
+        which: '0'.charCodeAt(0) + keymode,
+        preventDefault: function() {},
+      };
       handlekeydown(ev2);
       return;
     }
