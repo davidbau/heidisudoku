@@ -1579,7 +1579,7 @@ function colorkeyhtml(em, hm) {
 }
 
 function numberkeyhtml() {
-  var result = '<table class=numberkey style=padding:20px>';
+  var result = '<table class=numberkey>';
   for (var j = 1; j <= 9; ++j) {
     result += '<tr><td class=numberkey-cell id=nk' + j + '>' +
         '<div class=sudoku-answer>' + j + '</div></td></tr>';
