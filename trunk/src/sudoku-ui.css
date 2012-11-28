@@ -1,274 +1,267 @@
+/* Font loading for firefox */
+@font-face {
+  font-family: 'Patrick Hand';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Patrick Hand'), local('PatrickHand'),
+       url('PatrickHand-Regular.ttf') format('truetype'); }
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 800;
+  src: local('Open Sans Extrabold'), local('OpenSans-Extrabold'),
+  url('OpenSans-ExtraBold.ttf') format('truetype'); }
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans'), local('OpenSans'),
+       url('OpenSans-Regular.ttf') format('truetype'); }
+
 body {
-   -webkit-user-select: none;
-   user-select: none;
-   font: 10pt Arial;
-}
-h1 {
-   font: 24pt "arial black", "arial bold", "sans-serif";
-}
+  -webkit-user-select: none;
+  user-select: none;
+  font: 10pt Open Sans; }
+
+h1 { font: 24pt "Open Sans"; font-weight: 800; }
+#about h2 { font: 14pt Open Sans; font-weight: 800; }
+#about p, td { font: 10pt Open Sans }
+#about div.box { max-width: 360pt; text-align:left; }
+#about td { padding-right: 20px; }
+#about b { background-color: gainsboro; padding: 0 5px; }
+#about #version { text-align: center; font-style: italic;  }
+
 input[type="button"] {
-	background: gainsboro;
-	border: 2px solid white;
-        font-size: 12px;
-	padding: 4px 8px;
-	border-radius: 8px;
-}
+  font-family: "Open Sans";
+  background: gainsboro;
+  border: 2px solid white;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 8px; }
 input[type="button"]:hover {
-	background: silver;
-}
+  background: silver; }
 
 .puzzlename {
    text-align:center;
-   font:20pt "arial black","arial bold","sans-serif";
-   padding-bottom: 10px;
-}
-/* Font loading for firefox */
-@font-face {
-        font-family: 'Patrick Hand';
-        font-style: normal;
-        font-weight: normal;
-        src: local('Patrick Hand'),
-             local('PatrickHand'),
-             url('PatrickHand-Regular.ttf') format('truetype'); }
-/* Font loading for chrome */
-@media screen {
-  @font-face {
-        font-family: 'Patrick Hand';
-        font-style: normal;
-        font-weight: normal;
-        src: local('Patrick Hand'),
-             local('PatrickHand'),
-             url('PatrickHand-Regular.ttf') format('truetype'); } }
+   font: 24pt "Open Sans";
+   font-weight: 800;
+   padding-bottom: 10px; }
 table.timescore {
-        visibility: hidden;
-        margin-top: -15px;
-        border: 0;
-        border-collapse: collapse;
-        width: 450px;
-}
+  visibility: hidden;
+  margin-top: -15px;
+  border: 0;
+  border-collapse: collapse;
+  width: 450px; }
 table.timescore td {
-        font: 10pt "arial black", "arial bold", "sans-serif";
-}
+  font: 10pt "Open Sans";
+  font-weight: 800; }
 table.timescore .timer {
-        display: none;
-}
-
+  display: none; }
 table.colorkey {
-        border-collapse: collapse;
-	margin: 0 30px;
-}
-
+  border-collapse: collapse;
+  margin: 0 30px; }
 td.colorkey-cell {
-        width: 46px; height: 46px;
-        text-align: center; vertical-align: middle;
-        line-height: 0;
-        border: 1px solid white;
-}
-
+  width: 46px; height: 46px;
+  text-align: center; vertical-align: middle;
+  line-height: 0;
+  border: 1px solid white; }
 td.colorkey-cell:hover {
-        border: 1px solid black;
-}
-
+  border: 1px solid black; }
 table.numberkey {
-        border-collapse: no-collapse;
-        border-spacing: 0;
-}
-
+  border-collapse: no-collapse;
+  border-spacing: 0; }
 td.numberkey-cell {
-	background: silver;
-        width: 46px; height: 46px;
-        text-align: center; vertical-align: middle;
-        line-height: 0;
-	opacity: 0.38;
-        border: 1px solid white;
-}
-
+  background: silver;
+  width: 46px; height: 46px;
+  text-align: center; vertical-align: middle;
+  line-height: 0;
+  opacity: 0.38;
+  border: 1px solid white; }
 td.numberkey-cell:hover {
-	/* background: white; */
-	opacity: 1;
-        border: 1px solid black;
-}
-
+  opacity: 1;
+  border: 1px solid black; }
 table.sudoku {
-        border-collapse: collapse; }
+  border-collapse: collapse; }
 table.sudoku-select {
-        border-collapse: collapse;
-        border: 1px solid transparent;
-        line-height: 100%;
-        text-align: center; vertical-align: middle;
-        padding: 0px; }
+  border-collapse: collapse;
+  border: 1px solid transparent;
+  line-height: 100%;
+  text-align: center; vertical-align: middle;
+  padding: 0px; }
 table.sudoku-work-table {
-        border-collapse: collapse;
-        border: 0;
-        margin: 0;
-        width: 100%;
-        height: 100%; }
+  border-collapse: collapse;
+  border: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%; }
 table.sudoku-work-table td {
-        border: 0;
-        padding: 0;
-        margin: 0;
-        line-height: 0;
-        width: 15px; height: 14px;
-        text-align: center;
-        overflow: hidden;
-        vertical-align: top; }
+  border: 0;
+  padding: 0;
+  margin: 0;
+  line-height: 0;
+  width: 15px; height: 14px;
+  text-align: center;
+  overflow: hidden;
+  vertical-align: top; }
 table.sudoku-work-table div {
-        color: #22c;
-        font: 12px 'Patrick Hand', sans-serif;
-        width: 15px;
-        margin: 0 0; }
+  color: #22c;
+  font: 12px 'Patrick Hand', sans-serif;
+  width: 15px;
+  margin: 0 0; }
 td.sudoku-cell {
-        width: 46px; height: 46px;
-        text-align: center; vertical-align: middle;
-        line-height: 0;
-        border: 1px solid black; }
+  width: 46px; height: 46px;
+  text-align: center; vertical-align: middle;
+  line-height: 0;
+  border: 1px solid black; }
 div.sudoku-border {
-        width: 44px; height: 44px;
-        text-align: center; vertical-align: middle;
-        border: 1px solid transparent; overflow: hidden; }
+  width: 44px; height: 44px;
+  text-align: center; vertical-align: middle;
+  border: 1px solid transparent; overflow: hidden; }
 div.sudoku-work {
-        width: 44px; height: 44px;
-        text-align: center;
-        cursor: hand;
-        padding: 0; margin: 0; border: 0; }
+  width: 44px; height: 44px;
+  text-align: center;
+  cursor: hand;
+  padding: 0; margin: 0; border: 0; }
 div.sudoku-answer {
-        width: 44px; height: 44px;
-        text-align: center;
-        cursor: hand;
-        padding: 0; margin: 0px; border: 0;
-        color: #22c;
-        font: 40px 'Patrick Hand', sans-serif;}
+  width: 44px; height: 44px;
+  text-align: center;
+  cursor: hand;
+  padding: 0; margin: 0px; border: 0;
+  color: #22c;
+  font: 40px 'Patrick Hand', sans-serif;}
 div.sudoku-given {
-        width: 48px; height: 48px;
-        text-align: center; vertical-align: middle;
-        cursor: default;
-        padding: 0; margin: -3px;
-        line-height: 0;
-        font-weight: bold;
-        font: 34px 'arial black', sans-serif;}
+  width: 48px; height: 48px;
+  text-align: center; vertical-align: middle;
+  cursor: default;
+  padding: 0; margin: -3px;
+  line-height: 0;
+  font: 36px 'Open Sans';
+  font-weight: 800; }
 td.sudoku-border {
-        background: black; height: 1px; width: 1px;
-        border: 1px solid black;}
+  background: black; height: 1px; width: 1px;
+  border: 1px solid black;}
 img.sudoku-border {
-        background: black; height: 1px; width: 1px; }
+  background: black; height: 1px; width: 1px; }
 div.sudoku-popup {
-        position: absolute;
-        height: 42px; width: 220px;
-        font: 27px 'arial black', sans-serif;
-        cursor: default;
-        text-align: center;
-        padding: 2px;
-        vertical-align: middle;
-        border: 3px solid black;
-        background-color: white;
-        display: none; }
+  position: absolute;
+  height: 42px; width: 220px;
+  font: 27px 'Open Sans';
+  font-weight: 800;
+  cursor: default;
+  text-align: center;
+  padding: 2px;
+  vertical-align: middle;
+  border: 3px solid black;
+  background-color: white;
+  display: none; }
 div.sudoku-popup#victory {
-        background-color: yellow; }
+  background-color: yellow; }
 div.sudoku-popup#file {
-        height: auto; width: auto; }
+  height: auto; width: auto; }
 div.work-menu {
-        position: absolute;
-        display: none;
-        overflow: hidden; }
+  position: absolute;
+  display: none;
+  overflow: hidden; }
 div.work-menu table {
-        border: 2px solid black;
-        border-collapse: collapse;
-        border-spacing: 0;
-        width: 72px;
-        height: 96px; }
+  border: 2px solid black;
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 72px;
+  height: 96px; }
 div.work-menu td {
-        padding: 0;
-        }
+  padding: 0; }
 div.menu-clip {
-        height: 24px; width: 24px; border:0;
-        text-align:center;
-        vertical-align:middle;
-        overflow:hidden; }
+  height: 24px; width: 24px; border:0;
+  text-align:center;
+  vertical-align:middle;
+  overflow:hidden; }
 div.work-menu div.menu-text {
-        color: #aaa;
-        font: 20px Patrick Hand; padding:0; margin:0;
-        height: 24px; width: 24px; border:0;
-        margin: 0px;
-        vertical-align:middle;
-        cursor: pointer;
-        background-color:#fff;
-        opacity:1; }
+  color: #aaa;
+  font: 20px Patrick Hand; padding:0; margin:0;
+  height: 24px; width: 24px; border:0;
+  margin: 0px;
+  vertical-align:middle;
+  cursor: pointer;
+  background-color:#fff;
+  opacity:1; }
 div.menu-mode {
-        height: 24px; width: 24px; border:0;
-        background-repeat:no-repeat;
-        background-image:url(pencilgray.png);
-        background-position:center;
-        vertical-align:middle;
-        cursor: default;
-        background-color:transparent;
-        opacity:1; }
+  height: 24px; width: 24px; border:0;
+  background-repeat:no-repeat;
+  background-image:url(pencilgray.png);
+  background-position:center;
+  vertical-align:middle;
+  cursor: default;
+  background-color:transparent;
+  opacity:1; }
 div.menu-ok {
-        color: #aaa;
-        font: 12px Arial; padding:6px 0px; margin:0;
-        height: 24px; width: 24px; border:0;
-        margin: -0px;
-        vertical-align:middle;
-        cursor: pointer;
-        opacity:1; }
+  color: #aaa;
+  font: 12px 'Open Sans'; padding:6px 0px; margin:0;
+  height: 24px; width: 24px; border:0;
+  margin: -0px;
+  vertical-align:middle;
+  cursor: pointer;
+  opacity:1; }
 div.puzzle-menu {
-        position: absolute;
-        border: 2px solid black;
-        display: none;
-        overflow: hidden; }
+  position: absolute;
+  border: 2px solid black;
+  display: none;
+  overflow: hidden; }
 div.puzzle-menu table {
-        border-collapse: collapse;
-        border-spacing: 0;
-        width: 72px;
-        height: 72px; }
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 72px;
+  height: 72px; }
 div.puzzle-menu td {
-        padding: 0;
-        }
+  padding: 0; }
 div.puzzle-menu div.menu-text {
-        color: #aaa;
-        font: 16px Arial Black; padding:0; margin:0;
-        height: 24px; width: 24px; border:0;
-        margin: -0px;
-        vertical-align:middle;
-        cursor: pointer;
-        background-color:#fff;
-        opacity:1; }
+  color: #aaa;
+  font: 16px Open Sans; padding:0; margin:0;
+  font-weight: 800;
+  height: 24px; width: 24px; border:0;
+  margin: -0px;
+  vertical-align:middle;
+  cursor: pointer;
+  background-color:#fff;
+  opacity:1; }
 .save-closebutton {
-        background-image:url(closebutton.png);
-        background-position:center center; background-repeat:no-repeat;
-        position:absolute;
-        top:0;right:0;height:26;width:26; }
+  background-image:url(closebutton.png);
+  background-position:center center; background-repeat:no-repeat;
+  position:absolute;
+  top:0;right:0;height:26;width:26; }
 .save-closebutton:hover {
-        background-image:url(closebutton-hover.png); }
+  background-image:url(closebutton-hover.png); }
 .save-outerbox {
-        padding: 10px; }
+  padding: 10px; }
 .save-outerbox center {
-        font: 16pt Arial Black;
-        padding: 5px; }
+  font: 16pt Open Sans;
+  font-weight: 800;
+
+  padding: 5px; }
 .save-link {
-        position:absolute;
-        z-index:1;
-        font: 10pt arial;
-        margin:10px 0; }
+  position:absolute;
+  z-index:1;
+  font: 10pt Open Sans;
+  margin:10px 0; }
 #shortenedurl {
-        width: 120px;
-        margin: -3px 0;
-        display: none; }
+  width: 120px;
+  margin: -3px 0;
+  display: none; }
 .save-listbox {
-        overflow: auto;
-        width: 456px;
-        height: 236px;
-        border: 2px solid gray;
-        margin: 5px 0; }
+  overflow: auto;
+  width: 456px;
+  height: 236px;
+  border: 2px solid gray;
+  margin: 5px 0; }
 .save-listbox ul {
-        padding: 10px 0;
-        margin: 0; }
+  padding: 10px 0;
+  margin: 0; }
 .save-listbox li {
-        text-align: left;
-        list-style-type: none;
-        padding: 2px 10px; margin: 0;
-        font: 10pt Arial;
-        line-height: 22px; }
+  text-align: left;
+  list-style-type: none;
+  padding: 2px 10px; margin: 0;
+  font: 10pt Open Sans;
+  line-height: 22px; }
 .save-listbox li:nth-of-type(odd) {
-        background-color:#eef; }
+  background-color:#eef; }
 .save-listbox li:hover {
-        background-color:#ccf; }
+  background-color:#ccf; }
