@@ -237,7 +237,7 @@ function handlekeydown(ev) {
     state.work[pos] = 0;
     state.mark[pos] = 0;
     state.answer[pos] = null;
-    state.color[pos] = null;
+    // state.color[pos] = null;
   } else if (ev.which == 'M'.charCodeAt(0)) {
     var sofar = boardsofar(state);
     sofar[pos] = null;
