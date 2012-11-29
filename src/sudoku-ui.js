@@ -31,7 +31,6 @@ function startnewgame(seed, autoload) {
     }
     puzzle = Sudoku.makepuzzle(xseed);
     steps = SudokuHint.hintgrade(puzzle);
-    console.log('steps ' + steps);
     if (steps < 120) break;
     extra += 1;
   }
