@@ -13,6 +13,7 @@
     "96": "sudoku-icon-96.png",
     "128": "sudoku-icon-128.png"
   },
+  "offline_enabled": true,
   "permissions": [
   ]
 }
