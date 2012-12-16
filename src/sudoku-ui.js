@@ -346,7 +346,7 @@ function togglecolor(state, level) {
     }
   }
   if (makecolor && advice.unsolved) {
-    incrhint(encodepuzzle81(advice.colors));
+    incrhint(state, encodepuzzle81(advice.colors));
   }
   commitstate(state);
 }
@@ -553,6 +553,7 @@ $('#clearbutton').click(function(ev) {
     gradepuzzle();
     ev.preventDefault();
   }
+  lasthint = null;
   commitstate(cleared);
 });
 
@@ -566,7 +567,7 @@ function updatetime() {
   }
 }
 
-$('#timerbutton').mousedown(function(ev) {
+$('#timerbutton').click(function(ev) {
   hidepopups();
   var state = currentstate();
   if (isalt(ev)) {
@@ -593,7 +594,7 @@ $('#timerbutton').mousedown(function(ev) {
   }
 });
 
-$('#hintbutton,#checkbutton,#timerbutton').bind(
+$('#hintbutton,#checkbutton').bind(
     'mouseup mouseleave', function() {
   if ($('#victory').css('display') != 'none' ||
       $('#file').css('display') != 'none') {
@@ -945,6 +946,7 @@ function loadstate(name) {
   if ('elapsed' in state) {
     starttime = (new Date).getTime() - state.elapsed;
   }
+  lasthint = null;
   commitstate(state);
   return true;
 }
