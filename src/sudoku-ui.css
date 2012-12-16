@@ -57,6 +57,10 @@ table.timescore td {
   font-weight: 800; }
 table.timescore .timer {
   display: none; }
+.finished {
+  display: none; }
+.hinttext {
+  display: none; }
 table.colorkey {
   border-collapse: collapse;
   margin: 0 30px; }
