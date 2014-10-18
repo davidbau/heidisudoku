@@ -1,8 +1,9 @@
 {
+  "manifest_version": 2,
   "name": "Heidi's Infinite Sudoku",
   "description":
     "Sudoku for puzzle lovers.  Billions of accurately rated puzzles, gentle hints, save files, colors, notes, and keyboard shortcuts.",
-  "version": "0.0.0.63",
+  "version": "0.0.0.64",
   "app": {
     "launch": {
       "local_path": "app.html"

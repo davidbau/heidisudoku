@@ -14,6 +14,8 @@ var bgcolors = [
 
 $(function() {
 
+setupscreen();
+
 function startnewgame(seed, autoload) {
   var now = (new Date).getTime();
   var auto = (typeof seed == 'undefined');
@@ -184,7 +186,7 @@ function handlekeydown(ev) {
   }
   var state = currentstate();
   if (ev.which == 188) { // comma
-    showmenu(state, pos);
+    showmenu(state, pos, false);
     return;
   }
   if (num >= -1 && num < 9) {
@@ -381,7 +383,31 @@ $(window).bind('contextmenu', function(ev) {
   ev.stopPropagation();
 });
 
-function showmenu(state, pos) {
+function showmenu(state, pos, editmode) {
+  if (editmode) {
+    var choices = Sudoku.puzzlechoices(state.puzzle, pos);
+    if (listbits(choices).length > 1) {
+      workmenu.show(this, $('div.puzzle-menu'), state.puzzle[pos], 0, 0,
+                    choices, true,
+      function(num, w, m) {
+        state = currentstate();
+        if (state.puzzle[pos] !== num) {
+          state.puzzle[pos] = num;
+          if (num !== null) {
+            state.answer[pos] = null;
+            state.work[pos] = 0;
+            state.mark[pos] = 0;
+          }
+          state['seed'] = 0;
+          state['savename'] = '';
+          state['gentime'] = (new Date).getTime();
+          commitstate(state);
+          gradepuzzle();
+        }
+      });
+      return;
+    }
+  }
   var sofar = boardsofar(state);
   var elt = $('#sc' + pos);
   sofar[pos] = null;
@@ -409,26 +435,7 @@ $('td.sudoku-cell').mousedown(function(ev) {
   justclicked = pos;
   var state = currentstate();
   if (isalt(ev)) {
-    var bits = 0;
-    var hint = Sudoku.puzzlechoices(state.puzzle, pos);
-    workmenu.show(this, $('div.puzzle-menu'), state.puzzle[pos], 0, 0,
-                  hint, true,
-    function(num, w, m) {
-      state = currentstate();
-      if (state.puzzle[pos] !== num) {
-        state.puzzle[pos] = num;
-        if (num !== null) {
-          state.answer[pos] = null;
-          state.work[pos] = 0;
-          state.mark[pos] = 0;
-        }
-        state['seed'] = 0;
-        state['savename'] = '';
-        state['gentime'] = (new Date).getTime();
-        commitstate(state);
-        gradepuzzle();
-      }
-    });
+    showmenu(state, pos, true);
   } else {
     if (state.puzzle[pos] !== null) return;
     if (keymode !== null) {
@@ -440,7 +447,7 @@ $('td.sudoku-cell').mousedown(function(ev) {
       handlekeydown(ev2);
       return;
     }
-    showmenu(state, pos);
+    showmenu(state, pos, false);
   }
   ev.stopPropagation();
 });
@@ -1689,6 +1696,12 @@ function googlurl(url, cb) {
     }
     cb(result);
   });
+}
+
+function setupscreen() {
+  $('#leftlayout').prepend(colorkeyhtml('Easiest', 'Hardest'));
+  $('#centerlayout').prepend(boardhtml() + menuhtml());
+  $('#rightlayout').prepend(numberkeyhtml());
 }
 
 lib.boardhtml = boardhtml;
