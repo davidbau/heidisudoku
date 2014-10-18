@@ -7,6 +7,7 @@
 <script src=sudoku.js></script>
 <script src=sudoku-hint.js></script>
 <script src=sudoku-ui.js></script>
+<script src=english.js></script>
 <body>
 <table style="width:100%;height:100%;"><tr><td align=center>
 <center style="display:table-cell;vertical-align:middle;">
@@ -19,19 +20,12 @@
 <span class=hinttext>Hints <span class=hints>0</span></span></td>
 </tr></table>
 <table><tr>
-<td style=text-align:center>
-<script>
-document.write(SudokuUI.colorkeyhtml('Easiest', 'Hardest'));
-</script>
+<td style=text-align:center id=leftlayout>
 <p>
 <input type=button value="Color" id=colorbutton
    title="Show colors.  Ctrl to clear colors."
 </td>
-<td style="text-align:center">
-<script>
-document.write(SudokuUI.boardhtml());
-document.write(SudokuUI.menuhtml());
-</script>
+<td style="text-align:center" id=centerlayout>
 <input type=button value="File" id=filebutton
    title="Load or save.  Ctrl to load a 17-hint Sudoku."
 ><input type=button value="Clear" id=clearbutton
@@ -50,10 +44,7 @@ document.write(SudokuUI.menuhtml());
    title="Show timer.  Ctrl to reveal solution."
 >
 </td>
-<td>
-<script>
-document.write(SudokuUI.numberkeyhtml());
-</script>
+<td id=rightlayout>
 </td>
 </tr>
 </table>
@@ -83,49 +74,5 @@ document.write(SudokuUI.numberkeyhtml());
 onclick="this.href=this.href.replace(/#.*$/,'')+'#app.html'+location.hash"
 >About Heidi's Infinite Sudoku</a>
 </p>
-<script>
-SudokuUI.levels = [
-  "Unsolvable",
-  "Beginner",
-  "Easy",
-  "Simple",
-  "Basic",
-  "Moderate",
-  "Tricky",
-  "Clever",
-  "Puzzling",
-  "Subtle",
-  "Difficult",
-  "Knotty",
-  "Thorny",
-  "Baffling",
-  "Intricate",
-  "Perplexing",
-  "Obscure",
-  "Labyrinthine",
-  "Obstinate",
-  "Abstruse",
-  "Vexing",
-  "Enigmatic",
-  "Formidable",
-  "Diabolical",
-  "Confounding",
-  "Impossible"
-];
-SudokuUI.timeago = function timeago(ms) {
-  var messages = [
-    ['just now'],
-    ['from', Math.round(ms / 1000), 'seconds ago'],
-    ['from', Math.round(ms / 60 / 1000), 'minutes ago'],
-    ['from', Math.round(ms / 60 / 60 / 1000), 'hours ago'],
-    ['from', Math.round(ms / 24 / 60 / 60 / 1000), 'days ago'],
-    ['from', Math.round(ms / 7 / 24 / 60 / 60 / 1000), 'weeks ago'],
-    ['from', Math.round(ms / 30 / 24 / 60 / 60 / 1000), 'months ago'],
-    ['from', Math.round(ms / 365 / 24 / 60 / 60 / 1000), 'years ago']
-  ];
-  for (var j = 1; j < messages.length && messages[j][1] > 2; j++) { }
-  return messages[j - 1].join(' ');
-}
-</script>
 </td></tr>
 </table>
