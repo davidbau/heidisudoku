@@ -1496,13 +1496,13 @@ var filebox = (function() {
       $('.save-listbox li[data-key=' + lastcopykey + ']').css(
           'font-weight', 'bold');
     }
-    $('#savename').attr('disabled', currentstate === null);
-    $('#savecurrent').attr('disabled', !(lastcopykey === null || !changedname));
-    $('#savecopy').attr('disabled', !(lastcopykey !== null && changedname &&
+    $('#savename').prop('disabled', currentstate === null);
+    $('#savecurrent').prop('disabled', !(lastcopykey === null || !changedname));
+    $('#savecopy').prop('disabled', !(lastcopykey !== null && changedname &&
       currentname != ''));
-    $('#selectall').attr('disabled', saved.length == 0);
-    $('#deleteselected').attr('disabled', countselected == 0);
-    $('#loadselected').attr('disabled', countselected != 1);
+    $('#selectall').prop('disabled', saved.length == 0);
+    $('#deleteselected').prop('disabled', countselected == 0);
+    $('#loadselected').prop('disabled', countselected != 1);
   }
 
   $('.save-listbox').delegate('input', 'change', function() {
@@ -1524,8 +1524,8 @@ var filebox = (function() {
     if (ev.target === lastclickelt &&
         (new Date).getTime() - lastclicktime < 500) {
       ev.preventDefault();
-      $('.save-listbox ul li:not(:first) input').attr('checked', false);
-      $(lastclickelt).find('input').attr('checked', true);
+      $('.save-listbox ul li:not(:first) input').prop('checked', false);
+      $(lastclickelt).find('input').prop('checked', true);
       redrawlist();
       setTimeout(function() { $('#loadselected').click(); }, 0);
     }
@@ -1563,7 +1563,7 @@ var filebox = (function() {
   });
 
   $('#selectall').click(function() {
-    $('.save-listbox ul li:not(:first) input').attr('checked', true);
+    $('.save-listbox ul li:not(:first) input').prop('checked', true);
     redrawlist();
   });
 

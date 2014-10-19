@@ -35,7 +35,7 @@ input[type="button"] {
   font-family: "Open Sans";
   background: gainsboro;
   border: 2px solid white;
-  font-size: 12px;
+  font-size: 14px;
   padding: 3px 8px;
   border-radius: 8px;
   margin: 1px; }
@@ -244,21 +244,20 @@ div.puzzle-menu div.menu-text {
 .save-outerbox center {
   font: 16pt Open Sans;
   font-weight: 800;
-
   padding: 5px; }
 .save-link {
   position:absolute;
   z-index:1;
   font: 10pt Open Sans;
-  margin:10px 0; }
+  margin:18px 0; }
 #shortenedurl {
   width: 120px;
   margin: -3px 0;
   display: none; }
 .save-listbox {
   overflow: auto;
-  width: 456px;
-  height: 236px;
+  width: 490px;
+  height: 240px;
   border: 2px solid gray;
   margin: 5px 0; }
 .save-listbox ul {
