@@ -21,13 +21,13 @@ function startnewgame(seed, autoload) {
   var auto = (typeof seed == 'undefined');
   if (typeof increment == 'undefined') { increment = 1; }
   if (auto) { seed = now; }
+  if (loadstate('sudokupage_' + seed)) {
+    return;
+  }
   var puzzle, steps;
   var extra = 0;
   for (;;) {
-    if (loadstate('sudokupage_' + seed)) {
-      return;
-    }
-    var xseed = seed;
+    var xseed = 'h-' + seed;
     if (extra) {
       xseed += '.' + extra;
     }
@@ -534,7 +534,7 @@ $('#newbutton').click(function(ev) {
             color: Sudoku.emptyboard(), seed: 0, hints: 0,
             savename: '', gentime: (new Date).getTime()});
     $('#grade').html('&nbsp;');
-    $.getJSON('http://davidbau.com/sudoku/min.json?callback=?', function(p) {
+    $.getJSON('http://davidbau.com/sudoku/min.json', function(p) {
       var puzzle = decodepuzzle81(p);
       commitstate({puzzle: puzzle, answer: [], work: [], mark: [], color: [],
                    seed: 0, hints: 0,
@@ -757,7 +757,7 @@ $('#filebutton').click(function(ev) {
             color: Sudoku.emptyboard(), seed: 0, hints: 0,
             savename: '', gentime: (new Date).getTime()});
     $('#grade').html('&nbsp;');
-    $.getJSON('http://davidbau.com/sudoku/min.json?callback=?', function(p) {
+    $.getJSON('http://davidbau.com/sudoku/min.json', function(p) {
       var puzzle = decodepuzzle81(p);
       commitstate({puzzle: puzzle, answer: [], work: [], mark: [], color: [],
                    seed: 0, hints: 0,
