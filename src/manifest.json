@@ -2,7 +2,7 @@
   "name": "Heidi's Infinite Sudoku",
   "short_name": "Sudoku",
   "description":
-    "Sudoku for puzzle lovers.  Billions of accurately rated puzzles, gentle hints, save files, colors, notes, and keyboard shortcuts.",
+    "Sudoku for puzzle lovers.  Billions of accurately rated puzzles, gentle hints, save files, colors, notes, touch, and keyboard shortcuts.",
   "version": "0.0.0.65",
   "app": {
     "launch": {
