@@ -37,7 +37,8 @@ input[type="button"] {
   border: 2px solid white;
   font-size: 12px;
   padding: 3px 8px;
-  border-radius: 8px; }
+  border-radius: 8px;
+  margin: 1px; }
 input[type="button"]:hover {
   background: silver; }
 
@@ -143,7 +144,7 @@ div.sudoku-given {
   font: 36px 'Open Sans';
   font-weight: 800; }
 td.sudoku-border {
-  background: black; height: 1px; width: 1px;
+  background: black; height: 1px; width: 1px; font-size: 0;
   border: 1px solid black;}
 img.sudoku-border {
   background: black; height: 1px; width: 1px; }
@@ -176,13 +177,14 @@ div.work-menu table {
 div.work-menu td {
   padding: 0; }
 div.menu-clip {
-  height: 24px; width: 24px; border:0;
+  height: 32px; width: 32px; border:0;
   text-align:center;
   vertical-align:middle;
   overflow:hidden; }
 div.work-menu div.menu-text {
   color: #aaa;
-  font: 20px Patrick Hand; padding:0; margin:0;
+  font: 24px Patrick Hand;
+  padding:4px; margin:0;
   height: 24px; width: 24px; border:0;
   margin: 0px;
   vertical-align:middle;
@@ -220,7 +222,9 @@ div.puzzle-menu td {
   padding: 0; }
 div.puzzle-menu div.menu-text {
   color: #aaa;
-  font: 16px Open Sans; padding:0; margin:0;
+  font: 18px Open Sans;
+  padding:4px;
+  margin:0;
   font-weight: 800;
   height: 24px; width: 24px; border:0;
   margin: -0px;
