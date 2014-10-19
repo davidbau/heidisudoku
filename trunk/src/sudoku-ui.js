@@ -1,6 +1,6 @@
 // UI for Heidi's Infinite Sudoku Pad
 //
-// Copyright 2012 David Bau, all rights reserved.
+// Copyright 2014 David Bau, all rights reserved.
 
 var SudokuUI = {};
 
@@ -113,6 +113,7 @@ function incrhint(state, thishint) {
 
 $('body').click(function(ev) {
   if ($(ev.target).closest('#file').length > 0) return;
+  if (workmenu.showing() && workmenu.encloses(ev)) return;
   if (!$(ev.target).is('a,input')) {
     setkeymode(0);
   }
@@ -384,48 +385,46 @@ $(window).bind('contextmenu', function(ev) {
 });
 
 function showmenu(state, pos, editmode) {
+  var elt = $('#sc' + pos);
   if (editmode) {
     var choices = Sudoku.puzzlechoices(state.puzzle, pos);
-    if (listbits(choices).length > 1) {
-      workmenu.show(this, $('div.puzzle-menu'), state.puzzle[pos], 0, 0,
-                    choices, true,
-      function(num, w, m) {
-        state = currentstate();
-        if (state.puzzle[pos] !== num) {
-          state.puzzle[pos] = num;
-          if (num !== null) {
-            state.answer[pos] = null;
-            state.work[pos] = 0;
-            state.mark[pos] = 0;
-          }
-          state['seed'] = 0;
-          state['savename'] = '';
-          state['gentime'] = (new Date).getTime();
-          commitstate(state);
-          gradepuzzle();
+    workmenu.show(elt, $('div.puzzle-menu'), state.puzzle[pos], 0, 0,
+                  choices, true,
+    function(num, w, m) {
+      state = currentstate();
+      if (state.puzzle[pos] !== num) {
+        state.puzzle[pos] = num;
+        if (num !== null) {
+          state.answer[pos] = null;
+          state.work[pos] = 0;
+          state.mark[pos] = 0;
         }
-      });
-      return;
-    }
+        state['seed'] = 0;
+        state['savename'] = '';
+        state['gentime'] = (new Date).getTime();
+        commitstate(state);
+        gradepuzzle();
+      }
+    });
+  } else {
+    var sofar = boardsofar(state);
+    sofar[pos] = null;
+    var hint = SudokuHint.simplehint(sofar)[pos];
+    workmenu.show(elt, $('div.work-menu'),
+                  state.answer[pos], state.work[pos], state.mark[pos],
+                  hint, false,
+    function(num, w, m) {
+      state = currentstate();
+      if (state.answer[pos] !== num ||
+          state.work[pos] !== w ||
+          state.mark[pos] !== m) {
+        state.answer[pos] = num;
+        state.work[pos] = w;
+        state.mark[pos] = m;
+        commitstate(state);
+      }
+    });
   }
-  var sofar = boardsofar(state);
-  var elt = $('#sc' + pos);
-  sofar[pos] = null;
-  var hint = SudokuHint.simplehint(sofar)[pos];
-  workmenu.show(elt, $('div.work-menu'),
-                state.answer[pos], state.work[pos], state.mark[pos],
-                hint, false,
-  function(num, w, m) {
-    state = currentstate();
-    if (state.answer[pos] !== num ||
-        state.work[pos] !== w ||
-        state.mark[pos] !== m) {
-      state.answer[pos] = num;
-      state.work[pos] = w;
-      state.mark[pos] = m;
-      commitstate(state);
-    }
-  });
 }
 
 $('td.sudoku-cell').mousedown(function(ev) {
@@ -434,7 +433,7 @@ $('td.sudoku-cell').mousedown(function(ev) {
   var pos = parseInt($(this).attr('id').substr(2));
   justclicked = pos;
   var state = currentstate();
-  if (isalt(ev)) {
+  if (ev.ctrlKey || entrymode) {
     showmenu(state, pos, true);
   } else {
     if (state.puzzle[pos] !== null) return;
@@ -450,6 +449,7 @@ $('td.sudoku-cell').mousedown(function(ev) {
     showmenu(state, pos, false);
   }
   ev.stopPropagation();
+  return false;
 });
 
 function gradepuzzle(puzzle, steps) {
@@ -602,7 +602,7 @@ $('#timerbutton').click(function(ev) {
 });
 
 $('#hintbutton,#checkbutton').bind(
-    'mouseup mouseleave', function() {
+    'mouseup mouseleave touchend', function() {
   if ($('#victory').css('display') != 'none' ||
       $('#file').css('display') != 'none') {
     return;
@@ -613,7 +613,7 @@ $('#hintbutton,#checkbutton').bind(
   $('#markbutton').css('border', '');
 });
 
-$('#hintbutton').mousedown(function(ev) {
+$('#hintbutton').on('mousedown touchstart', function(ev) {
   hidepopups();
   var state = currentstate();
   var hint = SudokuHint.hint(state.puzzle, state.answer, state.work);
@@ -777,7 +777,7 @@ $('#filebutton').click(function(ev) {
   ev.stopPropagation();
 });
 
-$('#checkbutton').mousedown(function(ev) {
+$('#checkbutton').on('mousedown touchstart', function(ev) {
   hidepopups();
   var state = currentstate();
   var sofar = boardsofar(state);
@@ -1210,7 +1210,7 @@ var workmenu = (function() {
     var offset = $(elt).offset();
     offset.left += ($(elt).outerWidth() - $(menu).outerWidth()) / 2;
     offset.top += ($(elt).outerHeight() - $(menu).outerHeight()) / 2;
-    $(menu).css({display: 'block'}).offset(offset);
+    $(menu).css({display: 'block', opacity: ''}).offset(offset);
   }
   function sendcallback() {
     if (callback && !called) {
@@ -1229,6 +1229,14 @@ var workmenu = (function() {
       'display': 'none'
     });
     sendcallback();
+  }
+  function encloses(ev) {
+    if (!menu) return false;
+    if (ev.pageX == null || ev.pageY == null) return false;
+    var offset = $(menu).offset();
+    return (ev.pageX >= offset.left && ev.pageY >= offset.top &&
+        ev.pageX < offset.left + $(menu).outerWidth() &&
+        ev.pageY < offset.top + $(menu).outerHeight());
   }
   function keydown(ev) {
     var txt = null;
@@ -1314,17 +1322,23 @@ var workmenu = (function() {
     var dx = Math.max(topleft.left - x, x - (topleft.left + width), 0);
     var dy = Math.max(topleft.top - y, y - (topleft.top + height), 0);
     var dist = Math.sqrt(dx * dx + dy * dy);
-    if (dist >= 10) {
+    var fadedist = 50;
+    if (dist >= fadedist) {
       hide();
       $(menu).css('opacity', '');
     } else if (dist > 2) {
-      $(menu).css('opacity', (10 - dist) / 8);
+      $(menu).css('opacity', (fadedist - dist) / fadedist);
       sendcallback();
     } else {
       $(menu).css('opacity', '');
     }
   }
-  return {show:show, hide:hide, fade:fade, keydown:keydown,
+  return {
+    show:show,
+    hide:hide,
+    fade:fade,
+    keydown:keydown,
+    encloses:encloses,
     showing:function(){ return showing; } };
 })();
 

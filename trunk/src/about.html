@@ -1,5 +1,7 @@
 <title>About Heidi's Infinite Sudoku</title>
 <link rel=stylesheet href=sudoku-ui.css>
+<script src=jquery-2.1.1.js></script>
+<script src=about.js></script>
 <body id=about>
 
 <center>
@@ -7,7 +9,7 @@
 <center><h1 style='font: 20pt "arial black", "arial bold", "sans-serif"'
 >About Heidi's Infinite Sudoku</h1></center>
 <p style="text-align:center"
-><a href="index.html"
+><a class=back href="index.html"
 onclick="if (location.hash.indexOf('#',1)>0) this.href=location.hash.substr(1)"
 >Back to the game</a>
 
@@ -53,14 +55,14 @@ can be filled in, or where the possibilities can be narrowed down.
 <p>If you are still stuck, you can try a more explicit hint by holding
 down <b>ctrl</b> while clicking the <b>Hint</b> button.  Sometimes
 the strategies shown will be very subtle: learn to recognize
-<a href="http://www.sudokuwiki.org/Naked_Candidates">naked pairs</a>
-and <a href="http://www.sudokuwiki.org/Intersection_Removal">intersections</a>,
+<a target=_blank href="http://www.sudokuwiki.org/Naked_Candidates">naked pairs</a>
+and <a target=_blank href="http://www.sudokuwiki.org/Intersection_Removal">intersections</a>,
 and see if you can find the
-<a href="http://www.sudokuwiki.org/Hidden_Candidates">hidden pairs
+<a target=_blank href="http://www.sudokuwiki.org/Hidden_Candidates">hidden pairs
 or triples</a> or recognize an
-<a href="http://www.sudokuwiki.org/X_Wing_Strategy">x-wing</a>,
-<a href="http://www.sudokuwiki.org/Y_Wing_Strategy">y-wing</a> or
-<a href="http://www.sudokuwiki.org/Sword_Fish_Strategy">swordfish</a>.
+<a target=_blank href="http://www.sudokuwiki.org/X_Wing_Strategy">x-wing</a>,
+<a target=_blank href="http://www.sudokuwiki.org/Y_Wing_Strategy">y-wing</a> or
+<a target=_blank href="http://www.sudokuwiki.org/Sword_Fish_Strategy">swordfish</a>.
 
 <h2>Checking and Fixing Mistakes</h2>
 
@@ -168,20 +170,20 @@ involve untangling a mass of complex clues.
 <h2>Credits</h2>
 
 <p>Heidi's Hintpad was written in HTML and Javascript by Heidi's husband
-<a href="http://davidbau.com/about/david_bau.html">David Bau</a>
-using <a href="http://ejohn.org/">John Resig's</a>
-<a href="http://jquery.com/">jQuery</a>
-with <a href="http://benalman.com/">Ben Alman's</a> handy <a
+<a target=_blank href="http://davidbau.com/about/david_bau.html">David Bau</a>
+using <a target=_blank href="http://ejohn.org/">John Resig's</a>
+<a target=_blank href="http://jquery.com/">jQuery</a>
+with <a target=_blank href="http://benalman.com/">Ben Alman's</a> handy <a
 href="http://benalman.com/projects/jquery-bbq-plugin/">BBQ plugin</a>
 to manage "back" button state.
-<a href="http://www.unique-design.at/">Patrick Wagesreiter's</a> terrific
-<a href="http://code.google.com/webfonts/specimen/Patrick+Hand">Patrick Hand</a> font provides handwritten digits and
-<a href="http://www.monotypeimaging.com/ProductsServices/TypeDesignerShowcase/SteveMatteson/">Steve Matteson's</a>
-<a href="http://www.google.com/webfonts/specimen/Open+Sans">Open Sans</a> is
+<a target=_blank href="http://www.unique-design.at/">Patrick Wagesreiter's</a> terrific
+<a target=_blank href="http://code.google.com/webfonts/specimen/Patrick+Hand">Patrick Hand</a> font provides handwritten digits and
+<a target=_blank href="http://www.monotypeimaging.com/ProductsServices/TypeDesignerShowcase/SteveMatteson/">Steve Matteson's</a>
+<a target=_blank href="http://www.google.com/webfonts/specimen/Open+Sans">Open Sans</a> is
 used for the puzzle numerals.
-<a href="http://www.deleket.com/">Jojo Mendoza</a>
+<a target=_blank href="http://www.deleket.com/">Jojo Mendoza</a>
 provided the yellow highlighter icon;
-and <a href="http://en.wikipedia.org/wiki/Gordon_Royle">Gordon Royle's</a>
+and <a target=_blank href="http://en.wikipedia.org/wiki/Gordon_Royle">Gordon Royle's</a>
 mathematically beautiful <a
 href="http://school.maths.uwa.edu.au/~gordon/sudokumin.php"
 >Minimum Sudoku Collection</a> provides minimal 17-hint puzzles
@@ -189,7 +191,7 @@ when you hold <b>ctrl</b> while clicking <b>File</b>.
 
 <p>The sources for Heidi's Sudoku Hintpad are not licensed for reuse at
 this time, but they are available to read
-<a href="https://www.assembla.com/code/jssudoku/subversion/nodes/trunk/src"
+<a target=_blank href="https://www.assembla.com/code/jssudoku/subversion/nodes/trunk/src"
 >here on assembla.com</a>.
 
 <p id=version>Version 0.64</p>
@@ -197,6 +199,6 @@ this time, but they are available to read
 </center>
 
 <p style="text-align:center"
-><a href="index.html"
+><a class=back href="index.html"
 onclick="if (location.hash.indexOf('#',1)>0) this.href=location.hash.substr(1)"
 >Back to the game</a>
