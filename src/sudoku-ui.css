@@ -1,10 +1,10 @@
 /* Font loading for firefox */
 @font-face {
-  font-family: 'Patrick Hand';
+  font-family: 'Handlee';
   font-style: normal;
   font-weight: normal;
-  src: local('Patrick Hand'), local('PatrickHand'),
-       url('PatrickHand-Regular.ttf') format('truetype'); }
+  src: local('Handlee'),
+       url('Handlee-Regular.ttf') format('truetype'); }
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
@@ -111,7 +111,7 @@ table.sudoku-work-table td {
   vertical-align: top; }
 table.sudoku-work-table div {
   color: #22c;
-  font: 12px 'Patrick Hand', sans-serif;
+  font: 12px Handlee, sans-serif;
   width: 15px;
   margin: 0 0; }
 td.sudoku-cell {
@@ -134,7 +134,7 @@ div.sudoku-answer {
   cursor: hand;
   padding: 0; margin: 0px; border: 0;
   color: #22c;
-  font: 40px 'Patrick Hand', sans-serif;}
+  font: 40px Handlee, sans-serif;}
 div.sudoku-given {
   width: 48px; height: 48px;
   text-align: center; vertical-align: middle;
@@ -183,7 +183,7 @@ div.menu-clip {
   overflow:hidden; }
 div.work-menu div.menu-text {
   color: #aaa;
-  font: 24px Patrick Hand;
+  font: 24px Handlee;
   padding:4px; margin:0;
   height: 24px; width: 24px; border:0;
   margin: 0px;
@@ -244,6 +244,7 @@ div.puzzle-menu div.menu-text {
 .save-outerbox center {
   font: 16pt Open Sans;
   font-weight: 800;
+
   padding: 5px; }
 .save-link {
   position:absolute;

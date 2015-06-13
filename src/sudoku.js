@@ -63,37 +63,42 @@ function uniquesolution(board) {
 // and then finding a subset of squares that uniquely determine a
 // solution.
 
-function makepuzzle(seed, quick) {
+function makepuzzle(seed, quick, symmetric) {
   // Apply seed if supplied
   var oldrandom = null;
   if (seed && 'seedrandom' in Math) {
     oldrandom = Math.random;
-    Math.seedrandom(seed);
+    Math.seedrandom('sudoku-' + seed);
   }
 
   // Make a solved board
   var solved = solution(emptyboard());
 
-  // Look at squares in shuffled order
-  var order = [];
-  for (var i = 0; i < 81; i++) order.push(i);
-  shuffle(order);
-
   // Reveal a subsequence where later squares aren't immediately
   // deduced from earlier ones.  puzzle is a list of [position, value].
   var puzzle = [];
   var deduced = emptyboard();
-  for (var i = 0; i < order.length; i++) {
-    var pos = order[i];
-    if (deduced[pos] === null) {
-      puzzle.push({pos: pos, num: solved[pos]});
-      deduced[pos] = solved[pos];
-      deduce(deduced);
+  for (var k = (symmetric ? 2 : 1); k > 0; --k) {
+    // Look at squares in shuffled order
+    var order = unconstrained(deduced);
+    for (var i = 0; i < order.length; ++i) {
+      var pos = order[i];
+      if (deduced[pos] === null && (k < 2 || deduced[80 - pos] === null)) {
+        var hint = {pos: pos, num: solved[pos]};
+        if (symmetric) {
+          hint.sym = solved[80 - pos];
+          deduced[80 - pos] = solved[80 - pos];
+        }
+        deduced[80 - pos] = solved[80 - pos];
+        puzzle.push(hint);
+        deduce(deduced);
+      }
     }
   }
 
   // Shuffle the revealed squares
-  shuffle(puzzle);
+  // shuffle(puzzle);
+  puzzle.reverse();
 
   // Restore native prng
   if (oldrandom !== null) {
@@ -115,7 +120,7 @@ function makepuzzle(seed, quick) {
 
   // Convert the puzzle list to a 81-square board
   return boardforentries(puzzle);
-}  
+}
 
 // Solves a partially arbitrarily filled-in board quickly, or returns
 // null if there is no solution.  Spends no more than "limit" steps,
@@ -144,7 +149,7 @@ function solvefast(original, limit) {
     rabbitsteps += 10;
   }
 }
- 
+
 // Spends the given (limit) number of iterations on searching for
 // a solution to the input (original) board.  The return value is
 // an object {track:[some array], solution:board} that represents
@@ -210,6 +215,28 @@ function deduce(board) {
       }
     }
   }
+}
+
+// Given an input 81-number-or-null array (board), returns an array
+// of positions, ordered from least-constrained to most-constrained,
+// with positions at the same level of constraint shuffled.
+function unconstrained(board) {
+  var bits = figurebits(board);
+  var results = [];
+  for (var freedom = 0; freedom < 10; freedom++) {
+    results.push([]);
+  }
+  for (var pos = 0; pos < 81; pos++) {
+    if (board[pos] === null) {
+      results[listbits(bits.allowed[pos]).length].push(pos);
+    }
+  }
+  var result = [];
+  for (freedom = results.length - 1; freedom >= 0; --freedom) {
+    shuffle(results[freedom]);
+    result.push.apply(result, results[freedom]);
+  }
+  return result;
 }
 
 // Given an input 81-number-or-null array (board), returns a nested
@@ -381,6 +408,10 @@ function boardforentries(entries) {
   var result = emptyboard();
   for (var i = 0; i < entries.length; i++) {
     result[entries[i].pos] = entries[i].num;
+    if (entries[i].sym != null) {
+      result[80 - entries[i].pos] = entries[i].sym;
+    }
+
   }
   return result;
 }

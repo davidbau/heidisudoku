@@ -6,8 +6,7 @@ var SudokuUI = {};
 
 (function(lib) {
 
-lib.levels = [];
-for (var j = 0; j <= 10; j++) { lib.levels.push(j); }
+lib.levels = ['A', 'B', 'C', 'D', 'E'];
 
 var bgcolors = [
   '', '#ecf', '#bef', '#bfb', '#ffb', '#fdb', '#fcd', '#ddd', '#888'];
@@ -21,19 +20,22 @@ function startnewgame(seed, autoload) {
   var auto = (typeof seed == 'undefined');
   if (typeof increment == 'undefined') { increment = 1; }
   if (auto) { seed = now; }
-  if (loadstate('sudokupage_' + seed)) {
-    return;
-  }
   var puzzle, steps;
   var extra = 0;
   for (;;) {
-    var xseed = 'h-' + seed;
+    if (loadstate('sudokupage_' + seed)) {
+      return;
+    }
+    var xseed = seed;
     if (extra) {
       xseed += '.' + extra;
     }
-    puzzle = Sudoku.makepuzzle(xseed);
+    puzzle = Sudoku.makepuzzle(xseed, false, true);
     steps = SudokuHint.hintgrade(puzzle);
-    if (steps < 120) break;
+    // Reasonable difficulty is within this range.
+    // Only accept easy puzzles that have 26 or fewer hints.
+    if (steps >= 20 && steps < 120 || (steps > 7 && countfilled(puzzle) < 27))
+      break;
     extra += 1;
   }
   var finished = (new Date).getTime();
@@ -865,7 +867,7 @@ function countfilled(board) {
   var count = 0;
   for (var j = 0; j < 81; j++) {
     if (board[j] !== null) count += 1;
-  } 
+  }
   return count;
 }
 
@@ -882,7 +884,7 @@ function victorious(state) {
 
 function redraw(s, pos) {
   var state = s ? s : currentstate();
-  if (!s && skipredraw && (new Date).getTime() - skipredraw < 100) {
+  if (!s && skipredraw && (new Date).getTime() - skipredraw < 500) {
     skipredraw = 0;
     return;
   }
@@ -920,7 +922,7 @@ function redraw(s, pos) {
     } else {
       if (answer[j] !== null || work[j] == 0) {
         $("#sn" + j).attr('class', 'sudoku-answer').html(
-            answer[j] === null ? '&nbsp;' : answer[j] + 1);
+            answer[j] === null ? '&nbsp;' : handglyph(answer[j] + 1));
       } else {
         var text = '<table class="sudoku-work-table">';
         for (var n = 0; n < 9; n++) {
@@ -928,7 +930,7 @@ function redraw(s, pos) {
           text += '<td' +
           ((mark[j] & (1 << n)) ? ' style="background-color:yellow"' : '') +
           '><div>' +
-          ((work[j] & (1 << n)) ? (n+1) : '&nbsp;') +
+          ((work[j] & (1 << n)) ? handglyph(n + 1) : '&nbsp;') +
           '</div></td>';
           if (n % 3 == 2) { text += '</tr>'; }
         }
@@ -1183,7 +1185,7 @@ var workmenu = (function() {
       }
       $(elt).css({'background-color': (marked & (1 << j)) ? 'yellow' : ''});
     });
-    $(menu).find('div.menu-mode').css({'background-image': 'url("' + 
+    $(menu).find('div.menu-mode').css({'background-image': 'url("' +
       ['pencilgray.png', 'pencil.png', 'highlighter.png'][mode] + '")' });
   }
   function togglemode() {
@@ -1469,7 +1471,7 @@ var filebox = (function() {
           checked = true;
         }
         $('.save-listbox ul').append(
-           '<li data-key="' + htmlescape(item.key) + 
+           '<li data-key="' + htmlescape(item.key) +
            '"><input type=checkbox' + (checked ? ' checked' : '') +
            '> ' + htmlescape(item.state.savename) +
            ' ' + lib.timeago(now - item.state.gentime) +
@@ -1628,7 +1630,7 @@ function menuhtml() {
   for (var j = 0; j < cells.length; j++) {
     if (j % 3 == 0) result.push('<tr>');
     result.push('<td><div class=menu-clip><div class=menu-text>');
-    result.push(cells[j]);
+    result.push(handglyph(cells[j]));
     result.push('</div></div></td>');
     if (j % 3 == 2) result.push('</tr>');
   }
@@ -1644,6 +1646,12 @@ function menuhtml() {
   }
   result.push('</table></div>');
   return result.join('');
+}
+
+function handglyph(text) {
+  // The "1" doesn't look as one-like as the capital-I in Handlee.
+  if ('' + text === '1') { return 'I'; }
+  return text;
 }
 
 function colorkeyhtml(em, hm) {
@@ -1664,16 +1672,17 @@ function colorkeyhtml(em, hm) {
 
 function numberkeyhtml() {
   var result = '<table class=numberkey>';
+  var grid = '';
   for (var j = 1; j <= 9; ++j) {
     result += '<tr><td class=numberkey-cell id=nk' + j + '>' +
-        '<div class=sudoku-answer>' + j + '</div></td></tr>';
+        '<div class=sudoku-answer>' + handglyph(j) + '</div></td></tr>';
+    if (j % 3 === 1) { grid += '<tr>'; }
+    grid += '<td><div>' + handglyph(j) + '</div></td>';
+    if (j % 3 === 0) { grid += '</tr>'; }
   }
   result += '<tr><td class=numberkey-cell id=nk0>' +
-   '<div class=sudoku-work><table class=sudoku-work-table>' +
-   '<tr><td><div>1</div></td><td><div>2</div></td><td><div>3</div></td></tr>' +
-   '<tr><td><div>4</div></td><td><div>5</div></td><td><div>6</div></td></tr>' +
-   '<tr><td><div>7</div></td><td><div>8</div></td><td><div>9</div></td></tr>' +
-   '</table></div></td></tr>';
+    '<div class=sudoku-work><table class=sudoku-work-table>' + grid +
+    '</table></div></td></tr>';
   result += '</table>';
   return result;
 }
