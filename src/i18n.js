@@ -93,16 +93,34 @@ var I18n = (function() {
     translations[lang] = trans;
   }
 
+  // Check if we're on Mac
+  function isMac() {
+    return navigator.platform.indexOf('Mac') > -1;
+  }
+
+  // Replace Ctrl with Command symbol on Mac
+  function adaptForPlatform(text) {
+    if (isMac() && typeof text === 'string') {
+      // Replace various forms of "Ctrl" with the Command symbol (⌘ is U+2318)
+      return text.replace(/\bCtrl\b/g, '\u2318')      // English, French, Spanish, etc.
+                 .replace(/\bStrg\b/g, '\u2318')      // German
+                 .replace(/按Ctrl/g, '按\u2318');     // Chinese: "press Ctrl"
+    }
+    return text;
+  }
+
   // Get translation string
   function t(key, defaultValue) {
+    var result;
     if (translations[currentLang] && translations[currentLang][key]) {
-      return translations[currentLang][key];
+      result = translations[currentLang][key];
+    } else if (currentLang !== 'en' && translations['en'] && translations['en'][key]) {
+      // Fallback to English
+      result = translations['en'][key];
+    } else {
+      result = defaultValue || key;
     }
-    // Fallback to English
-    if (currentLang !== 'en' && translations['en'] && translations['en'][key]) {
-      return translations['en'][key];
-    }
-    return defaultValue || key;
+    return adaptForPlatform(result);
   }
 
   // Get translation function for current language

@@ -435,13 +435,13 @@ $('td.sudoku-cell').mousedown(function(ev) {
   var pos = parseInt($(this).attr('id').substr(2));
   justclicked = pos;
   var state = currentstate();
-  if (ev.ctrlKey || entrymode) {
+  if (ev.ctrlKey || ev.metaKey || entrymode) {
     showmenu(state, pos, true);
   } else {
     if (state.puzzle[pos] !== null) return;
     if (keymode !== null) {
       var ev2 = {
-        ctrlKey: ev.ctrlKey,
+        ctrlKey: ev.ctrlKey || ev.metaKey,
         which: '0'.charCodeAt(0) + keymode,
         preventDefault: function() {},
       };
@@ -1693,7 +1693,7 @@ function numberkeyhtml() {
 }
 
 function isalt(ev) {
-  return (ev.which == 3) || (ev.ctrlKey);
+  return (ev.which == 3) || (ev.ctrlKey) || (ev.metaKey);
 }
 
 function htmlescape(s) {
