@@ -536,7 +536,7 @@ $('#newbutton').click(function(ev) {
             color: Sudoku.emptyboard(), seed: 0, hints: 0,
             savename: '', gentime: (new Date).getTime()});
     $('#grade').html('&nbsp;');
-    $.getJSON('http://davidbau.com/sudoku/min.json', function(p) {
+    $.getJSON('https://davidbau.com/sudoku/min.json', function(p) {
       var puzzle = decodepuzzle81(p);
       commitstate({puzzle: puzzle, answer: [], work: [], mark: [], color: [],
                    seed: 0, hints: 0,
@@ -759,7 +759,7 @@ $('#filebutton').click(function(ev) {
             color: Sudoku.emptyboard(), seed: 0, hints: 0,
             savename: '', gentime: (new Date).getTime()});
     $('#grade').html('&nbsp;');
-    $.getJSON('http://davidbau.com/sudoku/min.json', function(p) {
+    $.getJSON('https://davidbau.com/sudoku/min.json', function(p) {
       var puzzle = decodepuzzle81(p);
       commitstate({puzzle: puzzle, answer: [], work: [], mark: [], color: [],
                    seed: 0, hints: 0,
@@ -1581,7 +1581,7 @@ var filebox = (function() {
 
   $('#shortenurl').click(function(ev) {
     ev.preventDefault();
-    googlurl('http://davidbau.com/sudoku/redirect.html' +
+    shorturl('https://davidbau.com/sudoku/redirect.html' +
              location.hash, function(s) {
       if (!s) return;
       $('#shortenurl').css('display', 'none');
@@ -1706,18 +1706,23 @@ var base64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
                   "0123456789" +
                   "-_";
 
-function googlurl(url, cb) {
+function shorturl(url, cb) {
+  // Use v.gd URL shortener API (no authentication required)
+  var encodedUrl = encodeURIComponent(url);
+  var apiUrl = 'https://v.gd/create.php?format=simple&url=' + encodedUrl;
+
   jsonlib.fetch({
-    url: 'https://www.googleapis.com/urlshortener/v1/url?' +
-         'key=AIzaSyCIhMVF0u3UknPnTV-7sSxFG3nEpwDdidE',
-    header: 'Content-Type: application/json',
-    data: JSON.stringify({longUrl: url})
+    url: apiUrl
   }, function (m) {
     var result = null;
     try {
       if ('content' in m) {
-        result = JSON.parse(m.content).id;
-        if (typeof result != "string") { result = null; }
+        // v.gd returns the short URL as plain text
+        result = m.content.trim();
+        // Validate it's a proper URL
+        if (typeof result != "string" || !result.startsWith('https://v.gd/')) {
+          result = null;
+        }
       }
     } catch (e) {
       result = null;
