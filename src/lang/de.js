@@ -3,7 +3,6 @@
 I18n.register('de', {
   'title': "Heidis Unendliches Sudoku",
   'about_title': "Über Heidis Unendliches Sudoku",
-  'promo': "Installieren Sie die Chrome-Web-App, um offline zu spielen",
   'time_label': "Zeit",
   'finished_in': "Fertig in",
   'hints_label': "Hinweise",

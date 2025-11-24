@@ -3,7 +3,6 @@
 I18n.register('ja', {
   'title': "ハイディの無限数独",
   'about_title': "ハイディの無限数独について",
-  'promo': "Chromeウェブアプリをインストールしてオフラインでプレイ",
   'time_label': "時間",
   'finished_in': "完了時間",
   'hints_label': "ヒント",

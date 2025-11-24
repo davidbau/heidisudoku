@@ -3,7 +3,6 @@
 I18n.register('fr', {
   'title': "Sudoku Infini de Heidi",
   'about_title': "À propos du Sudoku Infini de Heidi",
-  'promo': "Installez l'application Web Chrome pour jouer hors ligne",
   'time_label': "Temps",
   'finished_in': "Terminé en",
   'hints_label': "Indices",

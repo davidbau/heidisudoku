@@ -6,7 +6,6 @@ I18n.register('zh', {
   'about_title': "关于海蒂的无限数独",
 
   // Main UI
-  'promo': "安装Chrome网络应用以离线游戏",
   'time_label': "时间",
   'finished_in': "完成于",
   'hints_label': "提示",

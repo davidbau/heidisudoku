@@ -6,7 +6,6 @@ I18n.register('en', {
   'about_title': "About Heidi's Infinite Sudoku",
 
   // Main UI
-  'promo': "Install the Chrome Web App to play offline",
   'time_label': "Time",
   'finished_in': "Finished in",
   'hints_label': "Hints",

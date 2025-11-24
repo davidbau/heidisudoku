@@ -6,7 +6,6 @@ I18n.register('es', {
   'about_title': "Acerca de Sudoku Infinito de Heidi",
 
   // Main UI
-  'promo': "Instale la aplicación web de Chrome para jugar sin conexión",
   'time_label': "Tiempo",
   'finished_in': "Terminado en",
   'hints_label': "Pistas",

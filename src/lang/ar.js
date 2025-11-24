@@ -6,7 +6,6 @@ I18n.register('ar', {
   'about_title': "حول سودوكو هايدي اللانهائي",
 
   // Main UI
-  'promo': "قم بتثبيت تطبيق كروم للعب دون اتصال",
   'time_label': "الوقت",
   'finished_in': "انتهى في",
   'hints_label': "تلميحات",

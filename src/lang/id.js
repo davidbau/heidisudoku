@@ -6,7 +6,6 @@ I18n.register('id', {
   'about_title': "Tentang Sudoku Tak Terbatas Heidi",
 
   // Main UI
-  'promo': "Instal Aplikasi Web Chrome untuk bermain offline",
   'time_label': "Waktu",
   'finished_in': "Selesai dalam",
   'hints_label': "Petunjuk",
