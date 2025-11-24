@@ -1707,27 +1707,32 @@ var base64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
                   "-_";
 
 function shorturl(url, cb) {
-  // Use v.gd URL shortener API (no authentication required)
+  // Use v.gd URL shortener API with JSONP to avoid CORS issues
   var encodedUrl = encodeURIComponent(url);
-  var apiUrl = 'https://v.gd/create.php?format=simple&url=' + encodedUrl;
+  var apiUrl = 'https://v.gd/create.php?format=json&url=' + encodedUrl;
 
-  jsonlib.fetch({
-    url: apiUrl
-  }, function (m) {
-    var result = null;
-    try {
-      if ('content' in m) {
-        // v.gd returns the short URL as plain text
-        result = m.content.trim();
-        // Validate it's a proper URL
-        if (typeof result != "string" || !result.startsWith('https://v.gd/')) {
-          result = null;
+  $.ajax({
+    url: apiUrl,
+    dataType: 'jsonp',
+    success: function(data) {
+      var result = null;
+      try {
+        // v.gd returns JSON with shorturl field
+        if (data && data.shorturl) {
+          result = data.shorturl;
+          // Validate it's a proper URL
+          if (typeof result != "string" || !result.startsWith('https://v.gd/')) {
+            result = null;
+          }
         }
+      } catch (e) {
+        result = null;
       }
-    } catch (e) {
-      result = null;
+      cb(result);
+    },
+    error: function() {
+      cb(null);
     }
-    cb(result);
   });
 }
 
