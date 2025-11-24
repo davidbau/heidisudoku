@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>À propos du Sudoku Infini de Heidi</title>
+<link rel=stylesheet href=sudoku-ui.css>
+<script src=jquery-2.1.1.js></script>
+<script src=about.js></script>
+</head>
+<body id=about>
+
+<center>
+<div class=box>
+<center><h1 style='font: 20pt "arial black", "arial bold", "sans-serif"'
+>À propos du Sudoku Infini de Heidi</h1></center>
+<p style="text-align:center"
+><a class=back href="index.html"
+>Retour au jeu</a>
+
+<h2>Comment Jouer</h2>
+
+<p>Parcourez les énigmes avec les boutons <b>Suivant</b> et <b>Précédent</b> ou les touches <b>N</b> et <b>P</b>. Vous pouvez travailler sur les énigmes dans n'importe quel ordre et revenir à n'importe quelle énigme plus tard.
+
+<p>Pour remplir une énigme, cliquez sur un chiffre à droite puis cliquez sur n'importe quelle case pour noter ce chiffre au crayon. Les règles du Sudoku sont que chaque chiffre de 1 à 9 doit apparaître une fois dans chaque ligne, colonne et bloc 3x3.
+
+<h2>Raccourcis Clavier</h2>
+
+<p>Vous pouvez également utiliser le clavier. Pointez sur une case ou utilisez les touches fléchées <b>&larr;</b> <b>&uarr;</b> <b>&darr;</b> <b>&rarr;</b> pour déplacer le rectangle bleu pointillé, puis tapez un chiffre <b>1</b> - <b>9</b> pour le remplir.
+Taper plusieurs chiffres dans une case marquera tous ces chiffres, mais un chiffre tapé deux fois effacera toutes les marques et écrira le chiffre comme réponse. Utilisez la touche <b>espace</b> ou <b>0</b> pour effacer à nouveau la case sélectionnée.
+
+<p>La touche virgule <b>,</b> affiche un menu qui vous permet de marquer plusieurs chiffres. Avec le menu affiché, la touche <b>H</b> vous permet de surligner en jaune les chiffres marqués. La touche <b>M</b> marque automatiquement les chiffres qui ne sont pas en conflit direct dans la ligne, la colonne ou le bloc, et le bouton <b>Marques</b> les remplit pour chaque case.
+
+<h2>Obtenir des Indices</h2>
+
+<p>Cliquez sur une couleur à gauche pour révéler les cases qui sont à ce niveau de difficulté : les cases violettes sont les plus faciles, et les cases rouges sont les plus difficiles. Cliquez sur le bouton <b>Couleur</b> pour révéler toutes les couleurs.
+
+<p>Maintenez le bouton <b>Indice</b> enfoncé pour obtenir un indice spécifique. Les cases rouges signalent toute erreur. Les cases bleues seront des endroits qui contraignent l'énigme d'une manière ou d'une autre, et les cases vertes seront des emplacements où un chiffre peut être rempli, ou où les possibilités peuvent être réduites.
+
+<p>Si vous êtes toujours bloqué, vous pouvez essayer un indice plus explicite en maintenant <b>ctrl</b> enfoncé tout en cliquant sur le bouton <b>Indice</b>. Parfois, les stratégies montrées seront très subtiles : apprenez à reconnaître les <a target=_blank href="http://www.sudokuwiki.org/Naked_Candidates">paires nues</a> et les <a target=_blank href="http://www.sudokuwiki.org/Intersection_Removal">intersections</a>, et voyez si vous pouvez trouver les <a target=_blank href="http://www.sudokuwiki.org/Hidden_Candidates">paires ou triplets cachés</a> ou reconnaître une <a target=_blank href="http://www.sudokuwiki.org/X_Wing_Strategy">aile-x</a>, une <a target=_blank href="http://www.sudokuwiki.org/Y_Wing_Strategy">aile-y</a> ou un <a target=_blank href="http://www.sudokuwiki.org/Sword_Fish_Strategy">espadon</a>.
+
+<h2>Vérifier et Corriger les Erreurs</h2>
+
+<p>Le bouton <b>Vérifier</b> peut être utilisé pour vérifier rapidement si vous avez noté des erreurs ou des cases contradictoires sans révéler quelles sont les erreurs.
+
+<p>Maintenir <b>ctrl</b> enfoncé tout en cliquant sur <b>Vérifier</b> vous montrera la position d'une erreur.
+
+<p>Lorsque vous découvrez une erreur, vous pouvez utiliser le bouton "retour" du navigateur pour annuler autant de mouvements que nécessaire.
+
+<h2>Le Chronomètre</h2>
+
+<p>Le jeu gardera une trace du temps qu'il vous a fallu pour résoudre une énigme. Appuyez sur le bouton <b>Chronomètre</b> pour afficher le temps écoulé et le compteur d'indices.
+
+<p>Si vous vous éloignez d'une énigme et ne voulez pas que tout le temps d'inactivité soit compté contre vous, ne vous inquiétez pas : appuyez sur le bouton "Actualiser" de votre navigateur et le chronomètre reviendra au moment où vous avez fait votre dernier mouvement. De même, si vous sauvegardez un jeu, le temps sauvegardé sera le temps du dernier mouvement effectué.
+
+<h2>Sauvegarder et Partager des Énigmes</a>
+
+<p>Les énigmes peuvent également être sauvegardées et chargées à l'aide du bouton <b>Fichier</b>. Les jeux sauvegardés sont identifiés par la note, la date et la progression, ou vous pouvez les renommer vous-même.
+
+<p>Si vous découvrez un joyau de jeu que vous aimeriez partager, le lien <b>Sauvegarder comme URL</b> créera une URL courte pour votre énigme actuelle qui peut être envoyée par e-mail. Tous les marquages et couleurs que vous mettez sur le jeu seront sauvegardés avec l'URL, afin que vous puissiez partager une étape de sudoku particulièrement astucieuse avec d'autres joueurs.
+
+<h2>Entrer Vos Propres Énigmes</h2>
+
+<p>Si vous faites un clic droit ou maintenez <b>ctrl</b> enfoncé tout en cliquant sur une case, vous pouvez modifier l'énigme à tout moment. Maintenir <b>ctrl</b> enfoncé tout en cliquant sur <b>Effacer</b> effacera toute l'énigme, et vous pouvez entrer une nouvelle énigme à l'aide du clavier ou de la souris. Notez que certains chiffres ne peuvent pas être entrés car le bloc d'indices ne vous permettra pas d'entrer une énigme qui n'a pas de solution.
+
+<p>Dès que vous avez entré une énigme avec une solution unique, une note de difficulté sera affichée et le clavier reviendra en mode jeu.
+
+<h2>Énigmes Mathématiquement Minimales</h2>
+
+<p>Habituellement, les énigmes trouvées dans le Bloc de Sudoku Infini de Heidi auront 25 à 30 indices. Naturellement, s'il y a moins d'indices, vous profiterez d'un jeu un peu plus long.
+
+<p>Le plus petit nombre d'indices qui peut être donné sur un jeu de Sudoku résolvable est considéré comme étant 17, et Gordon Royle maintient une base de données de toutes les énigmes à 17 indices qui ont été découvertes jusqu'à présent. Si vous maintenez <b>ctrl</b> enfoncé tout en cliquant sur <b>Fichier</b>, l'une de ces énigmes à 17 indices sera chargée depuis Internet.
+
+<h2>Notes de Difficulté</h3>
+
+<p>Les énigmes de Sudoku sont notées sur une échelle de 24 niveaux allant de "Débutant" (le plus facile) à "Déroutant" (le plus difficile). L'échelle complète :
+
+<center><table><tr><td>
+1: Débutant<br>
+2: Facile<br>
+3: Simple<br>
+4: Basique<br>
+5: Modéré<br>
+6: Délicat<br>
+</td><td>
+7: Astucieux<br>
+8: Intrigant<br>
+9: Subtil<br>
+10: Difficile<br>
+11: Complexe<br>
+12: Épineux<br>
+</td><td>
+13: Déroutant<br>
+14: Compliqué<br>
+15: Perplexe<br>
+16: Obscur<br>
+17: Labyrinthique<br>
+18: Obstiné<br>
+</td><td>
+19: Abstrus<br>
+20: Vexant<br>
+21: Énigmatique<br>
+22: Formidable<br>
+23: Diabolique<br>
+24: Déconcertant<br>
+</td></tr></table>
+</center>
+
+<p>Les énigmes qui peuvent être résolues simplement en évitant les conflits directs sont "Basiques" ou plus faciles, selon la facilité à voir les contraintes. Les énigmes "Subtiles" nécessitent une ou deux déductions astucieuses. Et cela devient plus difficile à partir de là : les énigmes "Déconcertantes" impliquent de démêler une masse d'indices complexes.
+
+<h2>Crédits</h2>
+
+<p>Le Bloc d'Indices de Heidi a été écrit en HTML et Javascript par le mari de Heidi, <a target=_blank href="http://davidbau.com/about/david_bau.html">David Bau</a>, en utilisant <a target=_blank href="http://jquery.com/">jQuery</a> de <a target=_blank href="http://ejohn.org/">John Resig</a> avec le pratique <a href="http://benalman.com/projects/jquery-bbq-plugin/">plugin BBQ</a> de <a target=_blank href="http://benalman.com/">Ben Alman</a> (comme <a target=_blank href="https://raw.githubusercontent.com/hswong3i/jquery-bbq/master/jquery.ba-bbq.js">forké</a> par <a target=_blank href="http://hswong3i.net/">Edison Wong</a>). La merveilleuse police <a target=_blank href="https://www.google.com/fonts/specimen/Handlee">Handlee</a> de <a target=_blank href="https://dribbble.com/JoePrince">Joe Prince</a> fournit des chiffres manuscrits et <a target=_blank href="https://www.google.com/fonts/specimen/Open+Sans">Open Sans</a> de <a target=_blank href="http://www.monotypeimaging.com/ProductsServices/TypeDesignerShowcase/SteveMatteson/">Steve Matteson</a> est utilisée pour les chiffres de l'énigme. <a target=_blank href="http://www.deleket.com/">Jojo Mendoza</a> a fourni l'icône du surligneur jaune ; et la mathématiquement belle <a href="http://school.maths.uwa.edu.au/~gordon/sudokumin.php">Collection de Sudoku Minimum</a> de <a target=_blank href="http://en.wikipedia.org/wiki/Gordon_Royle">Gordon Royle</a> fournit des énigmes minimales à 17 indices lorsque vous maintenez <b>ctrl</b> enfoncé tout en cliquant sur <b>Fichier</b>.
+
+<p>Les sources du Bloc d'Indices de Sudoku de Heidi ne sont pas sous licence pour réutilisation pour le moment, mais elles sont disponibles à la lecture <a target=_blank href="https://github.com/davidbau/heidisudoku">ici sur Github</a>.
+
+<p id=version>Version 0.67</p>
+</div>
+</center>
+
+<p style="text-align:center"
+><a class=back href="index.html"
+>Retour au jeu</a>
+
+</body>
+</html>

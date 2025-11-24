@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Über Heidis unendliches Sudoku</title>
+<link rel=stylesheet href=sudoku-ui.css>
+<script src=jquery-2.1.1.js></script>
+<script src=about.js></script>
+</head>
+<body id=about>
+
+<center>
+<div class=box>
+<center><h1 style='font: 20pt "arial black", "arial bold", "sans-serif"'
+>Über Heidis unendliches Sudoku</h1></center>
+<p style="text-align:center"
+><a class=back href="index.html"
+>Zurück zum Spiel</a>
+
+<h2>Wie man spielt</h2>
+
+<p>Blättern Sie durch Rätsel mit den Schaltflächen <b>Weiter</b> und <b>Zurück</b> oder den Tasten <b>N</b> und <b>P</b>. Sie können an den Rätseln in beliebiger Reihenfolge arbeiten und später zu jedem Rätsel zurückkehren.
+
+<p>Um ein Rätsel auszufüllen, klicken Sie auf eine Zahl rechts und dann auf ein beliebiges Feld, um diese Zahl mit Bleistift einzutragen. Die Regeln des Sudoku sind, dass jede Ziffer 1-9 einmal in jeder Zeile, Spalte und jedem 3x3-Block erscheinen muss.
+
+<h2>Tastaturkürzel</h2>
+
+<p>Sie können auch die Tastatur verwenden. Zeigen Sie auf ein Feld oder verwenden Sie die Pfeiltasten <b>&larr;</b> <b>&uarr;</b> <b>&darr;</b> <b>&rarr;</b>, um das gepunktete blaue Rechteck zu bewegen, und tippen Sie dann eine Ziffer <b>1</b> - <b>9</b>, um es auszufüllen.
+Das Eingeben mehrerer Zahlen in einem Feld markiert alle diese Zahlen, aber eine doppelt angetippte Zahl löscht alle Markierungen und schreibt die Zahl als Antwort. Verwenden Sie die <b>Leertaste</b> oder die <b>0</b>-Taste, um das ausgewählte Feld erneut zu löschen.
+
+<p>Die Kommataste <b>,</b> öffnet ein Menü, mit dem Sie mehrere Zahlen markieren können. Bei angezeigtem Menü ermöglicht die <b>H</b>-Taste, markierte Zahlen gelb hervorzuheben. Die <b>M</b>-Taste markiert automatisch Zahlen, die nicht in direktem Konflikt in der Zeile, Spalte oder dem Block stehen, und die Schaltfläche <b>Markierungen</b> füllt diese für jedes Feld aus.
+
+<h2>Hinweise erhalten</h2>
+
+<p>Klicken Sie auf eine Farbe links, um Felder auf diesem Schwierigkeitsniveau anzuzeigen: violette Felder sind am einfachsten, und rote Felder sind am schwierigsten. Klicken Sie auf die Schaltfläche <b>Farbe</b>, um alle Farben anzuzeigen.
+
+<p>Halten Sie die Schaltfläche <b>Hinweis</b> gedrückt, um einen bestimmten Hinweis zu erhalten. Rote Felder weisen auf Fehler hin. Blaue Felder sind Orte, die das Rätsel auf irgendeine Weise einschränken, und grüne Felder sind Orte, an denen eine Zahl ausgefüllt werden kann oder wo die Möglichkeiten eingegrenzt werden können.
+
+<p>Wenn Sie immer noch feststecken, können Sie einen expliziten Hinweis versuchen, indem Sie <b>ctrl</b> gedrückt halten, während Sie auf die Schaltfläche <b>Hinweis</b> klicken. Manchmal sind die gezeigten Strategien sehr subtil: Lernen Sie, <a target=_blank href="http://www.sudokuwiki.org/Naked_Candidates">nackte Paare</a> und <a target=_blank href="http://www.sudokuwiki.org/Intersection_Removal">Überschneidungen</a> zu erkennen, und sehen Sie, ob Sie die <a target=_blank href="http://www.sudokuwiki.org/Hidden_Candidates">versteckten Paare oder Tripel</a> finden oder einen <a target=_blank href="http://www.sudokuwiki.org/X_Wing_Strategy">X-Wing</a>, <a target=_blank href="http://www.sudokuwiki.org/Y_Wing_Strategy">Y-Wing</a> oder <a target=_blank href="http://www.sudokuwiki.org/Sword_Fish_Strategy">Schwertfisch</a> erkennen können.
+
+<h2>Fehler überprüfen und korrigieren</h2>
+
+<p>Die Schaltfläche <b>Überprüfen</b> kann verwendet werden, um schnell zu überprüfen, ob Sie Fehler oder widersprüchliche Felder eingetragen haben, ohne zu verraten, was die Fehler sind.
+
+<p>Das Halten von <b>ctrl</b> beim Klicken auf <b>Überprüfen</b> zeigt Ihnen die Position eines Fehlers.
+
+<p>Wenn Sie einen Fehler entdecken, können Sie die „Zurück"-Schaltfläche des Browsers verwenden, um so viele Züge wie nötig rückgängig zu machen.
+
+<h2>Der Timer</h2>
+
+<p>Das Spiel verfolgt die Zeit, die Sie benötigt haben, um ein Rätsel zu lösen. Drücken Sie die Schaltfläche <b>Timer</b>, um die verstrichene Zeit und den Hinweiszähler anzuzeigen.
+
+<p>Wenn Sie sich von einem Rätsel entfernen und nicht möchten, dass die gesamte Leerlaufzeit gegen Sie gezählt wird, keine Sorge: Drücken Sie die „Aktualisieren"-Schaltfläche in Ihrem Browser, und der Timer kehrt zu der Zeit zurück, zu der Sie Ihren letzten Zug gemacht haben. Ebenso wird, wenn Sie ein Spiel speichern, die gespeicherte Zeit die Zeit des letzten gemachten Zugs sein.
+
+<h2>Rätsel speichern und teilen</a>
+
+<p>Rätsel können auch mit der Schaltfläche <b>Datei</b> gespeichert und geladen werden. Gespeicherte Spiele werden durch Bewertung, Datum und Fortschritt identifiziert, oder Sie können sie selbst umbenennen.
+
+<p>Wenn Sie ein Juwel eines Spiels entdecken, das Sie teilen möchten, erstellt der Link <b>Als URL speichern</b> eine kurze URL für Ihr aktuelles Rätsel, die per E-Mail versendet werden kann. Alle Markierungen und Farben, die Sie auf dem Spiel platzieren, werden zusammen mit der URL gespeichert, sodass Sie einen besonders cleveren Sudoku-Schritt mit anderen Rätselfreunden teilen können.
+
+<h2>Eigene Rätsel eingeben</h2>
+
+<p>Wenn Sie mit der rechten Maustaste klicken oder <b>ctrl</b> gedrückt halten, während Sie auf ein Feld klicken, können Sie das Rätsel jederzeit ändern. Das Halten von <b>ctrl</b> beim Klicken auf <b>Löschen</b> löscht das gesamte Rätsel, und Sie können ein neues Rätsel mit der Tastatur oder Maus eingeben. Beachten Sie, dass einige Zahlen nicht eingegeben werden können, da der Hinweisblock nicht zulässt, dass Sie ein Rätsel ohne Lösung eingeben.
+
+<p>Sobald Sie ein Rätsel mit einer eindeutigen Lösung eingegeben haben, wird eine Schwierigkeitsbewertung angezeigt und die Tastatur wechselt in den Spielmodus.
+
+<h2>Mathematisch minimale Rätsel</h2>
+
+<p>Normalerweise haben die Rätsel in Heidis unendlichem Sudoku-Block 25-30 Hinweise. Natürlich genießen Sie ein etwas längeres Spiel, wenn es weniger Hinweise gibt.
+
+<p>Die kleinste Anzahl von Hinweisen, die bei einem lösbaren Sudoku-Spiel gegeben werden kann, wird auf 17 geschätzt, und Gordon Royle pflegt eine Datenbank aller bisher entdeckten 17-Hinweis-Rätsel. Wenn Sie <b>ctrl</b> gedrückt halten, während Sie auf <b>Datei</b> klicken, wird eines dieser 17-Hinweis-Rätsel aus dem Internet geladen.
+
+<h2>Schwierigkeitsbewertungen</h3>
+
+<p>Sudoku-Rätsel werden auf einer 24-Stufen-Skala von „Anfänger" (am einfachsten) bis „Verwirrend" (am schwierigsten) bewertet. Die vollständige Skala:
+
+<center><table><tr><td>
+1: Anfänger<br>
+2: Leicht<br>
+3: Einfach<br>
+4: Grundlegend<br>
+5: Mäßig<br>
+6: Knifflig<br>
+</td><td>
+7: Clever<br>
+8: Rätselhaft<br>
+9: Subtil<br>
+10: Schwierig<br>
+11: Verwickelt<br>
+12: Dornig<br>
+</td><td>
+13: Verblüffend<br>
+14: Kompliziert<br>
+15: Verwirrend<br>
+16: Unklar<br>
+17: Labyrinthisch<br>
+18: Hartnäckig<br>
+</td><td>
+19: Abstrus<br>
+20: Ärgerlich<br>
+21: Rätselhaft<br>
+22: Formidabel<br>
+23: Teuflisch<br>
+24: Verwirrend<br>
+</td></tr></table>
+</center>
+
+<p>Rätsel, die gelöst werden können, indem man einfach direkte Konflikte vermeidet, sind „Grundlegend" oder einfacher, abhängig davon, wie leicht die Einschränkungen zu erkennen sind. „Subtile" Rätsel erfordern ein oder zwei clevere Ableitungen. Und es wird von dort aus schwieriger: „Verwirrende" Rätsel beinhalten das Entwirren einer Masse komplexer Hinweise.
+
+<h2>Danksagungen</h2>
+
+<p>Heidis Hinweisblock wurde in HTML und Javascript von Heidis Ehemann <a target=_blank href="http://davidbau.com/about/david_bau.html">David Bau</a> geschrieben, unter Verwendung von <a target=_blank href="http://jquery.com/">jQuery</a> von <a target=_blank href="http://ejohn.org/">John Resig</a> mit <a target=_blank href="http://benalman.com/">Ben Almans</a> praktischem <a href="http://benalman.com/projects/jquery-bbq-plugin/">BBQ-Plugin</a> (als <a target=_blank href="https://raw.githubusercontent.com/hswong3i/jquery-bbq/master/jquery.ba-bbq.js">Fork</a> von <a target=_blank href="http://hswong3i.net/">Edison Wong</a>). <a target=_blank href="https://dribbble.com/JoePrince">Joe Princes</a> wunderbare <a target=_blank href="https://www.google.com/fonts/specimen/Handlee">Handlee</a>-Schrift liefert handgeschriebene Ziffern und <a target=_blank href="http://www.monotypeimaging.com/ProductsServices/TypeDesignerShowcase/SteveMatteson/">Steve Mattesons</a> <a target=_blank href="https://www.google.com/fonts/specimen/Open+Sans">Open Sans</a> wird für die Rätselnummern verwendet. <a target=_blank href="http://www.deleket.com/">Jojo Mendoza</a> hat das gelbe Textmarkersymbol bereitgestellt; und <a target=_blank href="http://en.wikipedia.org/wiki/Gordon_Royle">Gordon Royles</a> mathematisch schöne <a href="http://school.maths.uwa.edu.au/~gordon/sudokumin.php">minimale Sudoku-Sammlung</a> liefert minimale 17-Hinweis-Rätsel, wenn Sie <b>ctrl</b> gedrückt halten, während Sie auf <b>Datei</b> klicken.
+
+<p>Die Quellen für Heidis Sudoku-Hinweisblock sind derzeit nicht zur Wiederverwendung lizenziert, aber sie können <a target=_blank href="https://github.com/davidbau/heidisudoku">hier auf Github</a> gelesen werden.
+
+<p id=version>Version 0.67</p>
+</div>
+</center>
+
+<p style="text-align:center"
+><a class=back href="index.html"
+>Zurück zum Spiel</a>
+
+</body>
+</html>

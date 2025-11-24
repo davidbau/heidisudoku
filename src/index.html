@@ -1,4 +1,7 @@
 <!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
 <title>Heidi's Infinite Sudoku</title>
 <link rel=stylesheet href=sudoku-ui.css>
 <script src=jquery-2.1.1.js></script>
@@ -7,11 +10,73 @@
 <script src=seedrandom.js></script>
 <script src=sudoku.js></script>
 <script src=sudoku-hint.js></script>
+<script src=i18n.js></script>
+<script src=lang/en.js></script>
+<script src=lang/zh.js></script>
+<script src=lang/zh-tw.js></script>
+<script src=lang/es.js></script>
+<script src=lang/ar.js></script>
+<script src=lang/pt.js></script>
+<script src=lang/id.js></script>
+<script src=lang/fr.js></script>
+<script src=lang/ja.js></script>
+<script src=lang/ru.js></script>
+<script src=lang/de.js></script>
 <script src=sudoku-ui.js></script>
 <script src=english.js></script>
+<script>
+$(function() {
+  // Initialize i18n and update page
+  document.title = I18n.t('title');
+  $('#main-title').text(I18n.t('title'));
+  $('#promo').text(I18n.t('promo'));
+  $('.progress').text(I18n.t('time_label'));
+  $('.finished').text(I18n.t('finished_in'));
+  $('.hinttext').html(I18n.t('hints_label') + ' <span class=hints>0</span>');
+  $('#colorbutton').val(I18n.t('color_button')).attr('title', I18n.t('color_button_title'));
+  $('#filebutton').val(I18n.t('file_button')).attr('title', I18n.t('file_button_title'));
+  $('#clearbutton').val(I18n.t('clear_button')).attr('title', I18n.t('clear_button_title'));
+  $('#checkbutton').val(I18n.t('check_button')).attr('title', I18n.t('check_button_title'));
+  $('#prevbutton').val(I18n.t('prev_button')).attr('title', I18n.t('prev_button_title'));
+  $('#nextbutton').val(I18n.t('next_button')).attr('title', I18n.t('next_button_title'));
+  $('#hintbutton').val(I18n.t('hint_button')).attr('title', I18n.t('hint_button_title'));
+  $('#markbutton').val(I18n.t('marks_button')).attr('title', I18n.t('marks_button_title'));
+  $('#timerbutton').val(I18n.t('timer_button')).attr('title', I18n.t('timer_button_title'));
+  $('#victory').text(I18n.t('victory'));
+  $('#ok').text(I18n.t('ok'));
+  $('#errors').text(I18n.t('errors'));
+  $('#nohint').text(I18n.t('nohint'));
+  $('.save-outerbox center').text(I18n.t('saved_games'));
+  $('#savename').val(I18n.t('saved_game_default'));
+  $('#savecurrent').val(I18n.t('save_current'));
+  $('#savecopy').val(I18n.t('save_copy'));
+  $('#shortenurl').text(I18n.t('save_as_url'));
+  $('#selectall').val(I18n.t('select_all'));
+  $('#deleteselected').val(I18n.t('delete_selected'));
+  $('#loadselected').val(I18n.t('load_selected'));
+  $('.save-outerbox center').first().text(I18n.t('saved_games'));
+  // Update about link to point to language-specific page
+  var aboutLink = $('a[href="about.html"]');
+  aboutLink.text(I18n.t('about_link'));
+  aboutLink.attr('href', 'about.' + I18n.getLanguage() + '.html');
+
+  // Language selector change handler
+  $('#langselect').on('change', function() {
+    var lang = $(this).val();
+    I18n.setLanguage(lang);
+    // Reload with language parameter
+    var url = window.location.pathname + '?lang=' + lang + window.location.hash;
+    window.location.href = url;
+  });
+
+  // Set current language in selector
+  $('#langselect').val(I18n.getLanguage());
+});
+</script>
+</head>
 <body>
 <table style="width:100%;height:100%;"><tr><td align=center>
-<center><h1>Heidi's Infinite Sudoku</h1>
+<center><h1 id="main-title">Heidi's Infinite Sudoku</h1>
 <p><a id=promo href="https://chrome.google.com/webstore/detail/ccbhekjfmokgloklnjnidfhlaofegeno">Install the Chrome Web App to play offline</a></p>
 </center>
 <center style="display:table-cell;vertical-align:middle;">
@@ -79,6 +144,23 @@
 <p align=center style="margin: 15px 0 0 0;font: 10pt Open Sans">
 <a href="about.html"
 >About this game</a>
+&nbsp;&nbsp;|&nbsp;&nbsp;
+<select id="langselect" style="padding:3px 8px;font-size:10pt;border:1px solid #ccc;border-radius:4px;">
+<option value="en">English</option>
+<option value="zh">中文 (简体)</option>
+<option value="zh-tw">中文 (繁體)</option>
+<option value="es">Español</option>
+<option value="ar">العربية</option>
+<option value="pt">Português</option>
+<option value="id">Bahasa Indonesia</option>
+<option value="fr">Français</option>
+<option value="ja">日本語</option>
+<option value="ru">Русский</option>
+<option value="de">Deutsch</option>
+</select>
 </p>
 </td></tr>
 </table>
+
+</body>
+</html>

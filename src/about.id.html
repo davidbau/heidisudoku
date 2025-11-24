@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Tentang Sudoku Tak Terbatas Heidi</title>
+<link rel=stylesheet href=sudoku-ui.css>
+<script src=jquery-2.1.1.js></script>
+<script src=about.js></script>
+</head>
+<body id=about>
+
+<center>
+<div class=box>
+<center><h1 style='font: 20pt "arial black", "arial bold", "sans-serif"'
+>Tentang Sudoku Tak Terbatas Heidi</h1></center>
+<p style="text-align:center"
+><a class=back href="index.html"
+>Kembali ke permainan</a>
+
+<h2>Cara Bermain</h2>
+
+<p>Jelajahi teka-teki dengan tombol <b>Berikutnya</b> dan <b>Sebelumnya</b> atau tombol <b>N</b> dan <b>P</b>. Anda dapat mengerjakan teka-teki dalam urutan apa pun dan kembali ke teka-teki mana pun nanti.
+
+<p>Untuk mengisi teka-teki, klik angka di sebelah kanan lalu klik kotak mana pun untuk menuliskan angka tersebut dengan pensil. Aturan Sudoku adalah setiap digit 1-9 harus muncul sekali di setiap baris, kolom, dan blok 3x3.
+
+<h2>Pintasan Keyboard</h2>
+
+<p>Anda juga dapat menggunakan keyboard. Arahkan ke kotak atau gunakan tombol panah <b>&larr;</b> <b>&uarr;</b> <b>&darr;</b> <b>&rarr;</b> untuk memindahkan persegi panjang biru putus-putus, lalu ketik digit <b>1</b> - <b>9</b> untuk mengisinya.
+Mengetik beberapa angka dalam satu kotak akan menandai semua angka tersebut, tetapi angka yang diketuk dua kali akan menghapus semua tanda dan menulis angka sebagai jawabannya. Gunakan tombol <b>spasi</b> atau <b>0</b> untuk menghapus kotak yang dipilih lagi.
+
+<p>Tombol koma <b>,</b> memunculkan menu yang memungkinkan Anda menandai beberapa angka. Dengan menu ditampilkan, tombol <b>H</b> memungkinkan Anda menyorot angka yang ditandai dengan warna kuning. Tombol <b>M</b> secara otomatis menandai angka yang tidak berkonflik langsung di baris, kolom, atau blok, dan tombol <b>Tanda</b> mengisi ini untuk setiap kotak.
+
+<h2>Mendapatkan Petunjuk</h2>
+
+<p>Klik warna di sebelah kiri untuk mengungkapkan kotak yang berada di tingkat kesulitan itu: kotak ungu adalah yang termudah, dan kotak merah adalah yang tersulit. Klik tombol <b>Warna</b> untuk mengungkapkan semua warna.
+
+<p>Tahan tombol <b>Petunjuk</b> untuk mendapatkan petunjuk spesifik. Kotak merah menunjukkan kesalahan apa pun. Kotak biru akan menjadi tempat yang membatasi teka-teki dengan cara tertentu, dan kotak hijau akan menjadi lokasi di mana angka dapat diisi, atau di mana kemungkinan dapat dipersempit.
+
+<p>Jika Anda masih terjebak, Anda dapat mencoba petunjuk yang lebih eksplisit dengan menahan <b>ctrl</b> sambil mengklik tombol <b>Petunjuk</b>. Terkadang strategi yang ditampilkan akan sangat halus: pelajari untuk mengenali <a target=_blank href="http://www.sudokuwiki.org/Naked_Candidates">pasangan terbuka</a> dan <a target=_blank href="http://www.sudokuwiki.org/Intersection_Removal">persimpangan</a>, dan lihat apakah Anda dapat menemukan <a target=_blank href="http://www.sudokuwiki.org/Hidden_Candidates">pasangan atau tripel tersembunyi</a> atau mengenali <a target=_blank href="http://www.sudokuwiki.org/X_Wing_Strategy">sayap-x</a>, <a target=_blank href="http://www.sudokuwiki.org/Y_Wing_Strategy">sayap-y</a> atau <a target=_blank href="http://www.sudokuwiki.org/Sword_Fish_Strategy">ikan pedang</a>.
+
+<h2>Memeriksa dan Memperbaiki Kesalahan</h2>
+
+<p>Tombol <b>Periksa</b> dapat digunakan untuk dengan cepat memeriksa apakah Anda telah menuliskan kesalahan atau kotak yang bertentangan tanpa mengungkapkan apa kesalahannya.
+
+<p>Menahan <b>ctrl</b> sambil mengklik <b>Periksa</b> akan menunjukkan posisi kesalahan.
+
+<p>Ketika Anda menemukan kesalahan, Anda dapat menggunakan tombol "kembali" browser untuk membatalkan sebanyak gerakan yang Anda butuhkan.
+
+<h2>Pengatur Waktu</h2>
+
+<p>Permainan akan melacak jumlah waktu yang telah Anda habiskan untuk menyelesaikan teka-teki. Tekan tombol <b>Pengatur Waktu</b> untuk menampilkan waktu yang telah berlalu dan penghitung petunjuk.
+
+<p>Jika Anda menjauh dari teka-teki dan tidak ingin semua waktu menganggur dihitung terhadap Anda, jangan khawatir: tekan tombol "Refresh" di browser Anda dan pengatur waktu akan kembali ke waktu Anda membuat gerakan terakhir. Demikian pula, jika Anda menyimpan permainan, waktu yang disimpan akan menjadi waktu gerakan terakhir yang dibuat.
+
+<h2>Menyimpan dan Berbagi Teka-teki</a>
+
+<p>Teka-teki juga dapat disimpan dan dimuat menggunakan tombol <b>File</b>. Permainan yang disimpan diidentifikasi oleh peringkat, tanggal, dan kemajuan, atau Anda dapat mengganti namanya sendiri.
+
+<p>Jika Anda menemukan permainan bagus yang ingin Anda bagikan, tautan <b>Simpan sebagai URL</b> akan membuat URL pendek untuk teka-teki Anda saat ini yang dapat dikirim melalui email. Setiap tanda dan warna yang Anda taruh di permainan akan disimpan bersama dengan URL, sehingga Anda dapat berbagi langkah sudoku yang sangat cerdas dengan pemain teka-teki lainnya.
+
+<h2>Memasukkan Teka-teki Anda Sendiri</h2>
+
+<p>Jika Anda klik kanan atau tahan <b>ctrl</b> sambil mengklik kotak, Anda dapat mengubah teka-teki kapan saja. Menahan <b>ctrl</b> sambil mengklik <b>Hapus</b> akan menghapus seluruh teka-teki, dan Anda dapat memasukkan teka-teki baru menggunakan keyboard atau mouse. Perhatikan bahwa beberapa angka tidak dapat dimasukkan karena papan petunjuk tidak akan membiarkan Anda memasukkan teka-teki yang tidak memiliki solusi.
+
+<p>Segera setelah Anda memasukkan teka-teki dengan solusi unik, peringkat kesulitan akan ditampilkan dan keyboard akan beralih kembali ke mode permainan.
+
+<h2>Teka-teki Matematis Minimal</h2>
+
+<p>Biasanya teka-teki yang ditemukan di Papan Sudoku Tak Terbatas Heidi akan memiliki 25-30 petunjuk. Tentu saja, jika ada lebih sedikit petunjuk, Anda akan menikmati permainan yang sedikit lebih lama.
+
+<p>Jumlah petunjuk terkecil yang dapat diberikan pada permainan Sudoku yang dapat dipecahkan diyakini adalah 17, dan Gordon Royle memelihara database semua teka-teki 17-petunjuk yang telah ditemukan sejauh ini. Jika Anda menahan <b>ctrl</b> sambil mengklik <b>File</b>, salah satu teka-teki 17-petunjuk ini akan dimuat dari internet.
+
+<h2>Peringkat Kesulitan</h3>
+
+<p>Teka-teki Sudoku dinilai pada skala 24 tingkat dari "Pemula" (termudah) hingga "Membingungkan" (tersulit). Skala lengkap:
+
+<center><table><tr><td>
+1: Pemula<br>
+2: Mudah<br>
+3: Sederhana<br>
+4: Dasar<br>
+5: Sedang<br>
+6: Rumit<br>
+</td><td>
+7: Cerdas<br>
+8: Membingungkan<br>
+9: Halus<br>
+10: Sulit<br>
+11: Kusut<br>
+12: Berduri<br>
+</td><td>
+13: Memusingkan<br>
+14: Rumit<br>
+15: Membingungkan<br>
+16: Kabur<br>
+17: Berliku-liku<br>
+18: Keras Kepala<br>
+</td><td>
+19: Abstrus<br>
+20: Menjengkelkan<br>
+21: Enigmatik<br>
+22: Tangguh<br>
+23: Diabolik<br>
+24: Membingungkan<br>
+</td></tr></table>
+</center>
+
+<p>Teka-teki yang dapat dipecahkan dengan hanya menghindari konflik langsung adalah "Dasar" atau lebih mudah, tergantung pada seberapa mudah untuk melihat batasannya. Teka-teki "Halus" memerlukan satu atau dua deduksi cerdas. Dan menjadi lebih sulit dari sana: teka-teki "Membingungkan" melibatkan menguraikan massa petunjuk kompleks.
+
+<h2>Kredit</h2>
+
+<p>Papan Petunjuk Heidi ditulis dalam HTML dan Javascript oleh suami Heidi, <a target=_blank href="http://davidbau.com/about/david_bau.html">David Bau</a>, menggunakan <a target=_blank href="http://jquery.com/">jQuery</a> dari <a target=_blank href="http://ejohn.org/">John Resig</a> dengan <a href="http://benalman.com/projects/jquery-bbq-plugin/">plugin BBQ</a> yang berguna dari <a target=_blank href="http://benalman.com/">Ben Alman</a> (sebagai <a target=_blank href="https://raw.githubusercontent.com/hswong3i/jquery-bbq/master/jquery.ba-bbq.js">fork</a> oleh <a target=_blank href="http://hswong3i.net/">Edison Wong</a>). Font <a target=_blank href="https://www.google.com/fonts/specimen/Handlee">Handlee</a> yang indah dari <a target=_blank href="https://dribbble.com/JoePrince">Joe Prince</a> menyediakan digit tulisan tangan dan <a target=_blank href="https://www.google.com/fonts/specimen/Open+Sans">Open Sans</a> dari <a target=_blank href="http://www.monotypeimaging.com/ProductsServices/TypeDesignerShowcase/SteveMatteson/">Steve Matteson</a> digunakan untuk angka teka-teki. <a target=_blank href="http://www.deleket.com/">Jojo Mendoza</a> menyediakan ikon stabilo kuning; dan <a href="http://school.maths.uwa.edu.au/~gordon/sudokumin.php">Koleksi Sudoku Minimum</a> yang secara matematis indah dari <a target=_blank href="http://en.wikipedia.org/wiki/Gordon_Royle">Gordon Royle</a> menyediakan teka-teki 17-petunjuk minimal ketika Anda menahan <b>ctrl</b> sambil mengklik <b>File</b>.
+
+<p>Sumber untuk Papan Petunjuk Sudoku Heidi tidak dilisensikan untuk digunakan kembali saat ini, tetapi tersedia untuk dibaca <a target=_blank href="https://github.com/davidbau/heidisudoku">di sini di Github</a>.
+
+<p id=version>Versi 0.67</p>
+</div>
+</center>
+
+<p style="text-align:center"
+><a class=back href="index.html"
+>Kembali ke permainan</a>
+
+</body>
+</html>

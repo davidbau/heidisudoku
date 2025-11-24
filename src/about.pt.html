@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Sobre o Sudoku Infinito da Heidi</title>
+<link rel=stylesheet href=sudoku-ui.css>
+<script src=jquery-2.1.1.js></script>
+<script src=about.js></script>
+</head>
+<body id=about>
+
+<center>
+<div class=box>
+<center><h1 style='font: 20pt "arial black", "arial bold", "sans-serif"'
+>Sobre o Sudoku Infinito da Heidi</h1></center>
+<p style="text-align:center"
+><a class=back href="index.html"
+>Voltar ao jogo</a>
+
+<h2>Como Jogar</h2>
+
+<p>Navegue pelos quebra-cabeças com os botões <b>Próximo</b> e <b>Anterior</b> ou as teclas <b>N</b> e <b>P</b>. Você pode trabalhar nos quebra-cabeças em qualquer ordem e voltar a qualquer quebra-cabeça mais tarde.
+
+<p>Para preencher um quebra-cabeça, clique em um número à direita e depois clique em qualquer quadrado para marcar esse número a lápis. As regras do Sudoku são que cada dígito de 1 a 9 deve aparecer uma vez em cada linha, coluna e bloco 3x3.
+
+<h2>Atalhos de Teclado</h2>
+
+<p>Você também pode usar o teclado. Aponte para um quadrado ou use as teclas de seta <b>&larr;</b> <b>&uarr;</b> <b>&darr;</b> <b>&rarr;</b> para mover o retângulo azul pontilhado e depois digite um dígito <b>1</b> - <b>9</b> para preenchê-lo.
+Digitar múltiplos números em um quadrado marcará todos esses números, mas um número digitado duas vezes limpará todas as marcações e escreverá o número como a resposta. Use a tecla <b>espaço</b> ou <b>0</b> para limpar novamente o quadrado selecionado.
+
+<p>A tecla vírgula <b>,</b> abre um menu que permite marcar múltiplos números. Com o menu exibido, a tecla <b>H</b> permite destacar os números marcados em amarelo. A tecla <b>M</b> marca automaticamente números que não estão em conflito direto na linha, coluna ou bloco, e o botão <b>Marcas</b> preenche estes para cada quadrado.
+
+<h2>Obtendo Dicas</h2>
+
+<p>Clique em uma cor à esquerda para revelar quadrados que estão naquele nível de dificuldade: quadrados violetas são os mais fáceis, e quadrados vermelhos são os mais difíceis. Clique no botão <b>Cor</b> para revelar todas as cores.
+
+<p>Mantenha pressionado o botão <b>Dica</b> para obter uma dica específica. Quadrados vermelhos apontam quaisquer erros. Quadrados azuis serão lugares que restringem o quebra-cabeça de alguma forma, e quadrados verdes serão locais onde um número pode ser preenchido, ou onde as possibilidades podem ser reduzidas.
+
+<p>Se você ainda estiver preso, pode tentar uma dica mais explícita mantendo pressionado <b>ctrl</b> enquanto clica no botão <b>Dica</b>. Às vezes as estratégias mostradas serão muito sutis: aprenda a reconhecer <a target=_blank href="http://www.sudokuwiki.org/Naked_Candidates">pares expostos</a> e <a target=_blank href="http://www.sudokuwiki.org/Intersection_Removal">interseções</a>, e veja se consegue encontrar os <a target=_blank href="http://www.sudokuwiki.org/Hidden_Candidates">pares ou trios ocultos</a> ou reconhecer uma <a target=_blank href="http://www.sudokuwiki.org/X_Wing_Strategy">asa-x</a>, <a target=_blank href="http://www.sudokuwiki.org/Y_Wing_Strategy">asa-y</a> ou <a target=_blank href="http://www.sudokuwiki.org/Sword_Fish_Strategy">peixe-espada</a>.
+
+<h2>Verificando e Corrigindo Erros</h2>
+
+<p>O botão <b>Verificar</b> pode ser usado para verificar rapidamente se você marcou algum erro ou quadrados contraditórios sem revelar quais são os erros.
+
+<p>Manter pressionado <b>ctrl</b> enquanto clica em <b>Verificar</b> mostrará a posição de um erro.
+
+<p>Quando você descobrir um erro, pode usar o botão "voltar" do navegador para desfazer quantos movimentos precisar.
+
+<h2>O Cronômetro</h2>
+
+<p>O jogo acompanhará o tempo que você levou para resolver um quebra-cabeça. Pressione o botão <b>Cronômetro</b> para exibir o tempo decorrido e o contador de dicas.
+
+<p>Se você se afastar de um quebra-cabeça e não quiser que todo o tempo ocioso seja contado contra você, não se preocupe: pressione o botão "Atualizar" no seu navegador e o cronômetro voltará ao tempo em que você fez seu último movimento. Da mesma forma, se você salvar um jogo, o tempo salvo será o tempo do último movimento feito.
+
+<h2>Salvando e Compartilhando Quebra-cabeças</a>
+
+<p>Os quebra-cabeças também podem ser salvos e carregados usando o botão <b>Arquivo</b>. Jogos salvos são identificados por classificação, data e progresso, ou você pode renomeá-los você mesmo.
+
+<p>Se você descobrir uma joia de jogo que gostaria de compartilhar, o link <b>Salvar como URL</b> criará uma URL curta para seu quebra-cabeça atual que pode ser enviada por e-mail. Qualquer marcação e cores que você colocar no jogo serão salvas junto com a URL, para que você possa compartilhar uma etapa particularmente inteligente de sudoku com outros jogadores.
+
+<h2>Inserindo Seus Próprios Quebra-cabeças</h2>
+
+<p>Se você clicar com o botão direito ou manter pressionado <b>ctrl</b> enquanto clica em um quadrado, pode alterar o quebra-cabeça a qualquer momento. Manter pressionado <b>ctrl</b> enquanto clica em <b>Limpar</b> limpará todo o quebra-cabeça, e você pode inserir um novo quebra-cabeça usando o teclado ou mouse. Note que alguns números não podem ser inseridos porque o bloco de dicas não permitirá que você insira um quebra-cabeça que não tem solução.
+
+<p>Assim que você inserir um quebra-cabeça com uma solução única, uma classificação de dificuldade será mostrada e o teclado voltará ao modo de jogo.
+
+<h2>Quebra-cabeças Matematicamente Mínimos</h2>
+
+<p>Geralmente os quebra-cabeças encontrados no Bloco de Sudoku Infinito da Heidi terão 25-30 dicas. Naturalmente, se houver menos dicas, você desfrutará de um jogo um pouco mais longo.
+
+<p>O menor número de dicas que pode ser dado em um jogo de Sudoku solucionável é considerado 17, e Gordon Royle mantém um banco de dados de todos os quebra-cabeças de 17 dicas que foram descobertos até agora. Se você manter pressionado <b>ctrl</b> enquanto clica em <b>Arquivo</b>, um desses quebra-cabeças de 17 dicas será carregado da internet.
+
+<h2>Classificações de Dificuldade</h3>
+
+<p>Os quebra-cabeças de Sudoku são classificados em uma escala de 24 níveis de "Iniciante" (o mais fácil) a "Desconcertante" (o mais difícil). A escala completa:
+
+<center><table><tr><td>
+1: Iniciante<br>
+2: Fácil<br>
+3: Simples<br>
+4: Básico<br>
+5: Moderado<br>
+6: Complicado<br>
+</td><td>
+7: Inteligente<br>
+8: Intrigante<br>
+9: Sutil<br>
+10: Difícil<br>
+11: Intrincado<br>
+12: Espinhoso<br>
+</td><td>
+13: Desconcertante<br>
+14: Complexo<br>
+15: Perplexo<br>
+16: Obscuro<br>
+17: Labiríntico<br>
+18: Obstinado<br>
+</td><td>
+19: Abstruso<br>
+20: Vexatório<br>
+21: Enigmático<br>
+22: Formidável<br>
+23: Diabólico<br>
+24: Confuso<br>
+</td></tr></table>
+</center>
+
+<p>Quebra-cabeças que podem ser resolvidos apenas evitando conflitos diretos são "Básicos" ou mais fáceis, dependendo de quão fácil é ver as restrições. Quebra-cabeças "Sutis" requerem uma ou duas deduções inteligentes. E fica mais difícil a partir daí: quebra-cabeças "Confusos" envolvem desembaraçar uma massa de pistas complexas.
+
+<h2>Créditos</h2>
+
+<p>O Bloco de Dicas da Heidi foi escrito em HTML e Javascript pelo marido da Heidi, <a target=_blank href="http://davidbau.com/about/david_bau.html">David Bau</a>, usando o <a target=_blank href="http://jquery.com/">jQuery</a> de <a target=_blank href="http://ejohn.org/">John Resig</a> com o útil <a href="http://benalman.com/projects/jquery-bbq-plugin/">plugin BBQ</a> de <a target=_blank href="http://benalman.com/">Ben Alman</a> (como <a target=_blank href="https://raw.githubusercontent.com/hswong3i/jquery-bbq/master/jquery.ba-bbq.js">bifurcado</a> por <a target=_blank href="http://hswong3i.net/">Edison Wong</a>). A maravilhosa fonte <a target=_blank href="https://www.google.com/fonts/specimen/Handlee">Handlee</a> de <a target=_blank href="https://dribbble.com/JoePrince">Joe Prince</a> fornece dígitos manuscritos e a <a target=_blank href="https://www.google.com/fonts/specimen/Open+Sans">Open Sans</a> de <a target=_blank href="http://www.monotypeimaging.com/ProductsServices/TypeDesignerShowcase/SteveMatteson/">Steve Matteson</a> é usada para os numerais do quebra-cabeça. <a target=_blank href="http://www.deleket.com/">Jojo Mendoza</a> forneceu o ícone do marca-texto amarelo; e a matematicamente bela <a href="http://school.maths.uwa.edu.au/~gordon/sudokumin.php">Coleção Mínima de Sudoku</a> de <a target=_blank href="http://en.wikipedia.org/wiki/Gordon_Royle">Gordon Royle</a> fornece quebra-cabeças mínimos de 17 dicas quando você mantém pressionado <b>ctrl</b> enquanto clica em <b>Arquivo</b>.
+
+<p>As fontes do Bloco de Dicas de Sudoku da Heidi não estão licenciadas para reutilização no momento, mas estão disponíveis para leitura <a target=_blank href="https://github.com/davidbau/heidisudoku">aqui no Github</a>.
+
+<p id=version>Versão 0.67</p>
+</div>
+</center>
+
+<p style="text-align:center"
+><a class=back href="index.html"
+>Voltar ao jogo</a>
+
+</body>
+</html>

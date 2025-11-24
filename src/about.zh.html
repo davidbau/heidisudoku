@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>关于海蒂的无限数独</title>
+<link rel=stylesheet href=sudoku-ui.css>
+<script src=jquery-2.1.1.js></script>
+<script src=about.js></script>
+</head>
+<body id=about>
+
+<center>
+<div class=box>
+<center><h1 style='font: 20pt "arial black", "arial bold", "sans-serif"'
+>关于海蒂的无限数独</h1></center>
+<p style="text-align:center"
+><a class=back href="index.html"
+>返回游戏</a>
+
+<h2>如何游戏</h2>
+
+<p>使用<b>下一个</b>和<b>上一个</b>按钮或<b>N</b>和<b>P</b>键翻阅谜题。您可以按任何顺序解决谜题，并随时返回任何谜题。
+
+<p>要填写谜题，请单击右侧的数字，然后单击任何方格以铅笔填入该数字。数独的规则是每个数字1-9必须在每行、每列和每个3x3块中各出现一次。
+
+<h2>键盘快捷键</h2>
+
+<p>您也可以使用键盘。指向一个方格或使用箭头键<b>&larr;</b> <b>&uarr;</b> <b>&darr;</b> <b>&rarr;</b>移动蓝色虚线矩形，然后输入数字<b>1</b> - <b>9</b>来填写。
+在一个方格中输入多个数字将标记所有这些数字，但双击数字将清除所有标记并将该数字写为答案。使用<b>空格</b>或<b>0</b>键再次清除选定的方格。
+
+<p>逗号<b>,</b>键会打开一个菜单，让您标记多个数字。在菜单显示时，<b>H</b>键可以用黄色突出显示标记的数字。<b>M</b>键会自动标记在行、列或块中没有直接冲突的数字，<b>标记</b>按钮为每个方格填充这些标记。
+
+<h2>获取提示</h2>
+
+<p>单击左侧的颜色以显示该难度级别的方格：紫色方格最容易，红色方格最难。单击<b>颜色</b>按钮显示所有颜色。
+
+<p>按住<b>提示</b>按钮获取具体提示。红色方格指出任何错误。蓝色方格将是以某种方式约束谜题的位置，绿色方格将是可以填入数字的位置，或可以缩小可能性的位置。
+
+<p>如果您仍然卡住，可以尝试按住<b>ctrl</b>键的同时单击<b>提示</b>按钮以获得更明确的提示。有时显示的策略会非常微妙：学习识别<a target=_blank href="http://www.sudokuwiki.org/Naked_Candidates">显性对</a>和<a target=_blank href="http://www.sudokuwiki.org/Intersection_Removal">交集</a>，看看能否找到<a target=_blank href="http://www.sudokuwiki.org/Hidden_Candidates">隐性对或三元组</a>，或识别<a target=_blank href="http://www.sudokuwiki.org/X_Wing_Strategy">X翼</a>、<a target=_blank href="http://www.sudokuwiki.org/Y_Wing_Strategy">Y翼</a>或<a target=_blank href="http://www.sudokuwiki.org/Sword_Fish_Strategy">剑鱼</a>。
+
+<h2>检查和修正错误</h2>
+
+<p><b>检查</b>按钮可用于快速检查您是否填入了任何错误或矛盾的方格，而不显示错误是什么。
+
+<p>按住<b>ctrl</b>键的同时单击<b>检查</b>将显示错误的位置。
+
+<p>当您发现错误时，可以使用浏览器的"后退"按钮撤销所需的多次移动。
+
+<h2>计时器</h2>
+
+<p>游戏将跟踪您解决谜题所花费的时间。按<b>计时器</b>按钮显示经过的时间和提示计数器。
+
+<p>如果您离开谜题并且不希望所有空闲时间计入，不用担心：按浏览器中的"刷新"按钮，计时器将返回到您上次移动的时间。同样，如果您保存游戏，保存的时间将是最后一次移动的时间。
+
+<h2>保存和分享谜题</a>
+
+<p>还可以使用<b>文件</b>按钮保存和加载谜题。保存的游戏由评级、日期和进度标识，或者您可以自己重命名它们。
+
+<p>如果您发现了想要分享的精彩游戏，<b>另存为URL</b>链接将为您当前的谜题创建一个短URL，可以通过电子邮件发送。您在游戏上放置的任何标记和颜色都将与URL一起保存，因此您可以与其他谜题爱好者分享特别巧妙的数独步骤。
+
+<h2>输入您自己的谜题</h2>
+
+<p>如果您右键单击或按住<b>ctrl</b>键的同时单击方格，您可以随时更改谜题。按住<b>ctrl</b>键的同时单击<b>清除</b>将清除整个谜题，您可以使用键盘或鼠标输入新谜题。请注意，某些数字无法输入，因为提示板不允许您输入没有解决方案的谜题。
+
+<p>一旦您输入了具有唯一解决方案的谜题，将显示难度评级，键盘将切换回游戏模式。
+
+<h2>数学最小谜题</h2>
+
+<p>通常在海蒂的无限数独板中找到的谜题将有25-30个提示。自然，如果提示较少，您会享受稍长的游戏。
+
+<p>可解决数独游戏可以给出的最少提示数被认为是17个，Gordon Royle维护着迄今为止发现的所有17提示谜题的数据库。如果您按住<b>ctrl</b>键的同时单击<b>文件</b>，将从互联网加载这些17提示谜题之一。
+
+<h2>难度评级</h3>
+
+<p>数独谜题按24级评分，从"初学者"（最简单）到"令人困惑"（最难）。完整的评分：
+
+<center><table><tr><td>
+1: 初学者<br>
+2: 简单<br>
+3: 容易<br>
+4: 基础<br>
+5: 适度<br>
+6: 棘手<br>
+</td><td>
+7: 巧妙<br>
+8: 费解<br>
+9: 微妙<br>
+10: 困难<br>
+11: 复杂<br>
+12: 多刺<br>
+</td><td>
+13: 令人困惑<br>
+14: 错综复杂<br>
+15: 令人迷惑<br>
+16: 晦涩<br>
+17: 迷宫般<br>
+18: 顽固<br>
+</td><td>
+19: 深奥<br>
+20: 烦人<br>
+21: 神秘<br>
+22: 艰巨<br>
+23: 恶魔般<br>
+24: 令人费解<br>
+</td></tr></table>
+</center>
+
+<p>只需避免直接冲突即可解决的谜题是"基础"或更容易，这取决于约束有多容易看到。"微妙"的谜题需要一两个巧妙的推理。从那里开始会变得更加困难："令人费解"的谜题涉及解开一堆复杂的线索。
+
+<h2>致谢</h2>
+
+<p>海蒂的提示板由海蒂的丈夫<a target=_blank href="http://davidbau.com/about/david_bau.html">David Bau</a>用HTML和Javascript编写，使用<a target=_blank href="http://ejohn.org/">John Resig的</a><a target=_blank href="http://jquery.com/">jQuery</a>和<a target=_blank href="http://benalman.com/">Ben Alman的</a>方便的<a href="http://benalman.com/projects/jquery-bbq-plugin/">BBQ插件</a>（由<a target=_blank href="https://raw.githubusercontent.com/hswong3i/jquery-bbq/master/jquery.ba-bbq.js">Edison Wong</a><a target=_blank href="http://hswong3i.net/">分叉</a>）。<a target=_blank href="https://dribbble.com/JoePrince">Joe Prince的</a>精彩<a target=_blank href="https://www.google.com/fonts/specimen/Handlee">Handlee</a>字体提供手写数字，<a target=_blank href="http://www.monotypeimaging.com/ProductsServices/TypeDesignerShowcase/SteveMatteson/">Steve Matteson的</a><a target=_blank href="https://www.google.com/fonts/specimen/Open+Sans">Open Sans</a>用于谜题数字。<a target=_blank href="http://www.deleket.com/">Jojo Mendoza</a>提供了黄色荧光笔图标；<a target=_blank href="http://en.wikipedia.org/wiki/Gordon_Royle">Gordon Royle的</a>数学上优美的<a href="http://school.maths.uwa.edu.au/~gordon/sudokumin.php">最小数独集合</a>在您按住<b>ctrl</b>键的同时单击<b>文件</b>时提供最小的17提示谜题。
+
+<p>海蒂的数独提示板的源代码目前未获得重复使用许可，但可以<a target=_blank href="https://github.com/davidbau/heidisudoku">在Github上阅读</a>。
+
+<p id=version>版本 0.67</p>
+</div>
+</center>
+
+<p style="text-align:center"
+><a class=back href="index.html"
+>返回游戏</a>
+
+</body>
+</html>

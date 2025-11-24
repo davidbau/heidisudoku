@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ハイジの無限数独について</title>
+<link rel=stylesheet href=sudoku-ui.css>
+<script src=jquery-2.1.1.js></script>
+<script src=about.js></script>
+</head>
+<body id=about>
+
+<center>
+<div class=box>
+<center><h1 style='font: 20pt "arial black", "arial bold", "sans-serif"'
+>ハイジの無限数独について</h1></center>
+<p style="text-align:center"
+><a class=back href="index.html"
+>ゲームに戻る</a>
+
+<h2>遊び方</h2>
+
+<p><b>次</b>と<b>前</b>ボタンまたは<b>N</b>と<b>P</b>キーでパズルを切り替えます。パズルは任意の順序で作業でき、後でいつでも任意のパズルに戻ることができます。
+
+<p>パズルを埋めるには、右側の数字をクリックしてから任意のマスをクリックしてその数字を鉛筆で記入します。数独のルールは、1-9の各数字が各行、各列、各3x3ブロックに1回ずつ出現する必要があることです。
+
+<h2>キーボードショートカット</h2>
+
+<p>キーボードも使用できます。マスを指すか、矢印キー<b>&larr;</b> <b>&uarr;</b> <b>&darr;</b> <b>&rarr;</b>を使用して青い点線の四角形を移動し、次に数字<b>1</b> - <b>9</b>を入力して埋めます。
+1つのマスに複数の数字を入力すると、それらの数字すべてにマークが付きますが、2回タップした数字はすべてのマークをクリアし、その数字を解答として書き込みます。選択したマスを再度クリアするには、<b>スペース</b>または<b>0</b>キーを使用します。
+
+<p>カンマ<b>,</b>キーを押すと、複数の数字をマークできるメニューが表示されます。メニューが表示されているとき、<b>H</b>キーでマークされた数字を黄色で強調表示できます。<b>M</b>キーは、行、列、またはブロックで直接競合しない数字を自動的にマークし、<b>マーク</b>ボタンはすべてのマスにこれらを入力します。
+
+<h2>ヒントの取得</h2>
+
+<p>左側の色をクリックして、その難易度レベルのマスを表示します。紫色のマスが最も簡単で、赤いマスが最も難しいです。<b>色</b>ボタンをクリックして、すべての色を表示します。
+
+<p><b>ヒント</b>ボタンを押し続けて、特定のヒントを取得します。赤いマスは間違いを指摘します。青いマスは、パズルを何らかの方法で制約する場所であり、緑のマスは、数字を入力できる場所、または可能性を絞り込むことができる場所です。
+
+<p>それでも行き詰まっている場合は、<b>ヒント</b>ボタンをクリックしながら<b>ctrl</b>キーを押したままにして、より明示的なヒントを試すことができます。表示される戦略は非常に微妙な場合があります。<a target=_blank href="http://www.sudokuwiki.org/Naked_Candidates">ネイキッドペア</a>と<a target=_blank href="http://www.sudokuwiki.org/Intersection_Removal">交差</a>を認識することを学び、<a target=_blank href="http://www.sudokuwiki.org/Hidden_Candidates">ヒドゥンペアまたはトリプル</a>を見つけられるか、<a target=_blank href="http://www.sudokuwiki.org/X_Wing_Strategy">Xウイング</a>、<a target=_blank href="http://www.sudokuwiki.org/Y_Wing_Strategy">Yウイング</a>、または<a target=_blank href="http://www.sudokuwiki.org/Sword_Fish_Strategy">ソードフィッシュ</a>を認識できるか見てみましょう。
+
+<h2>間違いの確認と修正</h2>
+
+<p><b>チェック</b>ボタンを使用して、間違いや矛盾したマスを記入したかどうかを、間違いが何であるかを明らかにせずに素早く確認できます。
+
+<p><b>チェック</b>をクリックしながら<b>ctrl</b>キーを押したままにすると、間違いの位置が表示されます。
+
+<p>間違いを見つけたら、ブラウザの「戻る」ボタンを使用して、必要なだけ多くの移動を元に戻すことができます。
+
+<h2>タイマー</h2>
+
+<p>ゲームは、パズルを解くのにかかった時間を追跡します。<b>タイマー</b>ボタンを押して、経過時間とヒントカウンターを表示します。
+
+<p>パズルから離れて、すべてのアイドル時間をカウントしたくない場合は、心配しないでください。ブラウザの「更新」ボタンを押すと、タイマーは最後の移動を行った時間に戻ります。同様に、ゲームを保存すると、保存された時間は最後の移動が行われた時間になります。
+
+<h2>パズルの保存と共有</a>
+
+<p>パズルは<b>ファイル</b>ボタンを使用して保存およびロードすることもできます。保存されたゲームは、評価、日付、および進行状況によって識別されるか、自分で名前を変更できます。
+
+<p>共有したい素晴らしいゲームを見つけた場合、<b>URLとして保存</b>リンクは、メールで送信できる現在のパズルの短いURLを作成します。ゲームに配置したマークと色はすべてURLとともに保存されるため、特に巧妙な数独のステップを他のパズル愛好家と共有できます。
+
+<h2>独自のパズルの入力</h2>
+
+<p>右クリックするか、マスをクリックしながら<b>ctrl</b>キーを押したままにすると、いつでもパズルを変更できます。<b>クリア</b>をクリックしながら<b>ctrl</b>キーを押したままにすると、パズル全体がクリアされ、キーボードまたはマウスを使用して新しいパズルを入力できます。ヒントパッドでは解決策のないパズルを入力できないため、一部の数字は入力できないことに注意してください。
+
+<p>一意の解決策を持つパズルを入力すると、難易度評価が表示され、キーボードはゲームモードに戻ります。
+
+<h2>数学的に最小のパズル</h2>
+
+<p>通常、ハイジの無限数独パッドで見つかるパズルには25〜30のヒントがあります。当然、ヒントが少ない場合は、少し長いゲームを楽しむことができます。
+
+<p>解決可能な数独ゲームで与えることができる最小のヒント数は17であると考えられており、Gordon Royleはこれまでに発見されたすべての17ヒントパズルのデータベースを維持しています。<b>ファイル</b>をクリックしながら<b>ctrl</b>キーを押したままにすると、これらの17ヒントパズルの1つがインターネットからロードされます。
+
+<h2>難易度評価</h3>
+
+<p>数独パズルは、「初心者」(最も簡単)から「困惑」(最も難しい)まで24レベルのスケールで評価されます。完全なスケール:
+
+<center><table><tr><td>
+1: 初心者<br>
+2: 簡単<br>
+3: シンプル<br>
+4: 基本<br>
+5: 中程度<br>
+6: トリッキー<br>
+</td><td>
+7: 賢い<br>
+8: 不可解<br>
+9: 微妙<br>
+10: 困難<br>
+11: 複雑<br>
+12: とげのある<br>
+</td><td>
+13: 当惑<br>
+14: 複雑<br>
+15: 困惑<br>
+16: 不明瞭<br>
+17: 迷宮<br>
+18: 頑固<br>
+</td><td>
+19: 難解<br>
+20: 厄介<br>
+21: 神秘的<br>
+22: 手ごわい<br>
+23: 悪魔的<br>
+24: 困惑<br>
+</td></tr></table>
+</center>
+
+<p>直接の競合を回避するだけで解決できるパズルは、制約がどれだけ見やすいかに応じて、「基本」またはそれより簡単です。「微妙な」パズルには、1つまたは2つの巧妙な推論が必要です。そしてそこからさらに難しくなります。「困惑する」パズルには、複雑な手がかりの塊を解きほぐすことが含まれます。
+
+<h2>クレジット</h2>
+
+<p>ハイジのヒントパッドは、ハイジの夫<a target=_blank href="http://davidbau.com/about/david_bau.html">David Bau</a>によってHTMLとJavascriptで記述され、<a target=_blank href="http://ejohn.org/">John Resig</a>の<a target=_blank href="http://jquery.com/">jQuery</a>と<a target=_blank href="http://benalman.com/">Ben Alman</a>の便利な<a href="http://benalman.com/projects/jquery-bbq-plugin/">BBQプラグイン</a>(<a target=_blank href="http://hswong3i.net/">Edison Wong</a>によって<a target=_blank href="https://raw.githubusercontent.com/hswong3i/jquery-bbq/master/jquery.ba-bbq.js">フォーク</a>されたもの)を使用しています。<a target=_blank href="https://dribbble.com/JoePrince">Joe Prince</a>の素晴らしい<a target=_blank href="https://www.google.com/fonts/specimen/Handlee">Handlee</a>フォントは手書きの数字を提供し、<a target=_blank href="http://www.monotypeimaging.com/ProductsServices/TypeDesignerShowcase/SteveMatteson/">Steve Matteson</a>の<a target=_blank href="https://www.google.com/fonts/specimen/Open+Sans">Open Sans</a>はパズルの数字に使用されています。<a target=_blank href="http://www.deleket.com/">Jojo Mendoza</a>は黄色のハイライターアイコンを提供し、<a target=_blank href="http://en.wikipedia.org/wiki/Gordon_Royle">Gordon Royle</a>の数学的に美しい<a href="http://school.maths.uwa.edu.au/~gordon/sudokumin.php">最小数独コレクション</a>は、<b>ファイル</b>をクリックしながら<b>ctrl</b>キーを押したままにすると、最小の17ヒントパズルを提供します。
+
+<p>ハイジの数独ヒントパッドのソースは現在再利用のライセンスはありませんが、<a target=_blank href="https://github.com/davidbau/heidisudoku">こちらのGithub</a>で読むことができます。
+
+<p id=version>バージョン 0.67</p>
+</div>
+</center>
+
+<p style="text-align:center"
+><a class=back href="index.html"
+>ゲームに戻る</a>
+
+</body>
+</html>

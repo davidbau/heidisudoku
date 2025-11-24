@@ -1655,6 +1655,11 @@ function handglyph(text) {
 }
 
 function colorkeyhtml(em, hm) {
+  // Use i18n for labels if available
+  if (typeof I18n !== 'undefined') {
+    em = I18n.t('easiest', em);
+    hm = I18n.t('hardest', hm);
+  }
   var result = '<table style=text-align:center>';
   result += '<tr><td>' + hm + '</td></tr>';
   result += '<tr><td><table class=colorkey>';
