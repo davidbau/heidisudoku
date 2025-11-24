@@ -92,7 +92,7 @@ I18n.register('zh', {
   'credits': "制作人员",
   'credits_content': "海蒂的提示板是由海蒂的丈夫<a target=_blank href=\"http://davidbau.com/about/david_bau.html\">David Bau</a>使用<a target=_blank href=\"http://ejohn.org/\">John Resig的</a> <a target=_blank href=\"http://jquery.com/\">jQuery</a>和<a target=_blank href=\"http://benalman.com/\">Ben Alman的</a>方便的<a href=\"http://benalman.com/projects/jquery-bbq-plugin/\">BBQ插件</a>（由<a target=_blank href=\"http://hswong3i.net/\">Edison Wong</a> <a target=_blank href=\"https://raw.githubusercontent.com/hswong3i/jquery-bbq/master/jquery.ba-bbq.js\">分叉</a>）用HTML和Javascript编写的。<a target=_blank href=\"https://dribbble.com/JoePrince\">Joe Prince的</a>精彩<a target=_blank href=\"https://www.google.com/fonts/specimen/Handlee\">Handlee</a>字体提供手写数字，<a target=_blank href=\"http://www.monotypeimaging.com/ProductsServices/TypeDesignerShowcase/SteveMatteson/\">Steve Matteson的</a> <a target=_blank href=\"https://www.google.com/fonts/specimen/Open+Sans\">Open Sans</a>用于谜题数字。<a target=_blank href=\"http://www.deleket.com/\">Jojo Mendoza</a>提供了黄色荧光笔图标；<a target=_blank href=\"http://en.wikipedia.org/wiki/Gordon_Royle\">Gordon Royle的</a>数学上美丽的<a href=\"http://school.maths.uwa.edu.au/~gordon/sudokumin.php\">最小数独集</a>在您按住<b>ctrl</b>同时单击<b>文件</b>时提供最小的17提示谜题。",
   'sources_notice': "海蒂的数独提示板的源代码目前未获得重用许可，但可以在<a target=_blank href=\"https://github.com/davidbau/heidisudoku\">Github上阅读</a>。",
-  'version': "版本 0.67",
+  'version': "版本 0.68",
 
   // Color labels
   'easiest': '最简单',

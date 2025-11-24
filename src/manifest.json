@@ -3,7 +3,7 @@
   "short_name": "Sudoku",
   "description":
     "Sudoku for puzzle lovers. Billions of accurately rated puzzles, gentle hints, save files, colors, notes, touch, keyboard shortcuts.",
-  "version": "0.0.0.67",
+  "version": "0.0.0.68",
   "app": {
     "launch": {
       "local_path": "app.html"
