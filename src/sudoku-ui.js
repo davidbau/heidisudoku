@@ -949,7 +949,7 @@ function loadstate(name) {
       !(name in window.localStorage)) {
     return false;
   }
-  var data = localStorage[name];
+  var data = localStorage.getItem(name);
   var state = JSON.parse(data);
   if (!state.puzzle || !state.puzzle.length) return false;
   if ('elapsed' in state) {
@@ -984,7 +984,7 @@ function savestate(name, state) {
   if (!('localStorage' in window) || !('JSON' in window)) {
     return;
   }
-  localStorage[name] = JSON.stringify(state);
+  localStorage.setItem(name, JSON.stringify(state));
 }
 
 function needsave(state) {
@@ -1121,7 +1121,7 @@ function base64toarray(base64) {
 }
 
 function zencodebits(numbers) {
-  result = [];
+  var result = [];
   for (var j = 0; j < numbers.length; j++) {
     if (numbers[j] == 0) {
       var zeroes = 1;
