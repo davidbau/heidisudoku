@@ -33,7 +33,7 @@ I18n.register('es', {
 
   // Popups
   'victory': "¡Ganaste!",
-  'ok': "bien hasta ahora",
+  'ok': "todo bien",
   'errors': "error",
   'nohint': "sin pista",
 
