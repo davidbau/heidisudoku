@@ -386,6 +386,23 @@ $(window).bind('contextmenu', function(ev) {
   ev.stopPropagation();
 });
 
+// On macOS, Ctrl+click is delivered to the page as a contextmenu event rather
+// than a click, so the Ctrl-modified ("alt") actions of these toolbar buttons
+// only fired with Cmd+click.  Re-dispatch a contextmenu over one of them as a
+// Ctrl-flagged click so Ctrl+click (and right-click) match the documented
+// Ctrl shortcuts.  Scoped to these ids so right-clicking the save dialog's
+// Save/Delete/Load buttons can never trigger them.  (#hintbutton and
+// #checkbutton already work this way: their actions are bound to mousedown,
+// which fires on Ctrl+click as button 3.)
+$(document).on('contextmenu',
+    '#prevbutton, #nextbutton, #newbutton, #clearbutton, #timerbutton, ' +
+    '#markbutton, #solvebutton, #colorbutton, #filebutton',
+    function(ev) {
+  ev.preventDefault();
+  $(this).trigger($.Event('click', {ctrlKey: true}));
+  return false;
+});
+
 function showmenu(state, pos, editmode) {
   var elt = $('#sc' + pos);
   if (editmode) {
