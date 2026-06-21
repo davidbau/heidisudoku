@@ -34,6 +34,12 @@ $(function() {
   aboutLink.text(I18n.t('about_link'));
   aboutLink.attr('href', 'about.' + I18n.getLanguage() + '.html');
   $('#ratelink').text(I18n.t('rate_app'));
+  // Point the rate link at THIS extension's reviews, derived from its own id,
+  // so it stays correct even though publishing as an extension assigns a new id.
+  if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.id) {
+    $('#ratelink').attr('href',
+      'https://chromewebstore.google.com/detail/' + chrome.runtime.id + '/reviews');
+  }
 
   // Language selector change handler
   $('#langselect').on('change', function() {
