@@ -1,8 +1,8 @@
 {
-  "name": "Heidi's Infinite Sudoku",
+  "default_locale": "en",
+  "name": "__MSG_extName__",
   "short_name": "Sudoku",
-  "description":
-    "Sudoku for puzzle lovers. Billions of accurately rated puzzles, gentle hints, save files, colors, notes, touch, keyboard shortcuts.",
+  "description": "__MSG_extDescription__",
   "version": "0.0.0.69",
   "icons": {
     "16": "sudoku-icon-16.png",
@@ -10,7 +10,7 @@
     "128": "sudoku-icon-128.png"
   },
   "action": {
-    "default_title": "Heidi's Infinite Sudoku",
+    "default_title": "__MSG_extName__",
     "default_icon": {
       "16": "sudoku-icon-16.png",
       "96": "sudoku-icon-96.png",

@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "Sudoku Infinito de Heidi",
+    "description": "Extension name shown in Chrome and the Web Store."
+  },
+  "extDescription": {
+    "message": "Sudoku para amantes de puzzles. Miles de millones de niveles evaluados, pistas suaves, guardado, colores, notas, táctil, teclado.",
+    "description": "Short store description (max 132 chars)."
+  }
+}

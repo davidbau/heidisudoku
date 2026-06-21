@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "Sudoku Tak Terbatas Heidi",
+    "description": "Extension name shown in Chrome and the Web Store."
+  },
+  "extDescription": {
+    "message": "Sudoku untuk pecinta teka-teki. Miliaran level berperingkat akurat, petunjuk lembut, simpan, warna, catatan, sentuh, keyboard.",
+    "description": "Short store description (max 132 chars)."
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "Heidis Unendliches Sudoku",
+    "description": "Extension name shown in Chrome and the Web Store."
+  },
+  "extDescription": {
+    "message": "Sudoku für Rätselfreunde. Milliarden präzise bewerteter Rätsel, sanfte Hinweise, Speichern, Farben, Notizen, Touch und Tastatur.",
+    "description": "Short store description (max 132 chars)."
+  }
+}

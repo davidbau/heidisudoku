@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "سودوكو هايدي اللانهائي",
+    "description": "Extension name shown in Chrome and the Web Store."
+  },
+  "extDescription": {
+    "message": "سودوكو لعشاق الألغاز. مليارات الألغاز بتقييم دقيق، تلميحات لطيفة، حفظ الملفات، ألوان، ملاحظات، لمس واختصارات لوحة المفاتيح.",
+    "description": "Short store description (max 132 chars)."
+  }
+}

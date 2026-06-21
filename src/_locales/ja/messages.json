@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "ハイディの無限数独",
+    "description": "Extension name shown in Chrome and the Web Store."
+  },
+  "extDescription": {
+    "message": "パズル好きのための数独。正確に評価された数十億の問題、やさしいヒント、保存、色分け、メモ、タッチ操作、キーボードショートカット。",
+    "description": "Short store description (max 132 chars)."
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "海蒂的无限数独",
+    "description": "Extension name shown in Chrome and the Web Store."
+  },
+  "extDescription": {
+    "message": "为谜题爱好者打造的数独。数十亿个精准评级的谜题、温和的提示、存档、颜色、笔记、触控和键盘快捷键。",
+    "description": "Short store description (max 132 chars)."
+  }
+}

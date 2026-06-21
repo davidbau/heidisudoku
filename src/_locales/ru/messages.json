@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "Бесконечный Судоку Хайди",
+    "description": "Extension name shown in Chrome and the Web Store."
+  },
+  "extDescription": {
+    "message": "Судоку для любителей головоломок. Миллиарды точно оценённых пазлов, мягкие подсказки, сохранения, цвета, заметки, касания, клавиши.",
+    "description": "Short store description (max 132 chars)."
+  }
+}
