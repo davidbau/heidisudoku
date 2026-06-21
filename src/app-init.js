@@ -33,6 +33,7 @@ $(function() {
   var aboutLink = $('a[href="about.html"]');
   aboutLink.text(I18n.t('about_link'));
   aboutLink.attr('href', 'about.' + I18n.getLanguage() + '.html');
+  $('#ratelink').text(I18n.t('rate_app'));
 
   // Language selector change handler
   $('#langselect').on('change', function() {

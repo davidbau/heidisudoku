@@ -37,6 +37,7 @@ I18n.register('fr', {
   'load_selected': "Charger Sélectionné",
   'saved_game_default': "Jeu Sauvegardé",
   'about_link': "À propos de ce jeu",
+  'rate_app': "Vous aimez ? Notez cette appli.",
   'back_to_game': "Retour au jeu",
   'how_to_play': "Comment Jouer",
   'how_to_play_p1': "Parcourez les puzzles avec les boutons <b>Suivant</b> et <b>Précédent</b> ou les touches <b>N</b> et <b>P</b>. Vous pouvez travailler sur les puzzles dans n'importe quel ordre et revenir à n'importe quel puzzle plus tard.",

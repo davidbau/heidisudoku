@@ -37,6 +37,7 @@ I18n.register('de', {
   'load_selected': "Ausgewählte laden",
   'saved_game_default': "Gespeichertes Spiel",
   'about_link': "Über dieses Spiel",
+  'rate_app': "Gefällt es Ihnen? Bewerten Sie diese App.",
   'back_to_game': "Zurück zum Spiel",
   'how_to_play': "Wie man spielt",
   'how_to_play_p1': "Blättern Sie durch Rätsel mit den Tasten <b>Weiter</b> und <b>Zurück</b> oder den <b>N</b>- und <b>P</b>-Tasten. Sie können die Rätsel in beliebiger Reihenfolge bearbeiten und später zu jedem Rätsel zurückkehren.",

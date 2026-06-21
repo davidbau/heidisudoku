@@ -48,6 +48,7 @@ I18n.register('zh', {
 
   // About page link
   'about_link': "关于此游戏",
+  'rate_app': "喜欢吗？为此应用评分。",
 
   // About page content
   'back_to_game': "返回游戏",

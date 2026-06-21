@@ -48,6 +48,7 @@ I18n.register('pt', {
 
   // About page link
   'about_link': "Sobre este jogo",
+  'rate_app': "Gostou? Avalie este app.",
 
   // About page content
   'back_to_game': "Voltar ao jogo",

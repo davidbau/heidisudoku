@@ -37,6 +37,7 @@ I18n.register('ja', {
   'load_selected': "選択をロード",
   'saved_game_default': "保存されたゲーム",
   'about_link': "このゲームについて",
+  'rate_app': "気に入りましたか？このアプリを評価してください。",
   'back_to_game': "ゲームに戻る",
   'how_to_play': "遊び方",
   'how_to_play_p1': "<b>次へ</b>と<b>前へ</b>ボタンまたは<b>N</b>と<b>P</b>キーでパズルをめくります。パズルは任意の順序で取り組むことができ、後で任意のパズルに戻ることができます。",

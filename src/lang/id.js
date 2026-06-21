@@ -48,6 +48,7 @@ I18n.register('id', {
 
   // About page link
   'about_link': "Tentang permainan ini",
+  'rate_app': "Suka? Beri rating aplikasi ini.",
 
   // About page content
   'back_to_game': "Kembali ke permainan",
