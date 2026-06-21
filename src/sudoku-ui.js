@@ -1724,32 +1724,23 @@ var base64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
                   "-_";
 
 function shorturl(url, cb) {
-  // Use v.gd URL shortener API with JSONP to avoid CORS issues
-  var encodedUrl = encodeURIComponent(url);
-  var apiUrl = 'https://v.gd/create.php?format=json&url=' + encodedUrl;
-
-  $.ajax({
-    url: apiUrl,
-    dataType: 'jsonp',
-    success: function(data) {
-      var result = null;
-      try {
-        // v.gd returns JSON with shorturl field
-        if (data && data.shorturl) {
-          result = data.shorturl;
-          // Validate it's a proper URL
-          if (typeof result != "string" || !result.startsWith('https://v.gd/')) {
-            result = null;
-          }
-        }
-      } catch (e) {
-        result = null;
-      }
-      cb(result);
-    },
-    error: function() {
-      cb(null);
+  // Use the v.gd URL shortener API.  format=simple returns the short URL as
+  // plain text.  A direct fetch is allowed because the manifest grants
+  // host_permissions for https://v.gd/*, which bypasses CORS without the
+  // remote-code execution that JSONP would require under the MV3 CSP.
+  var apiUrl = 'https://v.gd/create.php?format=simple&url=' +
+               encodeURIComponent(url);
+  fetch(apiUrl).then(function(response) {
+    return response.ok ? response.text() : null;
+  }).then(function(text) {
+    var result = text ? text.trim() : null;
+    // v.gd returns the short URL on success, or an "Error: ..." line on failure.
+    if (typeof result != "string" || !result.startsWith('https://v.gd/')) {
+      result = null;
     }
+    cb(result);
+  }).catch(function() {
+    cb(null);
   });
 }
 
