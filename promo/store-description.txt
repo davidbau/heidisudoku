@@ -1,0 +1,17 @@
+Heidi's Sudoku is different from other sudoku programs because it gives good hints.  It can gently guide you out of a jam without giving away the whole puzzle.
+
+The Hint button highlights a few squares to concentrate on. Things are not totally given away! If you hold down ctrl when clicking Hint, you will get more of an explicit hint. You can select Colors to see which parts of the board should be easiest to figure out first, and which parts are really hard and should be left to the end. Don't give up after you have hit a dead end in a puzzle. Use the Check button for a tip on whether you've made a mistake, and hold ctrl to see where it might be.
+
+More features:
+
+Switch between puzzles at your leisure.
+Learn tricks like naked pairs, hidden sets, xwing, ywing, swordfish.
+Use mouse or keyboard or touch.
+Pencil in notes, colors, or highlighting.
+Ratings grade actual difficulty.
+Track your speed with an optional timer.
+Enter custom Sudoku puzzles to get hints.
+
+Heidi's Infinite Sudoku is inspired by Heidi and David's favorite way to play Sudoku: we love puzzling together and sharing really clever hints.
+
+This app works offline.
